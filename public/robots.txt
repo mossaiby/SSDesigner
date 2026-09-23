@@ -1,0 +1,36 @@
+# Robots.txt for AeroSpatial Systems
+User-agent: *
+Allow: /
+
+# LLM & AI Search Crawlers Explicit Permissions
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Machine-Readable LLM Manifests
+# See: https://llmstxt.org/
+LLM-Full-Content: /llms-full.txt
+LLM-Summary: /llms.txt
+
+Sitemap: /sitemap.xml

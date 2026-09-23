@@ -1,0 +1,99 @@
+# AeroSpatial — Comprehensive Structural Engineering LLM Knowledge Base
+> Full technical documentation for LLMs, AI agents, and computational structural engineers.
+
+## Table of Contents
+1. Suite Architecture & Mathematical Foundations
+2. FormSpace Prime (Form-Finding & Dynamic Relaxation)
+3. AeroLattice 3D (Nonlinear Space Grid FEA & Post-Buckling)
+4. DeployX Space (Multibody Orbital Kinematics)
+5. NodeGen Parametric (MERO Solid Ball Joint Detailing)
+6. Real-World Case Studies & Empirical Telemetry
+7. Industry Compliance & Structural Standards
+
+---
+
+## 1. Suite Architecture & Mathematical Foundations
+AeroSpatial is a unified software platform designed for the structural analysis, equilibrium state finding, and fabrication of three-dimensional space structures. Unlike standard 2D/3D frame analysis programs, AeroSpatial addresses the acute geometrical nonlinearities, initial pretension requirements, and bifurcation stability criteria inherent to:
+- Double-layer and triple-layer spatial grids (space frames)
+- Single-layer and double-layer reticulated geodesic domes
+- Cable-supported roofs and prestressed membrane cable networks
+- Tensegrity prisms, masts, and tensegrity grids
+- Deployable aerospace mechanisms (satellite antennas, solar booms)
+
+### Tangent Stiffness Decomposition
+Across all non-linear modules, the spatial structure tangent stiffness matrix [K_T] is decomposed into three distinct components:
+[K_T] = [K_e] + [K_g](T) + [K_u](u)
+Where:
+- [K_e] represents the standard small-displacement elastic stiffness matrix.
+- [K_g](T) represents the geometric (initial stress or prestress) stiffness matrix, accounting for internal member axial tensions and compressions.
+- [K_u](u) represents the initial displacement stiffness matrix capturing higher-order rotations and finite strains.
+
+---
+
+## 2. FormSpace Prime
+- **Target Applications**: Self-stressed tensegrity systems, minimal surfaces, tension cable-nets, tensile facades.
+- **Governing Algorithm**: Dynamic Relaxation (DR) with Kinetic Damping.
+- **Equilibrium Formulation**:
+  The equation of motion for any free spatial node i at fictitious time step t is:
+  m_i * a_i(t) + c_i * v_i(t) = R_i(t)
+  Where the residual force vector R_i(t) is defined as:
+  R_i(t) = F_{ext, i} - ∑_{j} [ T_{ij} / L_{ij} * (x_j - x_i) ]
+- **Kinetic Damping Mechanism**:
+  Kinetic energy of the overall spatial system is monitored at every sub-step:
+  E_k(t) = 0.5 * ∑ m_i * ||v_i||^2
+  When a peak in kinetic energy is detected (dE_k/dt passes through zero from positive to negative), all nodal velocities are reset to zero (v_i = 0), and nodal coordinates are interpolated back to the energy peak. This eliminates oscillations and guarantees convergence to the static equilibrium geometry without requiring inversion of large stiffness matrices.
+
+---
+
+## 3. AeroLattice 3D
+- **Target Applications**: Large-span reticulated domes, Schwedler domes, Lamella grids, barrel vaults.
+- **Governing Algorithm**: Cylindrical and Spherical Arc-Length Path Following (Modified Riks-Crisfield Method).
+- **Buckling Phenonema Captured**:
+  - Global snap-through instability
+  - Member bifurcation buckling
+  - Joint slip and semi-rigid degradation
+- **Arc-Length Equation**:
+  Δu^T * Δu + ψ^2 * Δλ^2 * (P^T * P) = Δl^2
+  Where Δu is the incremental displacement vector, Δλ is the incremental load multiplier, P is the reference load vector, and Δl is the fixed arc-length radius.
+- **Singularity & Bifurcation Indicator**:
+  det([K_T(λ)]) = 0
+  Negative eigenvalue tracking through Sturm sequence analysis to identify post-buckling branches.
+
+---
+
+## 4. DeployX Space
+- **Target Applications**: Deployable space antennas, high-strain composite booms, expandable space stations.
+- **Formulation**: Flexible Multibody Dynamics using Absolute Nodal Coordinate Formulation (ANCF) coupled with Lagrangian Differential-Algebraic Equations (DAE):
+  M(q) * q̈ + C(q, q̇) * q̇ + K * q + Φ_q^T * λ = Q_ext
+  Subject to kinematic constraints: Φ(q, t) = 0
+- **Constraint Stabilization**: Baumgarte penalty approach to prevent drift in closed kinematic mechanisms:
+  Φ̈ + 2 * α * Φ̇ + β^2 * Φ = 0
+
+---
+
+## 5. NodeGen Parametric
+- **Target Applications**: 5-axis CNC manufacturing of MERO solid ball joints, cast nodes, and clevis fittings.
+- **Clash Prevention Geometry**:
+  For any two intersecting structural members i and j with outer diameters D_i and D_j entering a spherical solid ball node of radius R:
+  θ_{ij} ≥ arcsin(D_i / (2*R)) + arcsin(D_j / (2*R)) + θ_{clearance}
+- **Stress Concentration Validation**:
+  Neuber's elastic-plastic notch equation applied to threaded bore holes:
+  K_t^2 = (σ * ε) / (S * e)
+
+---
+
+## 6. Real-World Case Studies
+- **Al-Miraj Bioclimatic Dome**: 118m clear span, 1,420 spatial nodes, 34.2 kg/m² structural steel.
+- **Helios-9 Reflector**: 18.4m deployed diameter, 78.4 kg total mass, < 0.35 mm RMS parabolic accuracy.
+- **Grand Falcon Velodrome**: 142m x 98m double-layer space grid, 2,840 nodes, 194 tonnes steel saved.
+- **Alps-Alpine Hyperloop Portal**: 84m asymmetric tensegrity portal, 860 cable & strut elements.
+
+---
+
+## 7. Standards Compliance
+- **Eurocode 3**: EN 1993-1-1 (General steel design), EN 1993-1-6 (Shell strength & stability), EN 1993-1-11 (Tension components).
+- **ASCE / SEI 7-22**: Minimum Design Loads for Buildings and Other Structures (Nonlinear wind vortex & seismic drift).
+- **IASS Recommendations**: International Association for Shell and Spatial Structures guidelines.
+
+---
+End of Document. For automated agent inquiries, contact engineering@aerospatial-structures.com.

@@ -1,0 +1,57 @@
+# AeroSpatial — Space Structures Engineering Software Suite
+> Advanced computational mechanics, nonlinear FEA, dynamic relaxation form-finding, and tensegrity stability solvers for spatial grids, geodesic domes, and deployable aerospace systems.
+
+## Overview
+AeroSpatial provides high-precision structural analysis software engineered specifically for large-span spatial systems, tensegrity structures, cable-nets, and space deployables. The suite bridges rigorous theoretical mechanics with industrial 5-axis CNC manufacturing.
+
+- **Official Website**: https://aerospatial.ai/
+- **Domain**: Space Structures, Computational Mechanics, Aerospace Deployables
+- **Compliance**: Eurocode 3 (EN 1993-1-1 / EN 1993-1-11), ASCE/SEI 7-22, IASS Spatial Structures Recommendations
+- **Full Documentation**: https://aerospatial.ai/llms-full.txt
+
+## Software Suite Modules
+
+### 1. FormSpace Prime
+- **Category**: Form-Finding & Cable-Net Analysis (v2026.4 LTS)
+- **Primary Function**: Nonlinear dynamic relaxation and force-density form-finding engine for self-stressed tensegrity systems, cable-net structures, and spatial membranes.
+- **Key Algorithms**: Kinetic and viscous damping dynamic relaxation, Force Density Method (FDM), unilateral slack-cable contact handling.
+- **Formulation**: R(t) = F_ext - ∑ [T_i * (x_j - x_i) / L_i] = 0 with kinetic energy peak tracking.
+- **Capacity**: Tested up to 150,000 spatial nodes. GPU-accelerated sparse Cholesky solver.
+
+### 2. AeroLattice 3D
+- **Category**: Nonlinear FEA & Buckling Analysis (v2026.2 R3)
+- **Primary Function**: Geometrically and materially nonlinear analysis (GMNIA) for ultra-large span reticulated domes, barrel vaults, and spatial lattice shells.
+- **Key Algorithms**: Modified Riks-Crisfield cylindrical arc-length path following, bifurcation point detection, MERO semi-rigid ball joint moment-rotation hysteresis.
+- **Formulation**: Tangent stiffness K_T = K_e + K_g(T) + K_u(u); Arc-length constraint Δu^T Δu + ψ^2 Δλ^2 (P^T P) = Δl^2.
+- **Capacity**: 80,000 framework nodes.
+
+### 3. DeployX Space
+- **Category**: Aerospace Deployables & Kinematic Dynamics (v2026.1 SP2)
+- **Primary Function**: Flexible multibody dynamics solver for articulating satellite antennas, scissor-pantograph booms, solar sail trusses, and bistable tape-spring composites in zero-g orbital environments.
+- **Key Algorithms**: Lagrangian DAE formulation with Baumgarte constraint stabilization, origami-based tessellation kinematics (Miura-ori), thermo-elastic solar distortion.
+- **Capacity**: 35,000 multibody coordinate degrees of freedom.
+
+### 4. NodeGen Parametric
+- **Category**: Parametric Detailing & 5-Axis CNC Fabricator (v2026.3)
+- **Primary Function**: Bridges FEA results with robotic 5-axis CNC machining, generating MERO solid spherical ball joints, cast hubs, and member bevel connections with automated collision-cone clearance validation.
+- **Key Algorithms**: Spherical Voronoi partition, Neuber notch stress concentration evaluation, collision cone intersection verification.
+
+## Real-World Case Studies
+
+1. **Al-Miraj Bioclimatic Dome** (Riyadh, Saudi Arabia)
+   - 118.0 m clear span geodesic Schwedler dome.
+   - Saved 142 tonnes structural steel (21% reduction) via AeroLattice 3D post-buckling optimization.
+2. **Helios-9 Orbital Reflector** (ESA / Commercial Telecom)
+   - 18.4 m aperture deployable carbon-fiber ring truss antenna stowing inside 1.6m launcher fairing.
+   - Zero-G deployment verified with DeployX Space with surface RMS error < 0.35 mm.
+3. **Grand Falcon Velodrome Roof** (Abu Dhabi, UAE)
+   - 142.0 m x 98.0 m double-layer spatial grid covering 12,000 seats with zero interior columns.
+   - FormSpace Prime form-finding saved 194 tonnes steel.
+4. **Alps-Alpine High-Speed Hyperloop Portal** (Innsbruck, Austria)
+   - 84.0 m asymmetric spatial tensegrity arch resisting 380 km/h aerodynamic train shockwaves.
+
+## Academic & Commercial Licensing
+- **Live Technical Demos**: Available upon request via the AeroSpatial inquiry desk.
+- **Evaluation Licenses**: 30-day floating trial licenses provided to qualified structural engineering practices and aerospace research institutes.
+- **Academic Grants**: Free non-commercial licenses for accredited civil/aerospace engineering university departments.
+- **Contact**: engineering@aerospatial-structures.com
