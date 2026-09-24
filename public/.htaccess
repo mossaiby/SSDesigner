@@ -1,6 +1,31 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # -------------------------------------------------------------
+  # API Clean URL Routing (maps /api/<endpoint> to /api/<endpoint>.php)
+  # -------------------------------------------------------------
+  RewriteRule ^api/software(?:/(.*))?$ /api/software.php?id=$1 [QSA,L]
+  RewriteRule ^api/projects(?:/(.*))?$ /api/projects.php?id=$1 [QSA,L]
+  RewriteRule ^api/articles(?:/(.*))?$ /api/articles.php?id=$1 [QSA,L]
+  RewriteRule ^api/media(?:/(.*))?$ /api/media.php?id=$1 [QSA,L]
+  RewriteRule ^api/leads(?:/(.*))?$ /api/leads.php?id=$1 [QSA,L]
+  RewriteRule ^api/auth/set-password$ /api/auth.php?action=set-password [QSA,L]
+  RewriteRule ^api/auth/users$ /api/auth.php?action=users [QSA,L]
+  RewriteRule ^api/auth/login$ /api/auth.php?action=login [QSA,L]
+  RewriteRule ^api/upload$ /api/upload.php [QSA,L]
+  RewriteRule ^api/status$ /api/status.php [QSA,L]
+  RewriteRule ^api/setup$ /api/setup.php [QSA,L]
+
+  # -------------------------------------------------------------
+  # Allow direct access to uploaded media files
+  # -------------------------------------------------------------
+  RewriteCond %{REQUEST_URI} ^/uploads/ [NC]
+  RewriteRule .* - [L]
+
+  # -------------------------------------------------------------
+  # Single Page Application (SPA) Client-Side Router Fallback
+  # -------------------------------------------------------------
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

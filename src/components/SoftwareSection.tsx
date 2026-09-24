@@ -32,8 +32,22 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
         </div>
 
         {/* Software Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {softwareList.map(soft => {
+        {softwareList.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 p-12 text-center max-w-2xl mx-auto">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Computational Solvers Published</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+              Engineering solvers, dynamic relaxation tools, and CAD/CAM links configured in the database will be presented here.
+            </p>
+            <button
+              onClick={() => navigateTo({ view: 'admin' })}
+              className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+            >
+              Add Solver in Admin Console
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {softwareList.map(soft => {
             const mediaCount = mediaList.filter(m => m.targetType === 'software' && m.targetId === soft.id).length;
 
             return (
@@ -119,6 +133,7 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );

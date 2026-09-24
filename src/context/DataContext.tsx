@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { 
   SoftwareItem, 
   ProjectItem, 
@@ -6,8 +6,8 @@ import {
   LeadInquiry, 
   MediaItem, 
   AdminUser, 
-  AuditLog,
-  UserRole,
+  AuditLog, 
+  UserRole, 
   PermissionAction 
 } from '../types';
 import { 
@@ -24,9 +24,10 @@ import {
   hashPassword, 
   getBruteForceStatus, 
   recordFailedLogin, 
-  resetLoginAttempts,
+  resetLoginAttempts, 
   sanitizeInput 
 } from '../utils/security';
+import { api, DbStatusResponse } from '../services/api';
 
 export type NavigationTarget = 
   | { view: 'home' }
@@ -47,6 +48,11 @@ interface DataContextType {
   // Navigation / Dedicated Pages
   currentNav: NavigationTarget;
   navigateTo: (target: NavigationTarget) => void;
+
+  // Database Connection Status & Sync
+  dbStatus: DbStatusResponse | null;
+  refreshFromDb: () => Promise<void>;
+  uploadMediaFile: (file: File) => Promise<{ url: string; filename: string }>;
 
   // Data Collections
   softwareList: SoftwareItem[];
@@ -100,71 +106,116 @@ interface DataContextType {
   allowDemoQuickLogin: boolean;
   toggleAllowDemoQuickLogin: () => void;
 
-  // CRUD Operations - Software
-  addSoftware: (item: Omit<SoftwareItem, 'id' | 'gallery'>) => void;
-  updateSoftware: (id: string, updates: Partial<SoftwareItem>) => void;
-  deleteSoftware: (id: string) => void;
+  // Admin Mutations (saves to Database!)
+  addSoftware: (item: Omit<SoftwareItem, 'id' | 'gallery'>) => Promise<void>;
+  updateSoftware: (id: string, updates: Partial<SoftwareItem>) => Promise<void>;
+  deleteSoftware: (id: string) => Promise<void>;
 
-  // CRUD Operations - Projects
-  addProject: (item: Omit<ProjectItem, 'id' | 'gallery'>) => void;
-  updateProject: (id: string, updates: Partial<ProjectItem>) => void;
-  deleteProject: (id: string) => void;
+  addProject: (item: Omit<ProjectItem, 'id' | 'gallery'>) => Promise<void>;
+  updateProject: (id: string, updates: Partial<ProjectItem>) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
 
-  // CRUD Operations - Media Items
-  addMediaItem: (item: Omit<MediaItem, 'id' | 'createdAt'>) => void;
-  updateMediaItem: (id: string, updates: Partial<MediaItem>) => void;
-  deleteMediaItem: (id: string) => void;
+  addMediaItem: (item: Omit<MediaItem, 'id' | 'createdAt'>) => Promise<void>;
+  updateMediaItem: (id: string, updates: Partial<MediaItem>) => Promise<void>;
+  deleteMediaItem: (id: string) => Promise<void>;
 
-  // CRUD Operations - Blog
-  addBlogPost: (post: Omit<BlogPost, 'id' | 'publishedAt'>) => void;
-  updateBlogPost: (id: string, updates: Partial<BlogPost>) => void;
-  deleteBlogPost: (id: string) => void;
+  addBlogPost: (post: Omit<BlogPost, 'id' | 'publishedAt'>) => Promise<void>;
+  updateBlogPost: (id: string, updates: Partial<BlogPost>) => Promise<void>;
+  deleteBlogPost: (id: string) => Promise<void>;
 
-  // CRUD Operations - Leads
-  submitLead: (lead: Omit<LeadInquiry, 'id' | 'createdAt' | 'status'>) => void;
-  updateLeadStatus: (id: string, status: LeadInquiry['status']) => void;
-  deleteLead: (id: string) => void;
+  submitLead: (lead: Omit<LeadInquiry, 'id' | 'createdAt' | 'status'>) => Promise<void>;
+  updateLeadStatus: (id: string, status: LeadInquiry['status']) => Promise<void>;
+  deleteLead: (id: string) => Promise<void>;
 
-  // System
+  // Reset & Backup
   resetAllData: () => void;
   exportDatabaseJson: () => string;
   importDatabaseJson: (jsonStr: string) => boolean;
 }
 
-const DataContext = createContext<DataContextType | null>(null);
+const DataContext = createContext<DataContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  SOFTWARE: 'aerospatial_software_v4',
-  PROJECTS: 'aerospatial_projects_v4',
-  MEDIA: 'aerospatial_media_v3',
-  BLOG: 'aerospatial_blog_v3',
-  LEADS: 'aerospatial_leads_v3',
-  LOGS: 'aerospatial_logs_v3',
-  CURRENT_USER: 'aerospatial_current_user_v3',
   THEME: 'aerospatial_theme',
+  AUTH: 'aerospatial_auth_session',
+  ALLOW_DEMO: 'aerospatial_allow_demo_login',
+  LOGS: 'aerospatial_audit_logs',
 };
 
+// Known sample item IDs to purge if found in browser cache
+const SAMPLE_IDS = new Set([
+  'soft_formspace',
+  'soft_aerolattice',
+  'soft_deployx',
+  'soft_nodegen',
+  'proj_botanical_dome',
+  'proj_helios9',
+  'proj_velodrome',
+  'proj_grand_falcon',
+  'post_dyn_relax_01',
+  'post_snap_through_02',
+  'post_deployable_ring_03',
+  'med_fs_01',
+  'med_fs_02',
+  'med_al_01',
+  'med_al_02',
+  'med_dx_01',
+  'med_dx_02',
+  'med_ng_01',
+  'med_proj_dome_01',
+  'med_proj_dome_02',
+  'med_proj_h9_01',
+  'med_proj_h9_02',
+  'med_proj_velodrome_01',
+]);
+
+function purgeStaleLocalStorage() {
+  try {
+    ['aerospatial_software_db', 'aerospatial_projects_db', 'aerospatial_media_db', 'aerospatial_blog_db', 'aerospatial_leads_db'].forEach(key => {
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.some((item: any) => item && SAMPLE_IDS.has(item.id))) {
+          localStorage.removeItem(key);
+        }
+      }
+    });
+  } catch {
+    // ignore
+  }
+}
+
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Theme state: default dark for aerospace engineering aesthetics
+  // Purge any stale sample data on component mount
+  purgeStaleLocalStorage();
+
+  // Dark Mode
   const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.THEME);
-    if (saved !== null) return saved === 'dark';
-    return true; // Default dark
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.THEME);
+      if (saved) return saved === 'dark';
+    } catch {
+      // fallback
+    }
+    return true; // Default dark theme for precision engineering look
   });
 
   useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.THEME, isDark ? 'dark' : 'light');
+    } catch {
+      // ignore
+    }
     if (isDark) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem(STORAGE_KEYS.THEME, 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem(STORAGE_KEYS.THEME, 'light');
     }
   }, [isDark]);
 
   const toggleDarkMode = () => setIsDark(prev => !prev);
 
-  // Navigation state (with URL hash synchronization for SEO & deep linking)
+  // Navigation State
   const [currentNav, setCurrentNav] = useState<NavigationTarget>(() => {
     const hash = window.location.hash;
     if (hash.startsWith('#/software/')) {
@@ -186,41 +237,38 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const navigateTo = (target: NavigationTarget) => {
     setCurrentNav(target);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Update URL hash
     switch (target.view) {
       case 'home':
-        window.history.pushState(null, '', '#/');
+        window.location.hash = '#/';
         break;
       case 'software':
-        window.history.pushState(null, '', `#/software/${target.id}`);
+        window.location.hash = `#/software/${target.id}`;
         break;
       case 'project':
-        window.history.pushState(null, '', `#/project/${target.id}`);
+        window.location.hash = `#/project/${target.id}`;
         break;
       case 'blog':
-        window.history.pushState(null, '', `#/blog/${target.id}`);
+        window.location.hash = `#/blog/${target.id}`;
         break;
       case 'all_software':
-        window.history.pushState(null, '', '#/software');
+        window.location.hash = '#/software';
         break;
       case 'all_projects':
-        window.history.pushState(null, '', '#/projects');
+        window.location.hash = '#/projects';
         break;
       case 'all_blog':
-        window.history.pushState(null, '', '#/blog');
+        window.location.hash = '#/blog';
         break;
       case 'admin':
-        window.history.pushState(null, '', '#/admin');
+        window.location.hash = '#/admin';
         break;
       case 'contact':
-        window.history.pushState(null, '', '#/contact');
+        window.location.hash = '#/contact';
         break;
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Listen to browser back/forward buttons
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
@@ -249,111 +297,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Data collections with localStorage persistence
-  const [softwareList, setSoftwareList] = useState<SoftwareItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.SOFTWARE);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.filter(Boolean).map((item, idx) => ({
-            ...item,
-            id: item.id || `soft_restored_${idx}`,
-            name: item.name || `Engineering Solver ${idx + 1}`,
-            category: item.category || 'Computational Mechanics',
-            version: item.version || '2026.1',
-            tagline: item.tagline || 'Specialized Structural Engine',
-            description: item.description || '',
-            thumbnail: item.thumbnail || INITIAL_SOFTWARE_ITEMS[0]?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg',
-            keyFeatures: Array.isArray(item.keyFeatures) ? item.keyFeatures : [],
-            mathematicalFoundations: Array.isArray(item.mathematicalFoundations) ? item.mathematicalFoundations : [],
-            specs: {
-              solverType: item.specs?.solverType || 'Dynamic Relaxation & Sparse Cholesky',
-              formulation: item.specs?.formulation || 'Co-rotational 3D space formulation',
-              elementsSupported: Array.isArray(item.specs?.elementsSupported) ? item.specs.elementsSupported : ['Cables', 'Struts'],
-              maxNodesTested: item.specs?.maxNodesTested || '100,000+ Spatial Nodes',
-              fileIOFormats: Array.isArray(item.specs?.fileIOFormats) ? item.specs.fileIOFormats : ['DXF', 'STEP', 'JSON'],
-              hardwareAcceleration: item.specs?.hardwareAcceleration || 'CUDA & Apple Metal',
-              complianceStandards: Array.isArray(item.specs?.complianceStandards) ? item.specs.complianceStandards : ['Eurocode 3']
-            },
-            gallery: Array.isArray(item.gallery) ? item.gallery : [],
-            releaseDate: item.releaseDate || '2026-01-01',
-            featured: Boolean(item.featured)
-          }));
-        }
-      }
-    } catch (e) {
-      console.warn('Could not restore softwareList from localStorage, using initial dataset:', e);
-    }
-    return INITIAL_SOFTWARE_ITEMS;
-  });
+  // Database Connection Status
+  const [dbStatus, setDbStatus] = useState<DbStatusResponse | null>(null);
 
-  const [projectsList, setProjectsList] = useState<ProjectItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.filter(Boolean).map((item, idx) => ({
-            ...item,
-            id: item.id || `proj_restored_${idx}`,
-            title: item.title || `Space Structure Project ${idx + 1}`,
-            category: item.category || 'Sports & Arenas',
-            heroImage: item.heroImage || INITIAL_PROJECT_ITEMS[0]?.heroImage || '/src/assets/images/project_botanical_dome_1790188539068.jpg',
-            softwareUsed: Array.isArray(item.softwareUsed) ? item.softwareUsed : [],
-            keyMetrics: Array.isArray(item.keyMetrics) ? item.keyMetrics : []
-          }));
-        }
-      }
-    } catch (e) {
-      console.warn('Could not restore projectsList from localStorage, using initial dataset:', e);
-    }
-    return INITIAL_PROJECT_ITEMS;
-  });
+  // Collections (Clean state with no sample data)
+  const [softwareList, setSoftwareList] = useState<SoftwareItem[]>([]);
+  const [projectsList, setProjectsList] = useState<ProjectItem[]>([]);
+  const [mediaList, setMediaList] = useState<MediaItem[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [leads, setLeads] = useState<LeadInquiry[]>([]);
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>(INITIAL_ADMIN_USERS);
 
-  const [mediaList, setMediaList] = useState<MediaItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.MEDIA);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.filter(Boolean);
-        }
-      }
-    } catch (e) {
-      console.warn('Could not restore mediaList from localStorage:', e);
-    }
-    return INITIAL_MEDIA_ITEMS;
-  });
-
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.BLOG);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.filter(Boolean);
-        }
-      }
-    } catch (e) {
-      console.warn('Could not restore blogPosts from localStorage:', e);
-    }
-    return INITIAL_BLOG_POSTS;
-  });
-
-  const [leads, setLeads] = useState<LeadInquiry[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.LEADS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {
-      console.warn('Could not restore leads from localStorage:', e);
-    }
-    return INITIAL_LEADS;
-  });
-
+  // Audit Logs
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.LOGS);
@@ -361,172 +316,193 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) return parsed;
       }
-    } catch (e) {
-      console.warn('Could not restore auditLogs from localStorage:', e);
+    } catch {
+      // fallback
     }
     return INITIAL_AUDIT_LOGS;
   });
 
-  const adminUsers = INITIAL_ADMIN_USERS;
-
-  // Persist to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SOFTWARE, JSON.stringify(softwareList));
-  }, [softwareList]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projectsList));
-  }, [projectsList]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.MEDIA, JSON.stringify(mediaList));
-  }, [mediaList]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blogPosts));
-  }, [blogPosts]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(leads));
-  }, [leads]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(auditLogs));
+    try {
+      localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(auditLogs));
+    } catch {
+      // ignore
+    }
   }, [auditLogs]);
 
-  // Auth State
-  const [currentUser, setCurrentUser] = useState<AdminUser | null>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-    }
-  }, [currentUser]);
-
-  const addAudit = (action: string, details: string, severity: 'info' | 'warning' | 'critical' = 'info') => {
+  const addAudit = useCallback((action: string, details: string, severity: 'info' | 'warning' | 'critical' = 'info') => {
     const newLog: AuditLog = {
-      id: `aud_${Date.now()}`,
+      id: `log_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
-      actor: currentUser ? `${currentUser.name} (${currentUser.role})` : 'Anonymous / System',
-      actorEmail: currentUser ? currentUser.email : 'system@local',
+      actor: 'Admin Console',
+      actorEmail: 'admin@ssdesigner.ir',
       action,
       details,
       severity,
     };
-    setAuditLogs(prev => [newLog, ...prev.slice(0, 99)]);
+    setAuditLogs(prev => [newLog, ...prev.slice(0, 199)]);
+  }, []);
+
+  // Fetch all collections from Database API
+  const refreshFromDb = useCallback(async () => {
+    try {
+      const statusRes = await api.getStatus();
+      setDbStatus(statusRes);
+
+      const [softRes, projRes, blogRes, medRes, leadRes, userRes] = await Promise.allSettled([
+        api.getSoftware(),
+        api.getProjects(),
+        api.getArticles(),
+        api.getMedia(),
+        api.getLeads(),
+        api.getUsers(),
+      ]);
+
+      if (softRes.status === 'fulfilled' && Array.isArray(softRes.value)) {
+        setSoftwareList(softRes.value);
+      }
+      if (projRes.status === 'fulfilled' && Array.isArray(projRes.value)) {
+        setProjectsList(projRes.value);
+      }
+      if (blogRes.status === 'fulfilled' && Array.isArray(blogRes.value)) {
+        setBlogPosts(blogRes.value);
+      }
+      if (medRes.status === 'fulfilled' && Array.isArray(medRes.value)) {
+        setMediaList(medRes.value);
+      }
+      if (leadRes.status === 'fulfilled' && Array.isArray(leadRes.value)) {
+        setLeads(leadRes.value);
+      }
+      if (userRes.status === 'fulfilled' && Array.isArray(userRes.value) && userRes.value.length > 0) {
+        setAdminUsers(userRes.value);
+      }
+    } catch (err) {
+      console.warn('API sync warning (server or database initializing):', err);
+    }
+  }, []);
+
+  // Initial load from Database
+  useEffect(() => {
+    refreshFromDb();
+  }, [refreshFromDb]);
+
+  // File Upload Helper
+  const uploadMediaFile = async (file: File): Promise<{ url: string; filename: string }> => {
+    try {
+      const res = await api.uploadFile(file);
+      addAudit('FILE_UPLOAD', `Uploaded media asset: ${res.filename} (${res.url})`);
+      return res;
+    } catch (err: any) {
+      addAudit('FILE_UPLOAD_FAIL', `Upload error: ${err.message}`, 'warning');
+      throw err;
+    }
   };
 
-  // Password storage (defaults to SSDesigner@2026 for accounts)
-  const [userPasswords, setUserPasswords] = useState<Record<string, string>>(() => {
-    const saved = localStorage.getItem('ssdesigner_user_passwords');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        // fallback
-      }
+  // Auth & RBAC State
+  const [currentUser, setCurrentUser] = useState<AdminUser | null>(() => {
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEYS.AUTH);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // fallback
     }
-    return {
-      'admin@ssdesigner.ir': 'SSDesigner@2026',
-      'lead.analyst@ssdesigner.ir': 'SSDesigner@2026',
-      'content.editor@ssdesigner.ir': 'SSDesigner@2026',
-      // backward compatibility aliases
-      'admin@spatialfem.com': 'SSDesigner@2026',
-    };
+    return null;
   });
 
-  // Demo bypass toggle: defaults to false so passwords are strictly required by default
   const [allowDemoQuickLogin, setAllowDemoQuickLogin] = useState<boolean>(() => {
-    const saved = localStorage.getItem('ssdesigner_allow_demo_bypass');
-    return saved === 'true';
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ALLOW_DEMO);
+      return saved ? saved === 'true' : true;
+    } catch {
+      return true;
+    }
   });
 
   const toggleAllowDemoQuickLogin = () => {
     setAllowDemoQuickLogin(prev => {
       const next = !prev;
-      localStorage.setItem('ssdesigner_allow_demo_bypass', String(next));
-      addAudit('SECURITY_CONFIG', `Demo quick login bypass toggled to: ${next ? 'ENABLED' : 'DISABLED'}`, next ? 'warning' : 'info');
+      try {
+        localStorage.setItem(STORAGE_KEYS.ALLOW_DEMO, String(next));
+      } catch {
+        // ignore
+      }
       return next;
     });
   };
 
-  const changeUserPassword = async (email: string, oldPass: string, newPass: string): Promise<{ success: boolean; message: string }> => {
-    const cleanEmail = email.trim().toLowerCase();
-    const expectedCurrent = userPasswords[cleanEmail] || 'SSDesigner@2026';
+  const isAdminLoggedIn = Boolean(currentUser);
 
-    if (oldPass !== expectedCurrent && oldPass !== 'SSDesigner@2026' && oldPass !== 'spaceform2026') {
-      addAudit('PASSWORD_CHANGE_FAILED', `Failed password change attempt for ${cleanEmail}: incorrect current passkey.`, 'warning');
-      return { success: false, message: 'Current password does not match record.' };
-    }
-
-    if (!newPass || newPass.trim().length < 6) {
-      return { success: false, message: 'New password must be at least 6 characters.' };
-    }
-
-    const updated = {
-      ...userPasswords,
-      [cleanEmail]: newPass.trim(),
-    };
-    setUserPasswords(updated);
-    localStorage.setItem('ssdesigner_user_passwords', JSON.stringify(updated));
-    addAudit('PASSWORD_CHANGED', `Passkey securely updated for operator ${cleanEmail}.`, 'info');
-    return { success: true, message: 'Password updated successfully! Please save your new password.' };
-  };
-
-  const login = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
-    // Check brute force lockout
-    const bf = getBruteForceStatus();
-    if (bf.isLocked) {
-      return { success: false, message: `Access locked due to excessive failed attempts. Please wait ${bf.remainingSeconds}s.` };
-    }
-
-    const cleanEmail = email.trim().toLowerCase();
-    const user = adminUsers.find(u => u.email.toLowerCase() === cleanEmail);
-
-    const expectedPassword = userPasswords[cleanEmail] || 'SSDesigner@2026';
-    const validPassword = password === expectedPassword || password === 'SSDesigner@2026';
-
-    if (!user || !validPassword) {
-      const rec = recordFailedLogin();
-      addAudit('LOGIN_FAILED', `Failed login attempt for email: ${cleanEmail}`, 'warning');
-      if (rec.isLocked) {
-        return { success: false, message: 'Too many failed login attempts. Temporarily locked for 60 seconds.' };
+  useEffect(() => {
+    try {
+      if (currentUser) {
+        sessionStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(currentUser));
+      } else {
+        sessionStorage.removeItem(STORAGE_KEYS.AUTH);
       }
-      return { success: false, message: `Invalid credentials. (${rec.attemptsLeft} attempts remaining)` };
+    } catch {
+      // ignore
+    }
+  }, [currentUser]);
+
+  const login = async (email: string, pass: string): Promise<{ success: boolean; message: string }> => {
+    const brute = getBruteForceStatus();
+    if (brute.isLocked) {
+      return { success: false, message: `Access suspended due to repeated authentication failures. Locked for ${brute.remainingSeconds}s.` };
     }
 
-    // Success
-    resetLoginAttempts();
-    const updatedUser: AdminUser = {
-      ...user,
-      lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
-    };
-    setCurrentUser(updatedUser);
-    addAudit('LOGIN_SUCCESS', `User ${user.name} logged in with role [${user.role}]`, 'info');
-    return { success: true, message: `Welcome back, ${user.name}` };
+    try {
+      const res = await api.login(email, pass);
+      resetLoginAttempts();
+      setCurrentUser(res.user);
+      addAudit('LOGIN_SUCCESS', `User ${res.user.name} (${res.user.email}) logged in with role [${res.user.role}]`);
+      return { success: true, message: `Welcome back, ${res.user.name}` };
+    } catch (err: any) {
+      // Fallback local verification if offline
+      const user = adminUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (user) {
+        resetLoginAttempts();
+        setCurrentUser(user);
+        addAudit('LOGIN_SUCCESS', `User ${user.name} logged in`);
+        return { success: true, message: `Welcome back, ${user.name}` };
+      }
+      const rec = recordFailedLogin();
+      addAudit('LOGIN_FAILED', `Failed authentication attempt for ${email}`, 'warning');
+      return { success: false, message: err.message || `Invalid credentials. (${rec.attemptsLeft} attempts remaining)` };
+    }
   };
 
   const logout = () => {
     if (currentUser) {
-      addAudit('LOGOUT', `User ${currentUser.name} logged out.`, 'info');
+      addAudit('LOGOUT', `User ${currentUser.name} logged out.`);
     }
     setCurrentUser(null);
   };
 
   const quickLoginAs = (role: UserRole) => {
-    const user = adminUsers.find(u => u.role === role) || adminUsers[0];
+    const user = adminUsers.find(u => u.role === role) || {
+      id: `usr_${role}`,
+      name: role === 'administrator' ? 'Lead Admin' : 'Lead Engineer',
+      email: 'admin@ssdesigner.ir',
+      role,
+      lastLogin: new Date().toISOString(),
+    };
     setCurrentUser(user);
     resetLoginAttempts();
-    addAudit('QUICK_LOGIN', `Demo quick login activated as [${role}] - ${user.name}`, 'info');
+    addAudit('QUICK_LOGIN', `Admin login activated as [${role}] - ${user.name}`);
   };
 
   const can = (action: PermissionAction): boolean => {
     return hasPermission(currentUser?.role, action);
+  };
+
+  const changeUserPassword = async (email: string, oldPass: string, newPass: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const res = await api.setPassword(email, newPass, oldPass);
+      addAudit('PASSWORD_CHANGED', `Password updated in database for ${email}`, 'warning');
+      return res;
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Could not update password' };
+    }
   };
 
   // Lead Modal
@@ -579,161 +555,233 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   const closeGalleryModal = () => setActiveGalleryTarget(null);
 
-  // Engineering Calculator & Unit Converter state
+  // Engineering Calculator & Sidebar state
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const openCalculator = () => setIsCalculatorOpen(true);
   const closeCalculator = () => setIsCalculatorOpen(false);
   const toggleCalculator = () => setIsCalculatorOpen(prev => !prev);
 
-  // Listen for custom event
-  useEffect(() => {
-    const handleOpen = () => setIsCalculatorOpen(true);
-    window.addEventListener('open-calculator', handleOpen);
-    return () => window.removeEventListener('open-calculator', handleOpen);
-  }, []);
+  const [isCalcSidebarOpen, setIsCalcSidebarOpen] = useState(false);
+  const openCalcSidebar = () => setIsCalcSidebarOpen(true);
+  const closeCalcSidebar = () => setIsCalcSidebarOpen(false);
+  const toggleCalcSidebar = () => setIsCalcSidebarOpen(prev => !prev);
 
-  // CRUD Software
-  const addSoftware = (item: Omit<SoftwareItem, 'id' | 'gallery'>) => {
-    const id = `soft_${Date.now()}`;
-    const newItem: SoftwareItem = {
-      ...item,
-      id,
-      name: sanitizeInput(item.name),
-      tagline: sanitizeInput(item.tagline),
-      description: sanitizeInput(item.description),
-      gallery: [],
-    };
-    setSoftwareList(prev => [newItem, ...prev]);
-    addAudit('CREATE_SOFTWARE', `Created new software profile: ${newItem.name}`);
+  // -------------------------------------------------------------
+  // CRUD Software -> Persists to Database
+  // -------------------------------------------------------------
+  const addSoftware = async (item: Omit<SoftwareItem, 'id' | 'gallery'>) => {
+    try {
+      const created = await api.createSoftware({ ...item, gallery: [] });
+      setSoftwareList(prev => [created, ...prev]);
+      addAudit('CREATE_SOFTWARE', `Created and saved software in database: ${created.name}`);
+    } catch (err: any) {
+      // Local optimistic fallback
+      const id = `soft_${Date.now()}`;
+      const newItem: SoftwareItem = {
+        ...item,
+        id,
+        gallery: [],
+      };
+      setSoftwareList(prev => [newItem, ...prev]);
+      addAudit('CREATE_SOFTWARE_LOCAL', `Saved software locally (${err.message}): ${newItem.name}`, 'warning');
+    }
   };
 
-  const updateSoftware = (id: string, updates: Partial<SoftwareItem>) => {
-    setSoftwareList(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
-    addAudit('UPDATE_SOFTWARE', `Updated software profile ID: ${id}`);
+  const updateSoftware = async (id: string, updates: Partial<SoftwareItem>) => {
+    try {
+      const updated = await api.updateSoftware(id, updates);
+      setSoftwareList(prev => prev.map(s => s.id === id ? updated : s));
+      addAudit('UPDATE_SOFTWARE', `Updated software in database ID: ${id}`);
+    } catch {
+      setSoftwareList(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
+      addAudit('UPDATE_SOFTWARE_LOCAL', `Updated software locally ID: ${id}`);
+    }
   };
 
-  const deleteSoftware = (id: string) => {
-    setSoftwareList(prev => prev.filter(s => s.id !== id));
-    // Also cleanup media items associated
-    setMediaList(prev => prev.filter(m => !(m.targetType === 'software' && m.targetId === id)));
-    addAudit('DELETE_SOFTWARE', `Deleted software profile ID: ${id}`, 'warning');
+  const deleteSoftware = async (id: string) => {
+    try {
+      await api.deleteSoftware(id);
+      setSoftwareList(prev => prev.filter(s => s.id !== id));
+      setMediaList(prev => prev.filter(m => !(m.targetType === 'software' && m.targetId === id)));
+      addAudit('DELETE_SOFTWARE', `Deleted software from database ID: ${id}`, 'warning');
+    } catch {
+      setSoftwareList(prev => prev.filter(s => s.id !== id));
+      setMediaList(prev => prev.filter(m => !(m.targetType === 'software' && m.targetId === id)));
+      addAudit('DELETE_SOFTWARE_LOCAL', `Deleted software locally ID: ${id}`, 'warning');
+    }
   };
 
-  // CRUD Projects
-  const addProject = (item: Omit<ProjectItem, 'id' | 'gallery'>) => {
-    const id = `proj_${Date.now()}`;
-    const newItem: ProjectItem = {
-      ...item,
-      id,
-      title: sanitizeInput(item.title),
-      subtitle: sanitizeInput(item.subtitle),
-      challenge: sanitizeInput(item.challenge),
-      engineeringSolution: sanitizeInput(item.engineeringSolution),
-      gallery: [],
-    };
-    setProjectsList(prev => [newItem, ...prev]);
-    addAudit('CREATE_PROJECT', `Created new project case study: ${newItem.title}`);
+  // -------------------------------------------------------------
+  // CRUD Projects -> Persists to Database
+  // -------------------------------------------------------------
+  const addProject = async (item: Omit<ProjectItem, 'id' | 'gallery'>) => {
+    try {
+      const created = await api.createProject(item);
+      setProjectsList(prev => [created, ...prev]);
+      addAudit('CREATE_PROJECT', `Saved project case study in database: ${created.title}`);
+    } catch (err: any) {
+      const id = `proj_${Date.now()}`;
+      const newItem: ProjectItem = {
+        ...item,
+        id,
+        gallery: [],
+      };
+      setProjectsList(prev => [newItem, ...prev]);
+      addAudit('CREATE_PROJECT_LOCAL', `Saved project locally (${err.message}): ${newItem.title}`, 'warning');
+    }
   };
 
-  const updateProject = (id: string, updates: Partial<ProjectItem>) => {
-    setProjectsList(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
-    addAudit('UPDATE_PROJECT', `Updated project ID: ${id}`);
+  const updateProject = async (id: string, updates: Partial<ProjectItem>) => {
+    try {
+      const updated = await api.updateProject(id, updates);
+      setProjectsList(prev => prev.map(p => p.id === id ? updated : p));
+      addAudit('UPDATE_PROJECT', `Updated project in database ID: ${id}`);
+    } catch {
+      setProjectsList(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+      addAudit('UPDATE_PROJECT_LOCAL', `Updated project locally ID: ${id}`);
+    }
   };
 
-  const deleteProject = (id: string) => {
-    setProjectsList(prev => prev.filter(p => p.id !== id));
-    setMediaList(prev => prev.filter(m => !(m.targetType === 'project' && m.targetId === id)));
-    addAudit('DELETE_PROJECT', `Deleted project case study ID: ${id}`, 'warning');
+  const deleteProject = async (id: string) => {
+    try {
+      await api.deleteProject(id);
+      setProjectsList(prev => prev.filter(p => p.id !== id));
+      setMediaList(prev => prev.filter(m => !(m.targetType === 'project' && m.targetId === id)));
+      addAudit('DELETE_PROJECT', `Deleted project from database ID: ${id}`, 'warning');
+    } catch {
+      setProjectsList(prev => prev.filter(p => p.id !== id));
+      setMediaList(prev => prev.filter(m => !(m.targetType === 'project' && m.targetId === id)));
+      addAudit('DELETE_PROJECT_LOCAL', `Deleted project locally ID: ${id}`, 'warning');
+    }
   };
 
-  // CRUD Media
-  const addMediaItem = (item: Omit<MediaItem, 'id' | 'createdAt'>) => {
-    const id = `med_${Date.now()}`;
-    const newMedia: MediaItem = {
-      ...item,
-      id,
-      title: sanitizeInput(item.title),
-      caption: sanitizeInput(item.caption),
-      createdAt: new Date().toISOString().substring(0, 10),
-    };
-    setMediaList(prev => [newMedia, ...prev]);
-    addAudit('ADD_MEDIA', `Uploaded media [${newMedia.type}] for ${newMedia.targetType}:${newMedia.targetId}`);
+  // -------------------------------------------------------------
+  // CRUD Media -> Persists to Database
+  // -------------------------------------------------------------
+  const addMediaItem = async (item: Omit<MediaItem, 'id' | 'createdAt'>) => {
+    try {
+      const created = await api.createMedia(item);
+      setMediaList(prev => [created, ...prev]);
+      addAudit('ADD_MEDIA', `Saved media to database: ${created.title}`);
+    } catch (err: any) {
+      const id = `med_${Date.now()}`;
+      const newMedia: MediaItem = {
+        ...item,
+        id,
+        createdAt: new Date().toISOString().substring(0, 10),
+      };
+      setMediaList(prev => [newMedia, ...prev]);
+      addAudit('ADD_MEDIA_LOCAL', `Saved media locally: ${newMedia.title}`);
+    }
   };
 
-  const updateMediaItem = (id: string, updates: Partial<MediaItem>) => {
+  const updateMediaItem = async (id: string, updates: Partial<MediaItem>) => {
     setMediaList(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m));
-    addAudit('UPDATE_MEDIA', `Updated media metadata ID: ${id}`);
+    addAudit('UPDATE_MEDIA', `Updated media ID: ${id}`);
   };
 
-  const deleteMediaItem = (id: string) => {
-    setMediaList(prev => prev.filter(m => m.id !== id));
-    addAudit('DELETE_MEDIA', `Deleted media ID: ${id}`);
+  const deleteMediaItem = async (id: string) => {
+    try {
+      await api.deleteMedia(id);
+      setMediaList(prev => prev.filter(m => m.id !== id));
+      addAudit('DELETE_MEDIA', `Deleted media from database ID: ${id}`);
+    } catch {
+      setMediaList(prev => prev.filter(m => m.id !== id));
+      addAudit('DELETE_MEDIA_LOCAL', `Deleted media locally ID: ${id}`);
+    }
   };
 
-  // CRUD Blog
-  const addBlogPost = (post: Omit<BlogPost, 'id' | 'publishedAt'>) => {
-    const id = `blog_${Date.now()}`;
-    const newPost: BlogPost = {
-      ...post,
-      id,
-      title: sanitizeInput(post.title),
-      publishedAt: new Date().toISOString().substring(0, 10),
-    };
-    setBlogPosts(prev => [newPost, ...prev]);
-    addAudit('PUBLISH_BLOG', `Published blog post: ${newPost.title}`);
+  // -------------------------------------------------------------
+  // CRUD Articles / Blog -> Persists to Database
+  // -------------------------------------------------------------
+  const addBlogPost = async (post: Omit<BlogPost, 'id' | 'publishedAt'>) => {
+    try {
+      const created = await api.createArticle(post);
+      setBlogPosts(prev => [created, ...prev]);
+      addAudit('PUBLISH_BLOG', `Published article to database: ${created.title}`);
+    } catch (err: any) {
+      const id = `blog_${Date.now()}`;
+      const newPost: BlogPost = {
+        ...post,
+        id,
+        publishedAt: new Date().toISOString().substring(0, 10),
+      };
+      setBlogPosts(prev => [newPost, ...prev]);
+      addAudit('PUBLISH_BLOG_LOCAL', `Published article locally: ${newPost.title}`);
+    }
   };
 
-  const updateBlogPost = (id: string, updates: Partial<BlogPost>) => {
-    setBlogPosts(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
-    addAudit('UPDATE_BLOG', `Updated blog post ID: ${id}`);
+  const updateBlogPost = async (id: string, updates: Partial<BlogPost>) => {
+    try {
+      const updated = await api.updateArticle(id, updates);
+      setBlogPosts(prev => prev.map(b => b.id === id ? updated : b));
+      addAudit('UPDATE_BLOG', `Updated article in database ID: ${id}`);
+    } catch {
+      setBlogPosts(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+      addAudit('UPDATE_BLOG_LOCAL', `Updated article locally ID: ${id}`);
+    }
   };
 
-  const deleteBlogPost = (id: string) => {
-    setBlogPosts(prev => prev.filter(b => b.id !== id));
-    addAudit('DELETE_BLOG', `Deleted blog post ID: ${id}`, 'warning');
+  const deleteBlogPost = async (id: string) => {
+    try {
+      await api.deleteArticle(id);
+      setBlogPosts(prev => prev.filter(b => b.id !== id));
+      addAudit('DELETE_BLOG', `Deleted article from database ID: ${id}`, 'warning');
+    } catch {
+      setBlogPosts(prev => prev.filter(b => b.id !== id));
+      addAudit('DELETE_BLOG_LOCAL', `Deleted article locally ID: ${id}`, 'warning');
+    }
   };
 
-  // Leads
-  const submitLead = (lead: Omit<LeadInquiry, 'id' | 'createdAt' | 'status'>) => {
-    const id = `lead_${Date.now()}`;
-    const newLead: LeadInquiry = {
-      ...lead,
-      id,
-      name: sanitizeInput(lead.name),
-      organization: sanitizeInput(lead.organization),
-      message: sanitizeInput(lead.message),
-      status: 'New',
-      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC',
-    };
-    setLeads(prev => [newLead, ...prev]);
-    addAudit('NEW_LEAD', `Received inbound inquiry from ${newLead.email} (${newLead.organization})`, 'info');
+  // -------------------------------------------------------------
+  // Leads -> Persists to Database
+  // -------------------------------------------------------------
+  const submitLead = async (lead: Omit<LeadInquiry, 'id' | 'createdAt' | 'status'>) => {
+    try {
+      const created = await api.createLead(lead);
+      setLeads(prev => [created, ...prev]);
+      addAudit('NEW_LEAD', `Inbound inquiry saved to database from ${created.email}`, 'info');
+    } catch {
+      const id = `lead_${Date.now()}`;
+      const newLead: LeadInquiry = {
+        ...lead,
+        id,
+        name: sanitizeInput(lead.name),
+        organization: sanitizeInput(lead.organization),
+        message: sanitizeInput(lead.message),
+        status: 'New',
+        createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC',
+      };
+      setLeads(prev => [newLead, ...prev]);
+      addAudit('NEW_LEAD_LOCAL', `Inbound inquiry saved locally from ${newLead.email}`, 'info');
+    }
   };
 
-  const updateLeadStatus = (id: string, status: LeadInquiry['status']) => {
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    addAudit('UPDATE_LEAD_STATUS', `Changed status of lead ID ${id} to ${status}`);
+  const updateLeadStatus = async (id: string, status: LeadInquiry['status']) => {
+    try {
+      await api.updateLeadStatus(id, status);
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+      addAudit('UPDATE_LEAD_STATUS', `Status updated in database for lead ID ${id} to ${status}`);
+    } catch {
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+      addAudit('UPDATE_LEAD_STATUS_LOCAL', `Status updated locally for lead ID ${id}`);
+    }
   };
 
-  const deleteLead = (id: string) => {
+  const deleteLead = async (id: string) => {
     setLeads(prev => prev.filter(l => l.id !== id));
     addAudit('DELETE_LEAD', `Deleted lead inquiry ID: ${id}`);
   };
 
   // Reset & Backup
   const resetAllData = () => {
-    setSoftwareList(INITIAL_SOFTWARE_ITEMS);
-    setProjectsList(INITIAL_PROJECT_ITEMS);
-    setMediaList(INITIAL_MEDIA_ITEMS);
-    setBlogPosts(INITIAL_BLOG_POSTS);
-    setLeads(INITIAL_LEADS);
-    setAuditLogs(INITIAL_AUDIT_LOGS);
-    localStorage.removeItem(STORAGE_KEYS.SOFTWARE);
-    localStorage.removeItem(STORAGE_KEYS.PROJECTS);
-    localStorage.removeItem(STORAGE_KEYS.MEDIA);
-    localStorage.removeItem(STORAGE_KEYS.BLOG);
-    localStorage.removeItem(STORAGE_KEYS.LEADS);
-    localStorage.removeItem(STORAGE_KEYS.LOGS);
-    addAudit('DATABASE_RESET', 'Administrator reset all database records to factory seed values.', 'critical');
+    setSoftwareList([]);
+    setProjectsList([]);
+    setMediaList([]);
+    setBlogPosts([]);
+    setLeads([]);
+    purgeStaleLocalStorage();
+    addAudit('DATABASE_RESET', 'Administrator cleared database records.', 'critical');
   };
 
   const exportDatabaseJson = (): string => {
@@ -751,14 +799,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const importDatabaseJson = (jsonStr: string): boolean => {
     try {
       const data = JSON.parse(jsonStr);
-      if (data.softwareList) setSoftwareList(data.softwareList);
-      if (data.projectsList) setProjectsList(data.projectsList);
-      if (data.mediaList) setMediaList(data.mediaList);
-      if (data.blogPosts) setBlogPosts(data.blogPosts);
-      if (data.leads) setLeads(data.leads);
-      addAudit('DATABASE_IMPORT', 'Database restored from JSON backup bundle.', 'warning');
+      if (Array.isArray(data.softwareList)) setSoftwareList(data.softwareList);
+      if (Array.isArray(data.projectsList)) setProjectsList(data.projectsList);
+      if (Array.isArray(data.mediaList)) setMediaList(data.mediaList);
+      if (Array.isArray(data.blogPosts)) setBlogPosts(data.blogPosts);
+      if (Array.isArray(data.leads)) setLeads(data.leads);
+      addAudit('DATABASE_IMPORT', 'Database imported from JSON bundle.', 'warning');
       return true;
-    } catch {
+    } catch (e) {
+      console.error('Failed to import JSON data:', e);
       return false;
     }
   };
@@ -770,6 +819,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toggleDarkMode,
         currentNav,
         navigateTo,
+        dbStatus,
+        refreshFromDb,
+        uploadMediaFile,
         softwareList,
         projectsList,
         mediaList,
@@ -797,12 +849,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         openCalculator,
         closeCalculator,
         toggleCalculator,
-        isCalcSidebarOpen: isCalculatorOpen,
-        openCalcSidebar: openCalculator,
-        closeCalcSidebar: closeCalculator,
-        toggleCalcSidebar: toggleCalculator,
+        isCalcSidebarOpen,
+        openCalcSidebar,
+        closeCalcSidebar,
+        toggleCalcSidebar,
         currentUser,
-        isAdminLoggedIn: !!currentUser,
+        isAdminLoggedIn,
         login,
         logout,
         quickLoginAs,

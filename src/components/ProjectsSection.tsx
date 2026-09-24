@@ -58,8 +58,22 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
         </div>
 
         {/* Project Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map(proj => {
+        {filteredProjects.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 p-12 text-center max-w-2xl mx-auto">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Projects Published Yet</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+              Case studies, FEA models, clear spans, and erection photos published in the Admin Console will appear here.
+            </p>
+            <button
+              onClick={() => navigateTo({ view: 'admin' })}
+              className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+            >
+              Add Project Case Study in Admin Console
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProjects.map(proj => {
             const mediaCount = mediaList.filter(m => m.targetType === 'project' && m.targetId === proj.id).length;
 
             return (
@@ -145,6 +159,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );

@@ -82,7 +82,35 @@ export const AdminPortal: React.FC = () => {
     importDatabaseJson,
     openMediaLightbox,
     navigateTo,
+    dbStatus,
+    refreshFromDb,
+    uploadMediaFile,
   } = useData();
+
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (file: File, inputId: string) => {
+    setIsUploading(true);
+    const input = document.getElementById(inputId) as HTMLInputElement;
+    if (input) input.placeholder = 'Uploading file to database & storage...';
+    try {
+      const res = await uploadMediaFile(file);
+      if (input) {
+        input.value = res.url;
+        input.placeholder = 'Uploaded';
+      }
+    } catch {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        if (input && ev.target?.result) {
+          input.value = ev.target.result as string;
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -160,19 +188,6 @@ export const AdminPortal: React.FC = () => {
       setLoginPassword('');
     }
     setIsSubmittingLogin(false);
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (url: string) => void) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const url = event.target?.result as string;
-      callback(url);
-      setUploadPreview(url);
-    };
-    reader.readAsDataURL(file);
   };
 
   // If not logged in, show secure login screen
@@ -341,10 +356,38 @@ export const AdminPortal: React.FC = () => {
             </button>
             <button
               onClick={logout}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-rose-400 hover:text-rose-300 rounded-lg hover:bg-rose-950/40 border border-rose-900/40 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-rose-400 hover:text-rose-300 rounded-lg hover:bg-rose-950/40 border border-rose-900/40 transition-colors cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Database Engine Status Strip */}
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl mb-4 text-xs">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>{dbStatus?.engine || 'Database Persistence (Active)'}</span>
+            </span>
+            <span className="text-slate-700">|</span>
+            <span className="text-slate-400 font-mono text-[11px]">
+              Database: <span className="text-cyan-400">{dbStatus?.database || 'ssdesigner_db'}</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-slate-400 font-mono text-[11px] hidden md:inline">
+              Records: {softwareList.length} Solvers · {projectsList.length} Projects · {blogPosts.length} Articles · {mediaList.length} Media · {leads.length} Leads
+            </span>
+            <button
+              onClick={() => refreshFromDb()}
+              className="px-2.5 py-1 text-[11px] font-mono rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Synchronize state from database"
+            >
+              <RefreshCw className="w-3 h-3" />
+              <span>Sync DB</span>
             </button>
           </div>
         </div>
@@ -450,78 +493,96 @@ export const AdminPortal: React.FC = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {softwareList.map(soft => {
-                const mediaCount = mediaList.filter(m => m.targetType === 'software' && m.targetId === soft.id).length;
-                return (
-                  <div
-                    key={soft.id}
-                    className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col justify-between"
+            {softwareList.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
+                <Layers className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
+                <h3 className="text-base font-bold text-white mb-1">No Software Profiles in Database</h3>
+                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+                  All sample data has been cleared. Add your first calculation engine or finite element solver and it will be saved directly into the MySQL database.
+                </p>
+                {can('manage_software') && (
+                  <button
+                    onClick={() => setIsAddingSoftware(true)}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
                   >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
-                          {soft.category} · v{soft.version}
-                        </span>
-                        <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
-                          {mediaCount} Media Assets
-                        </span>
+                    + Add Software Profile
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {softwareList.map(soft => {
+                  const mediaCount = mediaList.filter(m => m.targetType === 'software' && m.targetId === soft.id).length;
+                  return (
+                    <div
+                      key={soft.id}
+                      className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
+                            {soft.category} · v{soft.version}
+                          </span>
+                          <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                            {mediaCount} Media Assets
+                          </span>
+                        </div>
+
+                        <h3 className="text-lg font-bold text-white mb-1">
+                          {soft.name}
+                        </h3>
+                        <p className="text-xs text-slate-300 font-medium mb-3">
+                          {soft.tagline}
+                        </p>
+                        <p className="text-xs text-slate-400 line-clamp-3 mb-4 leading-relaxed">
+                          {soft.description}
+                        </p>
+
+                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px]">
+                          <div className="text-slate-400 font-mono">
+                            <span className="text-cyan-400 font-semibold">Solver:</span> {soft.specs.solverType}
+                          </div>
+                          <div className="text-slate-400 font-mono">
+                            <span className="text-cyan-400 font-semibold">Capacity:</span> {soft.specs.maxNodesTested}
+                          </div>
+                        </div>
                       </div>
 
-                      <h3 className="text-lg font-bold text-white mb-1">
-                        {soft.name}
-                      </h3>
-                      <p className="text-xs text-slate-300 font-medium mb-3">
-                        {soft.tagline}
-                      </p>
-                      <p className="text-xs text-slate-400 line-clamp-3 mb-4 leading-relaxed">
-                        {soft.description}
-                      </p>
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+                        <button
+                          onClick={() => navigateTo({ view: 'software', id: soft.id })}
+                          className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          Preview Showcase Page
+                        </button>
 
-                      <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px]">
-                        <div className="text-slate-400 font-mono">
-                          <span className="text-cyan-400 font-semibold">Solver:</span> {soft.specs.solverType}
-                        </div>
-                        <div className="text-slate-400 font-mono">
-                          <span className="text-cyan-400 font-semibold">Capacity:</span> {soft.specs.maxNodesTested}
+                        <div className="flex items-center gap-2">
+                          {can('manage_software') && (
+                            <button
+                              onClick={() => setEditingSoftware(soft)}
+                              className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                              title="Edit Profile"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
+                          {can('manage_software') && (
+                            <button
+                              onClick={() => setConfirmDelete({ type: 'software', id: soft.id, name: soft.name })}
+                              className="p-1.5 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors cursor-pointer"
+                              title="Delete Software"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
-                      <button
-                        onClick={() => navigateTo({ view: 'software', id: soft.id })}
-                        className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        Preview Showcase Page
-                      </button>
-
-                      <div className="flex items-center gap-2">
-                        {can('manage_software') && (
-                          <button
-                            onClick={() => setEditingSoftware(soft)}
-                            className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
-                            title="Edit Profile"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                        )}
-                        {can('manage_software') && (
-                          <button
-                            onClick={() => setConfirmDelete({ type: 'software', id: soft.id, name: soft.name })}
-                            className="p-1.5 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors"
-                            title="Delete Software"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
@@ -549,78 +610,96 @@ export const AdminPortal: React.FC = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {projectsList.map(proj => {
-                const mediaCount = mediaList.filter(m => m.targetType === 'project' && m.targetId === proj.id).length;
-                return (
-                  <div
-                    key={proj.id}
-                    className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col justify-between"
+            {projectsList.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
+                <Building2 className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
+                <h3 className="text-base font-bold text-white mb-1">No Projects in Database</h3>
+                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+                  Document your architectural case studies, clear spans, and finite element models. All projects are saved permanently in the database.
+                </p>
+                {can('manage_projects') && (
+                  <button
+                    onClick={() => setIsAddingProject(true)}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
                   >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
-                          {proj.category} · {proj.year}
-                        </span>
-                        <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
-                          {mediaCount} Media Assets
-                        </span>
+                    + Add Project Case Study
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {projectsList.map(proj => {
+                  const mediaCount = mediaList.filter(m => m.targetType === 'project' && m.targetId === proj.id).length;
+                  return (
+                    <div
+                      key={proj.id}
+                      className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
+                            {proj.category} · {proj.year}
+                          </span>
+                          <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                            {mediaCount} Media Assets
+                          </span>
+                        </div>
+
+                        <h3 className="text-lg font-bold text-white mb-1">
+                          {proj.title}
+                        </h3>
+                        <p className="text-xs text-slate-300 font-medium mb-3">
+                          {proj.location} · {proj.span}
+                        </p>
+
+                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px]">
+                          <div className="text-slate-400">
+                            <span className="text-cyan-400 font-mono font-semibold">Structural System:</span> {proj.structuralSystem}
+                          </div>
+                          <div className="text-slate-400">
+                            <span className="text-cyan-400 font-mono font-semibold">Lead Client:</span> {proj.clientOrEngineer}
+                          </div>
+                          <div className="text-slate-400">
+                            <span className="text-emerald-400 font-mono font-semibold">Material Saved:</span> {proj.steelWeightSaved}
+                          </div>
+                        </div>
                       </div>
 
-                      <h3 className="text-lg font-bold text-white mb-1">
-                        {proj.title}
-                      </h3>
-                      <p className="text-xs text-slate-300 font-medium mb-3">
-                        {proj.location} · {proj.span}
-                      </p>
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+                        <button
+                          onClick={() => navigateTo({ view: 'project', id: proj.id })}
+                          className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          Preview Case Study Page
+                        </button>
 
-                      <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px]">
-                        <div className="text-slate-400">
-                          <span className="text-cyan-400 font-mono font-semibold">Structural System:</span> {proj.structuralSystem}
-                        </div>
-                        <div className="text-slate-400">
-                          <span className="text-cyan-400 font-mono font-semibold">Lead Client:</span> {proj.clientOrEngineer}
-                        </div>
-                        <div className="text-slate-400">
-                          <span className="text-emerald-400 font-mono font-semibold">Material Saved:</span> {proj.steelWeightSaved}
+                        <div className="flex items-center gap-2">
+                          {can('manage_projects') && (
+                            <button
+                              onClick={() => setEditingProject(proj)}
+                              className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                              title="Edit Project"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
+                          {can('manage_projects') && (
+                            <button
+                              onClick={() => setConfirmDelete({ type: 'project', id: proj.id, name: proj.title })}
+                              className="p-1.5 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors cursor-pointer"
+                              title="Delete Project"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
-                      <button
-                        onClick={() => navigateTo({ view: 'project', id: proj.id })}
-                        className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        Preview Case Study Page
-                      </button>
-
-                      <div className="flex items-center gap-2">
-                        {can('manage_projects') && (
-                          <button
-                            onClick={() => setEditingProject(proj)}
-                            className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
-                            title="Edit Project"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                        )}
-                        {can('manage_projects') && (
-                          <button
-                            onClick={() => setConfirmDelete({ type: 'project', id: proj.id, name: proj.title })}
-                            className="p-1.5 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors"
-                            title="Delete Project"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
@@ -683,6 +762,23 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {/* Media Grid */}
+            {mediaList.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
+                <UploadCloud className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
+                <h3 className="text-base font-bold text-white mb-1">No Media Assets in Database</h3>
+                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+                  Upload CAD screenshots, FEA color stress contours, and site erection photography to populate your project and solver galleries.
+                </p>
+                {can('manage_media') && (
+                  <button
+                    onClick={() => setIsAddingMedia(true)}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
+                  >
+                    + Upload Photo / Video
+                  </button>
+                )}
+              </div>
+            ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {mediaList
                 .filter(m => {
@@ -774,6 +870,7 @@ export const AdminPortal: React.FC = () => {
                   );
                 })}
             </div>
+            )}
           </div>
         )}
 
@@ -801,6 +898,23 @@ export const AdminPortal: React.FC = () => {
               )}
             </div>
 
+            {blogPosts.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
+                <FileText className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
+                <h3 className="text-base font-bold text-white mb-1">No Technical Articles in Database</h3>
+                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+                  Publish dynamic relaxation formulations, numerical convergence studies, and structural engineering insights.
+                </p>
+                {can('manage_blog') && (
+                  <button
+                    onClick={() => setIsAddingBlog(true)}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
+                  >
+                    + Publish Article
+                  </button>
+                )}
+              </div>
+            ) : (
             <div className="space-y-4">
               {blogPosts.map(post => (
                 <div
@@ -827,14 +941,14 @@ export const AdminPortal: React.FC = () => {
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => navigateTo({ view: 'blog', id: post.id })}
-                      className="px-3 py-1.5 text-xs text-cyan-400 border border-slate-700 rounded-lg hover:border-cyan-500 transition-colors"
+                      className="px-3 py-1.5 text-xs text-cyan-400 border border-slate-700 rounded-lg hover:border-cyan-500 transition-colors cursor-pointer"
                     >
                       Read Post
                     </button>
                     {can('manage_blog') && (
                       <button
                         onClick={() => setEditingBlog(post)}
-                        className="p-2 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
+                        className="p-2 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
@@ -842,7 +956,7 @@ export const AdminPortal: React.FC = () => {
                     {can('manage_blog') && (
                       <button
                         onClick={() => setConfirmDelete({ type: 'blog', id: post.id, name: post.title })}
-                        className="p-2 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors"
+                        className="p-2 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -851,6 +965,7 @@ export const AdminPortal: React.FC = () => {
                 </div>
               ))}
             </div>
+            )}
           </div>
         )}
 
@@ -885,6 +1000,15 @@ export const AdminPortal: React.FC = () => {
               </button>
             </div>
 
+            {leads.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
+                <Users className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
+                <h3 className="text-base font-bold text-white mb-1">No Inbound Inquiries Yet</h3>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  Client inquiries, demo requests, and consulting messages submitted from the public contact forms will be automatically captured into the database and shown here.
+                </p>
+              </div>
+            ) : (
             <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase">
@@ -934,7 +1058,7 @@ export const AdminPortal: React.FC = () => {
                         {can('delete_leads') && (
                           <button
                             onClick={() => deleteLead(lead.id)}
-                            className="p-1 text-slate-500 hover:text-rose-400 transition-colors"
+                            className="p-1 text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
                             title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -946,6 +1070,7 @@ export const AdminPortal: React.FC = () => {
                 </tbody>
               </table>
             </div>
+            )}
           </div>
         )}
 
@@ -1397,24 +1522,16 @@ export const AdminPortal: React.FC = () => {
                     accept="image/*"
                     onChange={e => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onload = ev => {
-                          const input = document.getElementById('software_thumbnail_input') as HTMLInputElement;
-                          if (input && ev.target?.result) {
-                            input.value = ev.target.result as string;
-                          }
-                        };
-                        reader.readAsDataURL(file);
-                      }
+                      if (file) handleFileUpload(file, 'software_thumbnail_input');
                     }}
                     className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
                   />
+                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono">Uploading...</span>}
                 </div>
                 <input
                   id="software_thumbnail_input"
                   name="thumbnail"
-                  defaultValue={editingSoftware?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg'}
+                  defaultValue={editingSoftware?.thumbnail || ''}
                   placeholder="URL or uploaded image path"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
@@ -1627,24 +1744,16 @@ export const AdminPortal: React.FC = () => {
                     accept="image/*"
                     onChange={e => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onload = ev => {
-                          const input = document.getElementById('project_hero_input') as HTMLInputElement;
-                          if (input && ev.target?.result) {
-                            input.value = ev.target.result as string;
-                          }
-                        };
-                        reader.readAsDataURL(file);
-                      }
+                      if (file) handleFileUpload(file, 'project_hero_input');
                     }}
                     className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
                   />
+                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono">Uploading...</span>}
                 </div>
                 <input
                   id="project_hero_input"
                   name="heroImage"
-                  defaultValue={editingProject?.heroImage || '/src/assets/images/project_botanical_dome_1790188539068.jpg'}
+                  defaultValue={editingProject?.heroImage || ''}
                   placeholder="URL or uploaded image path"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
@@ -1765,25 +1874,19 @@ export const AdminPortal: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Option A: Upload Local File</label>
-                <input
-                  type="file"
-                  accept="image/*,video/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onload = ev => {
-                        const urlInput = document.getElementById('media_url_input') as HTMLInputElement;
-                        if (urlInput && ev.target?.result) {
-                          urlInput.value = ev.target.result as string;
-                        }
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  className="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 cursor-pointer"
-                />
+                <label className="block text-slate-400 mb-1 font-mono">Option A: Upload Local File (Images / Simulation Videos)</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file, 'media_url_input');
+                    }}
+                    className="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 cursor-pointer text-xs"
+                  />
+                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono whitespace-nowrap">Uploading...</span>}
+                </div>
               </div>
 
               <div>
@@ -1961,24 +2064,16 @@ export const AdminPortal: React.FC = () => {
                     accept="image/*"
                     onChange={e => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onload = ev => {
-                          const input = document.getElementById('blog_cover_input') as HTMLInputElement;
-                          if (input && ev.target?.result) {
-                            input.value = ev.target.result as string;
-                          }
-                        };
-                        reader.readAsDataURL(file);
-                      }
+                      if (file) handleFileUpload(file, 'blog_cover_input');
                     }}
                     className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
                   />
+                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono">Uploading...</span>}
                 </div>
                 <input
                   id="blog_cover_input"
                   name="coverImage"
-                  defaultValue={editingBlog?.coverImage || '/src/assets/images/software_form_finding_1790188528595.jpg'}
+                  defaultValue={editingBlog?.coverImage || ''}
                   placeholder="URL or uploaded image path"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />

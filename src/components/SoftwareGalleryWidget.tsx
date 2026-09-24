@@ -16,51 +16,46 @@ import {
 import { SoftwareItem } from '../types';
 import { INITIAL_SOFTWARE_ITEMS } from '../data/initialData';
 
-const DEFAULT_FALLBACK_SOFTWARE: SoftwareItem = INITIAL_SOFTWARE_ITEMS[0] || {
-  id: 'soft_formspace',
-  name: 'FormSpace Prime',
-  tagline: 'Nonlinear Dynamic Relaxation & Force-Density Form-Finding Engine',
-  category: 'Form-Finding & Cable-Net',
-  version: '2026.4 LTS',
-  description: 'The industry-standard computational engine for self-stressed tensegrity systems, cable-net structures, and double-layer space grids.',
-  keyFeatures: [
-    'Dynamic Relaxation with Kinetic & Viscous Damping algorithms',
-    'Force Density Method (FDM) with linear & nonlinear branch-length constraints',
-    'Pretension optimization satisfying strict allowable member envelope bounds'
-  ],
-  mathematicalFoundations: [
-    'Nodal Residual Force Vector: R_i(t) = 0'
-  ],
-  specs: {
-    solverType: 'Kinetic Damping Dynamic Relaxation & Sparse Cholesky Solver',
-    formulation: 'Co-rotational 3D space truss & tension-only cable network formulation',
-    elementsSupported: ['Tension-only Cables', 'Compression Struts'],
-    maxNodesTested: '150,000+ Spatial Nodes',
-    fileIOFormats: ['STEP (.stp)', 'IFC 4.3', 'DXF 3D'],
-    hardwareAcceleration: 'CUDA & Apple Metal hardware accelerated sparse algebra',
-    complianceStandards: ['Eurocode 3 (EN 1993-1-11)', 'IASS Guidelines']
-  },
-  thumbnail: '/src/assets/images/software_form_finding_1790188528595.jpg',
-  releaseDate: '2026-01-15',
-  featured: true,
-  gallery: []
-};
-
 export const SoftwareGalleryWidget: React.FC = () => {
   const { softwareList, navigateTo, openLeadModal, openGalleryModal } = useData();
 
-  // Safely ensure we always have at least one software item
-  const validSoftwareList: SoftwareItem[] = (Array.isArray(softwareList) && softwareList.length > 0)
-    ? softwareList
-    : [DEFAULT_FALLBACK_SOFTWARE];
+  if (!Array.isArray(softwareList) || softwareList.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 p-8 sm:p-12 text-center max-w-3xl mx-auto backdrop-blur-sm shadow-sm">
+        <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-cyan-600 dark:text-cyan-400">
+          <Cpu className="w-6 h-6" />
+        </div>
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Computational Solvers Matrix</h3>
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto mb-6 leading-relaxed">
+          No calculation engines are currently published. Structural engineers and operators can configure, benchmark, and publish proprietary finite element solvers in the Admin Console.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            onClick={() => navigateTo({ view: 'admin' })}
+            className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+          >
+            Manage Software in Admin Console
+          </button>
+          <button
+            onClick={() => openLeadModal({ inquiryType: 'Consulting / Engineering Partnership' })}
+            className="px-5 py-2.5 text-xs font-medium rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+          >
+            Inquire About Custom Solvers
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const validSoftwareList: SoftwareItem[] = softwareList;
 
   const [selectedSoftwareId, setSelectedSoftwareId] = useState<string>(
-    validSoftwareList[0]?.id || DEFAULT_FALLBACK_SOFTWARE.id
+    validSoftwareList[0]?.id || ''
   );
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
 
   const selectedSoftware: SoftwareItem = 
-    validSoftwareList.find(s => s && s.id === selectedSoftwareId) || validSoftwareList[0] || DEFAULT_FALLBACK_SOFTWARE;
+    validSoftwareList.find(s => s && s.id === selectedSoftwareId) || validSoftwareList[0];
 
   // Dynamic categories list from softwareList
   const uniqueCategories = Array.from(new Set(validSoftwareList.map(s => s?.category).filter(Boolean)));
@@ -75,18 +70,26 @@ export const SoftwareGalleryWidget: React.FC = () => {
   const handleNext = () => {
     const currentIndex = validSoftwareList.findIndex(s => s?.id === selectedSoftware.id);
     const nextIndex = (currentIndex + 1) % validSoftwareList.length;
-    setSelectedSoftwareId(validSoftwareList[nextIndex]?.id || DEFAULT_FALLBACK_SOFTWARE.id);
+    setSelectedSoftwareId(validSoftwareList[nextIndex]?.id || validSoftwareList[0]?.id);
   };
 
   const handlePrev = () => {
     const currentIndex = validSoftwareList.findIndex(s => s?.id === selectedSoftware.id);
     const prevIndex = (currentIndex - 1 + validSoftwareList.length) % validSoftwareList.length;
-    setSelectedSoftwareId(validSoftwareList[prevIndex]?.id || DEFAULT_FALLBACK_SOFTWARE.id);
+    setSelectedSoftwareId(validSoftwareList[prevIndex]?.id || validSoftwareList[0]?.id);
   };
 
-  const currentThumbnail = selectedSoftware?.thumbnail || DEFAULT_FALLBACK_SOFTWARE.thumbnail;
-  const currentFeatures = Array.isArray(selectedSoftware?.keyFeatures) ? selectedSoftware.keyFeatures : DEFAULT_FALLBACK_SOFTWARE.keyFeatures;
-  const currentSpecs = selectedSoftware?.specs || DEFAULT_FALLBACK_SOFTWARE.specs;
+  const currentThumbnail = selectedSoftware?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg';
+  const currentFeatures = Array.isArray(selectedSoftware?.keyFeatures) ? selectedSoftware.keyFeatures : [];
+  const currentSpecs = selectedSoftware?.specs || {
+    solverType: 'Dynamic Relaxation',
+    formulation: 'Co-rotational 3D',
+    elementsSupported: ['Cables', 'Struts'],
+    maxNodesTested: '100,000+ Spatial Nodes',
+    fileIOFormats: ['DXF', 'STEP', 'JSON'],
+    hardwareAcceleration: 'CUDA & Apple Metal',
+    complianceStandards: ['Eurocode 3']
+  };
 
   return (
     <div className="w-full">
@@ -208,7 +211,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-3">
                 <button
-                  onClick={() => navigateTo({ view: 'software', id: selectedSoftware?.id || DEFAULT_FALLBACK_SOFTWARE.id })}
+                  onClick={() => selectedSoftware && navigateTo({ view: 'software', id: selectedSoftware.id })}
                   className="px-5 py-2.5 rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-semibold text-xs transition-colors flex items-center gap-2 shadow-lg shadow-cyan-950/50 cursor-pointer"
                 >
                   <span>Launch Engine Specs & TeX</span>
@@ -223,7 +226,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => openGalleryModal(selectedSoftware?.id || DEFAULT_FALLBACK_SOFTWARE.id, 'software', selectedSoftware?.name || 'Software')}
+                  onClick={() => selectedSoftware && openGalleryModal(selectedSoftware.id, 'software', selectedSoftware.name)}
                   className="px-3 py-2.5 rounded-xl bg-slate-900/80 text-cyan-400 hover:text-white border border-slate-800 text-xs transition-colors flex items-center gap-1.5 backdrop-blur-xs cursor-pointer"
                   title="View Simulation Renders & Videos"
                 >
@@ -257,8 +260,8 @@ export const SoftwareGalleryWidget: React.FC = () => {
         {filteredSoftware.map(software => {
           if (!software) return null;
           const isSelected = software.id === selectedSoftware?.id;
-          const itemThumbnail = software.thumbnail || DEFAULT_FALLBACK_SOFTWARE.thumbnail;
-          const itemSpecs = software.specs || DEFAULT_FALLBACK_SOFTWARE.specs;
+          const itemThumbnail = software.thumbnail || '';
+          const itemSpecs = software.specs;
 
           return (
             <div
