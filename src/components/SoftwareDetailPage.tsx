@@ -19,6 +19,7 @@ import {
   Sigma
 } from 'lucide-react';
 import { MathRenderer, FormattedMathText, BlockMath, InlineMath } from './MathRenderer';
+import { INITIAL_SOFTWARE_ITEMS } from '../data/initialData';
 
 interface SoftwareDetailPageProps {
   softwareId: string;
@@ -36,7 +37,7 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
     can 
   } = useData();
 
-  const software = softwareList.find(s => s.id === softwareId) || softwareList[0];
+  const software = softwareList.find(s => s.id === softwareId) || softwareList[0] || INITIAL_SOFTWARE_ITEMS[0];
 
   // Projects that used this software
   const usedInProjects = projectsList.filter(p => 

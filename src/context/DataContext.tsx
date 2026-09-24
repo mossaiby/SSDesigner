@@ -251,33 +251,120 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Data collections with localStorage persistence
   const [softwareList, setSoftwareList] = useState<SoftwareItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.SOFTWARE);
-    return saved ? JSON.parse(saved) : INITIAL_SOFTWARE_ITEMS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.SOFTWARE);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.filter(Boolean).map((item, idx) => ({
+            ...item,
+            id: item.id || `soft_restored_${idx}`,
+            name: item.name || `Engineering Solver ${idx + 1}`,
+            category: item.category || 'Computational Mechanics',
+            version: item.version || '2026.1',
+            tagline: item.tagline || 'Specialized Structural Engine',
+            description: item.description || '',
+            thumbnail: item.thumbnail || INITIAL_SOFTWARE_ITEMS[0]?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg',
+            keyFeatures: Array.isArray(item.keyFeatures) ? item.keyFeatures : [],
+            mathematicalFoundations: Array.isArray(item.mathematicalFoundations) ? item.mathematicalFoundations : [],
+            specs: {
+              solverType: item.specs?.solverType || 'Dynamic Relaxation & Sparse Cholesky',
+              formulation: item.specs?.formulation || 'Co-rotational 3D space formulation',
+              elementsSupported: Array.isArray(item.specs?.elementsSupported) ? item.specs.elementsSupported : ['Cables', 'Struts'],
+              maxNodesTested: item.specs?.maxNodesTested || '100,000+ Spatial Nodes',
+              fileIOFormats: Array.isArray(item.specs?.fileIOFormats) ? item.specs.fileIOFormats : ['DXF', 'STEP', 'JSON'],
+              hardwareAcceleration: item.specs?.hardwareAcceleration || 'CUDA & Apple Metal',
+              complianceStandards: Array.isArray(item.specs?.complianceStandards) ? item.specs.complianceStandards : ['Eurocode 3']
+            },
+            gallery: Array.isArray(item.gallery) ? item.gallery : [],
+            releaseDate: item.releaseDate || '2026-01-01',
+            featured: Boolean(item.featured)
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn('Could not restore softwareList from localStorage, using initial dataset:', e);
+    }
+    return INITIAL_SOFTWARE_ITEMS;
   });
 
   const [projectsList, setProjectsList] = useState<ProjectItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-    return saved ? JSON.parse(saved) : INITIAL_PROJECT_ITEMS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.filter(Boolean).map((item, idx) => ({
+            ...item,
+            id: item.id || `proj_restored_${idx}`,
+            title: item.title || `Space Structure Project ${idx + 1}`,
+            category: item.category || 'Sports & Arenas',
+            heroImage: item.heroImage || INITIAL_PROJECT_ITEMS[0]?.heroImage || '/src/assets/images/project_botanical_dome_1790188539068.jpg',
+            softwareUsed: Array.isArray(item.softwareUsed) ? item.softwareUsed : [],
+            keyMetrics: Array.isArray(item.keyMetrics) ? item.keyMetrics : []
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn('Could not restore projectsList from localStorage, using initial dataset:', e);
+    }
+    return INITIAL_PROJECT_ITEMS;
   });
 
   const [mediaList, setMediaList] = useState<MediaItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.MEDIA);
-    return saved ? JSON.parse(saved) : INITIAL_MEDIA_ITEMS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.MEDIA);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.filter(Boolean);
+        }
+      }
+    } catch (e) {
+      console.warn('Could not restore mediaList from localStorage:', e);
+    }
+    return INITIAL_MEDIA_ITEMS;
   });
 
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.BLOG);
-    return saved ? JSON.parse(saved) : INITIAL_BLOG_POSTS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.BLOG);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.filter(Boolean);
+        }
+      }
+    } catch (e) {
+      console.warn('Could not restore blogPosts from localStorage:', e);
+    }
+    return INITIAL_BLOG_POSTS;
   });
 
   const [leads, setLeads] = useState<LeadInquiry[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LEADS);
-    return saved ? JSON.parse(saved) : INITIAL_LEADS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.LEADS);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Could not restore leads from localStorage:', e);
+    }
+    return INITIAL_LEADS;
   });
 
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LOGS);
-    return saved ? JSON.parse(saved) : INITIAL_AUDIT_LOGS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.LOGS);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Could not restore auditLogs from localStorage:', e);
+    }
+    return INITIAL_AUDIT_LOGS;
   });
 
   const adminUsers = INITIAL_ADMIN_USERS;

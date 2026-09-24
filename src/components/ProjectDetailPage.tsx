@@ -15,6 +15,7 @@ import {
   ExternalLink 
 } from 'lucide-react';
 import { FormattedMathText } from './MathRenderer';
+import { INITIAL_PROJECT_ITEMS } from '../data/initialData';
 
 interface ProjectDetailPageProps {
   projectId: string;
@@ -32,7 +33,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
     can 
   } = useData();
 
-  const project = projectsList.find(p => p.id === projectId) || projectsList[0];
+  const project = projectsList.find(p => p.id === projectId) || projectsList[0] || INITIAL_PROJECT_ITEMS[0];
 
   // Media associated with this project
   const projectMedia = mediaList.filter(m => m.targetType === 'project' && m.targetId === project.id);

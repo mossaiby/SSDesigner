@@ -14,37 +14,79 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { SoftwareItem } from '../types';
+import { INITIAL_SOFTWARE_ITEMS } from '../data/initialData';
+
+const DEFAULT_FALLBACK_SOFTWARE: SoftwareItem = INITIAL_SOFTWARE_ITEMS[0] || {
+  id: 'soft_formspace',
+  name: 'FormSpace Prime',
+  tagline: 'Nonlinear Dynamic Relaxation & Force-Density Form-Finding Engine',
+  category: 'Form-Finding & Cable-Net',
+  version: '2026.4 LTS',
+  description: 'The industry-standard computational engine for self-stressed tensegrity systems, cable-net structures, and double-layer space grids.',
+  keyFeatures: [
+    'Dynamic Relaxation with Kinetic & Viscous Damping algorithms',
+    'Force Density Method (FDM) with linear & nonlinear branch-length constraints',
+    'Pretension optimization satisfying strict allowable member envelope bounds'
+  ],
+  mathematicalFoundations: [
+    'Nodal Residual Force Vector: R_i(t) = 0'
+  ],
+  specs: {
+    solverType: 'Kinetic Damping Dynamic Relaxation & Sparse Cholesky Solver',
+    formulation: 'Co-rotational 3D space truss & tension-only cable network formulation',
+    elementsSupported: ['Tension-only Cables', 'Compression Struts'],
+    maxNodesTested: '150,000+ Spatial Nodes',
+    fileIOFormats: ['STEP (.stp)', 'IFC 4.3', 'DXF 3D'],
+    hardwareAcceleration: 'CUDA & Apple Metal hardware accelerated sparse algebra',
+    complianceStandards: ['Eurocode 3 (EN 1993-1-11)', 'IASS Guidelines']
+  },
+  thumbnail: '/src/assets/images/software_form_finding_1790188528595.jpg',
+  releaseDate: '2026-01-15',
+  featured: true,
+  gallery: []
+};
 
 export const SoftwareGalleryWidget: React.FC = () => {
   const { softwareList, navigateTo, openLeadModal, openGalleryModal } = useData();
+
+  // Safely ensure we always have at least one software item
+  const validSoftwareList: SoftwareItem[] = (Array.isArray(softwareList) && softwareList.length > 0)
+    ? softwareList
+    : [DEFAULT_FALLBACK_SOFTWARE];
+
   const [selectedSoftwareId, setSelectedSoftwareId] = useState<string>(
-    softwareList[0]?.id || 'soft_formspace'
+    validSoftwareList[0]?.id || DEFAULT_FALLBACK_SOFTWARE.id
   );
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
 
   const selectedSoftware: SoftwareItem = 
-    softwareList.find(s => s.id === selectedSoftwareId) || softwareList[0];
+    validSoftwareList.find(s => s && s.id === selectedSoftwareId) || validSoftwareList[0] || DEFAULT_FALLBACK_SOFTWARE;
 
   // Dynamic categories list from softwareList
-  const uniqueCategories = Array.from(new Set(softwareList.map(s => s.category).filter(Boolean)));
+  const uniqueCategories = Array.from(new Set(validSoftwareList.map(s => s?.category).filter(Boolean)));
 
   // Filtering
-  const filteredSoftware = softwareList.filter(item => {
+  const filteredSoftware = validSoftwareList.filter(item => {
+    if (!item) return false;
     if (selectedFilter === 'all') return true;
     return item.category === selectedFilter;
   });
 
   const handleNext = () => {
-    const currentIndex = softwareList.findIndex(s => s.id === selectedSoftwareId);
-    const nextIndex = (currentIndex + 1) % softwareList.length;
-    setSelectedSoftwareId(softwareList[nextIndex].id);
+    const currentIndex = validSoftwareList.findIndex(s => s?.id === selectedSoftware.id);
+    const nextIndex = (currentIndex + 1) % validSoftwareList.length;
+    setSelectedSoftwareId(validSoftwareList[nextIndex]?.id || DEFAULT_FALLBACK_SOFTWARE.id);
   };
 
   const handlePrev = () => {
-    const currentIndex = softwareList.findIndex(s => s.id === selectedSoftwareId);
-    const prevIndex = (currentIndex - 1 + softwareList.length) % softwareList.length;
-    setSelectedSoftwareId(softwareList[prevIndex].id);
+    const currentIndex = validSoftwareList.findIndex(s => s?.id === selectedSoftware.id);
+    const prevIndex = (currentIndex - 1 + validSoftwareList.length) % validSoftwareList.length;
+    setSelectedSoftwareId(validSoftwareList[prevIndex]?.id || DEFAULT_FALLBACK_SOFTWARE.id);
   };
+
+  const currentThumbnail = selectedSoftware?.thumbnail || DEFAULT_FALLBACK_SOFTWARE.thumbnail;
+  const currentFeatures = Array.isArray(selectedSoftware?.keyFeatures) ? selectedSoftware.keyFeatures : DEFAULT_FALLBACK_SOFTWARE.keyFeatures;
+  const currentSpecs = selectedSoftware?.specs || DEFAULT_FALLBACK_SOFTWARE.specs;
 
   return (
     <div className="w-full">
@@ -72,7 +114,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
-            All ({softwareList.length})
+            All ({validSoftwareList.length})
           </button>
           {uniqueCategories.map(cat => (
             <button
@@ -95,8 +137,8 @@ export const SoftwareGalleryWidget: React.FC = () => {
         {/* Background Image with Gradient Overlay */}
         <div className="relative aspect-21/9 min-h-[360px] max-h-[480px] w-full overflow-hidden">
           <img
-            src={selectedSoftware.thumbnail}
-            alt={selectedSoftware.name}
+            src={currentThumbnail}
+            alt={selectedSoftware?.name || 'FormSpace Prime'}
             className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover:scale-105"
             referrerPolicy="no-referrer"
           />
@@ -110,13 +152,13 @@ export const SoftwareGalleryWidget: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-500 text-slate-950 shadow-sm">
-                  {selectedSoftware.version}
+                  {selectedSoftware?.version || '2026.1'}
                 </span>
                 <span className="px-3 py-1 rounded-full text-xs font-mono bg-slate-800/90 text-cyan-300 border border-slate-700/80 backdrop-blur-xs">
-                  {selectedSoftware.category}
+                  {selectedSoftware?.category || 'General'}
                 </span>
                 <span className="hidden sm:inline-flex px-3 py-1 rounded-full text-xs font-mono bg-slate-900/80 text-slate-300 border border-slate-700/80">
-                  {selectedSoftware.specs.solverType}
+                  {currentSpecs?.solverType || 'Dynamic Relaxation'}
                 </span>
               </div>
 
@@ -142,20 +184,20 @@ export const SoftwareGalleryWidget: React.FC = () => {
             {/* Middle / Bottom Software Info */}
             <div className="max-w-2xl space-y-3 pt-4">
               <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
-                {selectedSoftware.name}
+                {selectedSoftware?.name || 'Computational Solver'}
               </h3>
               
               <p className="text-cyan-300 font-mono text-xs sm:text-sm font-medium">
-                {selectedSoftware.tagline}
+                {selectedSoftware?.tagline || ''}
               </p>
 
               <p className="text-slate-300 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 leading-relaxed font-normal">
-                {selectedSoftware.description}
+                {selectedSoftware?.description || ''}
               </p>
 
               {/* Key Highlights Chips */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                {selectedSoftware.keyFeatures.slice(0, 3).map((feat, idx) => (
+                {currentFeatures.slice(0, 3).map((feat, idx) => (
                   <div key={idx} className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[11px] text-slate-200 backdrop-blur-xs font-mono">
                     <CheckCircle2 className="w-3 h-3 text-cyan-400 shrink-0" />
                     <span className="truncate max-w-[240px]">{feat}</span>
@@ -166,7 +208,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-3">
                 <button
-                  onClick={() => navigateTo({ view: 'software', id: selectedSoftware.id })}
+                  onClick={() => navigateTo({ view: 'software', id: selectedSoftware?.id || DEFAULT_FALLBACK_SOFTWARE.id })}
                   className="px-5 py-2.5 rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-semibold text-xs transition-colors flex items-center gap-2 shadow-lg shadow-cyan-950/50 cursor-pointer"
                 >
                   <span>Launch Engine Specs & TeX</span>
@@ -174,14 +216,14 @@ export const SoftwareGalleryWidget: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => openLeadModal({ softwareInterest: selectedSoftware.name, inquiryType: 'Software Demo' })}
+                  onClick={() => openLeadModal({ softwareInterest: selectedSoftware?.name, inquiryType: 'Software Demo' })}
                   className="px-4 py-2.5 rounded-xl bg-slate-800/90 text-white hover:bg-slate-700 border border-slate-700 font-medium text-xs transition-colors backdrop-blur-xs cursor-pointer"
                 >
                   Request Technical Evaluation
                 </button>
 
                 <button
-                  onClick={() => openGalleryModal(selectedSoftware.id, 'software', selectedSoftware.name)}
+                  onClick={() => openGalleryModal(selectedSoftware?.id || DEFAULT_FALLBACK_SOFTWARE.id, 'software', selectedSoftware?.name || 'Software')}
                   className="px-3 py-2.5 rounded-xl bg-slate-900/80 text-cyan-400 hover:text-white border border-slate-800 text-xs transition-colors flex items-center gap-1.5 backdrop-blur-xs cursor-pointer"
                   title="View Simulation Renders & Videos"
                 >
@@ -193,7 +235,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
 
             {/* Bottom Stepper Dots */}
             <div className="flex items-center gap-1.5 pt-4">
-              {softwareList.map(s => (
+              {validSoftwareList.map(s => (
                 <button
                   key={s.id}
                   onClick={() => setSelectedSoftwareId(s.id)}
@@ -213,7 +255,11 @@ export const SoftwareGalleryWidget: React.FC = () => {
       {/* Page-Width Software Gallery Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {filteredSoftware.map(software => {
-          const isSelected = software.id === selectedSoftware.id;
+          if (!software) return null;
+          const isSelected = software.id === selectedSoftware?.id;
+          const itemThumbnail = software.thumbnail || DEFAULT_FALLBACK_SOFTWARE.thumbnail;
+          const itemSpecs = software.specs || DEFAULT_FALLBACK_SOFTWARE.specs;
+
           return (
             <div
               key={software.id}
@@ -227,7 +273,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
               {/* Card Thumbnail */}
               <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-950">
                 <img
-                  src={software.thumbnail}
+                  src={itemThumbnail}
                   alt={software.name}
                   className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
                   referrerPolicy="no-referrer"
@@ -237,14 +283,14 @@ export const SoftwareGalleryWidget: React.FC = () => {
                 {/* Category chip over image */}
                 <div className="absolute top-3 left-3">
                   <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-slate-900/90 text-cyan-300 border border-slate-700 backdrop-blur-xs">
-                    {software.category}
+                    {software.category || 'Engineering'}
                   </span>
                 </div>
 
                 {/* Version badge */}
                 <div className="absolute top-3 right-3">
                   <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500 text-slate-950 font-bold">
-                    {software.version.split(' ')[0]}
+                    {(software.version || '2026').split(' ')[0]}
                   </span>
                 </div>
 
@@ -259,7 +305,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
               {/* Card Body */}
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                 <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                  {software.tagline}
+                  {software.tagline || ''}
                 </p>
 
                 {/* Technical specs teaser */}
@@ -267,7 +313,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
                   <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
                     <span>Capacity:</span>
                     <span className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[140px]">
-                      {software.specs.maxNodesTested}
+                      {itemSpecs.maxNodesTested || '100,000+ Nodes'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">

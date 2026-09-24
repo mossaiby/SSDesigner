@@ -16,6 +16,7 @@ import { MediaLightboxViewer } from './components/MediaLightboxViewer';
 import { LeadCaptureModal } from './components/LeadCaptureModal';
 import { SeoAuditDrawer } from './components/SeoAuditDrawer';
 import { EngineeringCalculatorDrawer } from './components/EngineeringCalculatorDrawer';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 const AppContent: React.FC = () => {
   const { currentNav } = useData();
@@ -83,8 +84,10 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <DataProvider>
-      <AppContent />
-    </DataProvider>
+    <ErrorBoundary>
+      <DataProvider>
+        <AppContent />
+      </DataProvider>
+    </ErrorBoundary>
   );
 }

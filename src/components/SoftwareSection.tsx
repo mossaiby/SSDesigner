@@ -63,8 +63,8 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
                   {/* Preview Thumbnail */}
                   <div className="relative aspect-video rounded-xl overflow-hidden mb-6 bg-slate-950 border border-slate-200 dark:border-slate-800">
                     <img
-                      src={soft.thumbnail}
-                      alt={soft.name}
+                      src={soft?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg'}
+                      alt={soft?.name || 'Engineering Software'}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                       referrerPolicy="no-referrer"
@@ -81,7 +81,7 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
 
                   {/* Key Capabilities Bullet Points */}
                   <div className="space-y-2 mb-6">
-                    {soft.keyFeatures.slice(0, 3).map((feat, idx) => (
+                    {(soft?.keyFeatures || []).slice(0, 3).map((feat, idx) => (
                       <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
                         <Check className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
                         <span>{feat}</span>
@@ -91,8 +91,8 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
 
                   {/* Technical Specifications Spec Pill */}
                   <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 mb-6 font-mono text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
-                    <div><span className="text-cyan-700 dark:text-cyan-400 font-semibold">Solver:</span> {soft.specs.solverType}</div>
-                    <div><span className="text-cyan-700 dark:text-cyan-400 font-semibold">Capacity:</span> {soft.specs.maxNodesTested}</div>
+                    <div><span className="text-cyan-700 dark:text-cyan-400 font-semibold">Solver:</span> {soft?.specs?.solverType || 'Dynamic Relaxation'}</div>
+                    <div><span className="text-cyan-700 dark:text-cyan-400 font-semibold">Capacity:</span> {soft?.specs?.maxNodesTested || '100,000+ Spatial Nodes'}</div>
                   </div>
                 </div>
 

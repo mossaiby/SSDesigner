@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { FormattedMathText, MarkdownArticleView } from './MathRenderer';
+import { INITIAL_BLOG_POSTS } from '../data/initialData';
 
 interface BlogDetailPageProps {
   postId: string;
@@ -10,7 +11,7 @@ interface BlogDetailPageProps {
 export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ postId }) => {
   const { blogPosts, navigateTo, openLeadModal } = useData();
 
-  const post = blogPosts.find(p => p.id === postId) || blogPosts[0];
+  const post = blogPosts.find(p => p.id === postId) || blogPosts[0] || INITIAL_BLOG_POSTS[0];
 
   useEffect(() => {
     document.title = `${post.title} – Engineering Insights | SSDesigner`;
