@@ -22,10 +22,10 @@ export const SeoAuditDrawer: React.FC = () => {
       case 'software': {
         const item = softwareList.find(s => s.id === currentNav.id) || softwareList[0];
         return {
-          title: `${item.name} – Space Structures Engineering Software | AeroSpatial`,
+          title: `${item.name} – Space Structures Engineering Software | SSDesigner`,
           description: item.description.substring(0, 160) + '...',
           type: 'SoftwareApplication',
-          url: `https://aerospatial.ai/#/software/${item.id}`,
+          url: `https://ssdesigner.ir/#/software/${item.id}`,
           keywords: [item.name, item.category, 'space structures', 'finite element solver', 'truss analysis'],
           schema: {
             '@context': 'https://schema.org',
@@ -48,10 +48,10 @@ export const SeoAuditDrawer: React.FC = () => {
       case 'project': {
         const item = projectsList.find(p => p.id === currentNav.id) || projectsList[0];
         return {
-          title: `${item.title} – Real-World Space Structure Case Study | AeroSpatial`,
-          description: `${item.subtitle}. Engineered using AeroSpatial calculation software. Clear span: ${item.span}.`,
+          title: `${item.title} – Real-World Space Structure Case Study | SSDesigner`,
+          description: `${item.subtitle}. Engineered using SSDesigner calculation software. Clear span: ${item.span}.`,
           type: 'CreativeWork / CaseStudy',
-          url: `https://aerospatial.ai/#/project/${item.id}`,
+          url: `https://ssdesigner.ir/#/project/${item.id}`,
           keywords: [item.title, item.category, item.span, 'spatial structures', 'space grid case study'],
           schema: {
             '@context': 'https://schema.org',
@@ -71,10 +71,10 @@ export const SeoAuditDrawer: React.FC = () => {
       case 'blog': {
         const post = blogPosts.find(p => p.id === currentNav.id) || blogPosts[0];
         return {
-          title: `${post.title} | AeroSpatial Engineering Insights`,
+          title: `${post.title} | SSDesigner Engineering Insights`,
           description: post.excerpt,
           type: 'Article',
-          url: `https://aerospatial.ai/#/blog/${post.id}`,
+          url: `https://ssdesigner.ir/#/blog/${post.id}`,
           keywords: post.tags,
           schema: {
             '@context': 'https://schema.org',
@@ -89,27 +89,27 @@ export const SeoAuditDrawer: React.FC = () => {
             },
             publisher: {
               '@type': 'Organization',
-              name: 'AeroSpatial Computing AG',
+              name: 'SSDesigner Systems',
             },
           },
         };
       }
       default:
         return {
-          title: 'AeroSpatial – Computational Mechanics for Extreme Space Structures',
+          title: 'SSDesigner – Computational Mechanics for Extreme Space Structures',
           description: 'Specialized finite-element analysis, dynamic relaxation form-finding, and post-buckling solvers for large-span spatial trusses, geodesic domes, and tensegrity systems.',
           type: 'Organization / EngineeringService',
-          url: 'https://aerospatial.ai/',
+          url: 'https://ssdesigner.ir/',
           keywords: ['space structures software', 'dynamic relaxation', 'tensegrity form finding', 'nonlinear buckling solver', 'Eurocode 3', 'space frame FEA'],
           schema: {
             '@context': 'https://schema.org',
             '@type': 'Organization',
-            name: 'AeroSpatial Computing AG',
-            url: 'https://aerospatial.ai',
+            name: 'SSDesigner Systems',
+            url: 'https://ssdesigner.ir',
             description: 'Advanced computational mechanics software for spatial systems, reticulated shells, and deployables.',
             sameAs: [
-              'https://github.com/aerospatial-structures',
-              'https://linkedin.com/company/aerospatial-structures'
+              'https://github.com/ssdesigner',
+              'https://linkedin.com/company/ssdesigner'
             ],
           },
         };

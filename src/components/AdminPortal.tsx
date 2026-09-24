@@ -246,7 +246,7 @@ export const AdminPortal: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base font-bold text-white tracking-tight">
-                  AeroSpatial Master Admin Console
+                  SSDesigner Master Admin Console
                 </h1>
                 <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
                   {currentUser?.role}

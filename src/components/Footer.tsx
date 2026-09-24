@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center gap-3">
             <span className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
-              AeroSpatial
+              SSDesigner
             </span>
             <span className="text-[10px] font-mono text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-200 dark:border-cyan-900/50">
               FEM Solvers
@@ -124,7 +124,7 @@ export const Footer: React.FC = () => {
 
       <div className="max-w-7xl mx-auto pt-8 border-t border-slate-200 dark:border-slate-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-slate-500 dark:text-slate-400">
         <div>
-          © 2026 AeroSpatial Computing AG. All mathematical rights reserved.
+          © 2026 SSDesigner (ssdesigner.ir). All mathematical rights reserved.
         </div>
         <div className="flex items-center gap-4">
           <span>Precision Non-Linear Mechanics</span>

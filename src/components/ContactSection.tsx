@@ -72,7 +72,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isStandalonePage
                 <Mail className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-semibold text-slate-950 dark:text-white">Direct Technical Dispatch</div>
-                  <div className="text-cyan-600 dark:text-cyan-400 font-mono">engineering@aerospatial-structures.com</div>
+                  <div className="text-cyan-600 dark:text-cyan-400 font-mono">engineering@ssdesigner.ir</div>
                 </div>
               </div>
             </div>
@@ -192,7 +192,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isStandalonePage
                         {softwareList.map(s => (
                           <option key={s.id} value={s.name}>{s.name}</option>
                         ))}
-                        <option value="Full Space Structures Suite">Entire AeroSpatial Suite</option>
+                        <option value="Full Space Structures Suite">Entire SSDesigner Suite</option>
                       </select>
                     </div>
                   </div>

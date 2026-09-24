@@ -17,11 +17,6 @@ export const Hero: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Hero Headline Block */}
         <div className="max-w-4xl mx-auto text-center space-y-5 mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-100 dark:bg-cyan-950/50 border border-cyan-300 dark:border-cyan-800/50 text-[11px] font-mono text-cyan-800 dark:text-cyan-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-            <span>Version 2026.4 Computational Solvers & Mathematical Engines</span>
-          </div>
-
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-950 dark:text-white tracking-tight leading-[1.1] text-balance">
             Computational Solvers for Extreme <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-sky-500 dark:from-cyan-400 dark:to-sky-300">Space Structures</span>
           </h1>

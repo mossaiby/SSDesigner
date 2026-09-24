@@ -44,7 +44,7 @@ export const Navbar: React.FC = () => {
             onClick={() => handleNavClick('home')}
             className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-950 dark:text-white px-2 py-1 rounded-lg hover:bg-slate-900 hover:text-white dark:hover:bg-cyan-400 dark:hover:text-slate-950 transition-all whitespace-nowrap"
           >
-            AeroSpatial
+            SSDesigner
           </button>
           <span className="hidden lg:inline text-[11px] font-mono text-cyan-700 dark:text-cyan-400 px-2 py-0.5 rounded bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-900/40">
             Space Structures FEM

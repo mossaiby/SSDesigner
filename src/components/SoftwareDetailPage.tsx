@@ -48,7 +48,7 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
 
   // Update document title for Technical SEO
   useEffect(() => {
-    document.title = `${software.name} – Space Structures Engineering Software | AeroSpatial`;
+    document.title = `${software.name} – Space Structures Engineering Software | SSDesigner`;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [software]);
 

@@ -71,7 +71,7 @@ export const LeadCaptureModal: React.FC = () => {
               Inquiry Dispatched Successfully
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 max-w-sm mx-auto leading-relaxed">
-              Thank you, <span className="text-white font-semibold">{name}</span>. An engineering specialist from AeroSpatial will review your structural requirements and send credentials or benchmark documentation to <span className="text-cyan-400 font-mono">{email}</span>.
+              Thank you, <span className="text-white font-semibold">{name}</span>. An engineering specialist from SSDesigner will review your structural requirements and send credentials or benchmark documentation to <span className="text-cyan-400 font-mono">{email}</span>.
             </p>
             <div className="pt-4">
               <button

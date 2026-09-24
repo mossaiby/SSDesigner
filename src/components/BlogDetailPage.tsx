@@ -13,7 +13,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ postId }) => {
   const post = blogPosts.find(p => p.id === postId) || blogPosts[0];
 
   useEffect(() => {
-    document.title = `${post.title} – Engineering Insights | AeroSpatial`;
+    document.title = `${post.title} – Engineering Insights | SSDesigner`;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [post]);
 

@@ -43,7 +43,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
   );
 
   useEffect(() => {
-    document.title = `${project.title} – Real-World Space Structure Case Study | AeroSpatial`;
+    document.title = `${project.title} – Real-World Space Structure Case Study | SSDesigner`;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [project]);
 
@@ -151,7 +151,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
 
             <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
               <h4 className="text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2">
-                AeroSpatial Solvers Deployed on this Project:
+                SSDesigner Solvers Deployed on this Project:
               </h4>
               <div className="flex flex-wrap gap-2">
                 {project.softwareUsed.map((softName, i) => (
