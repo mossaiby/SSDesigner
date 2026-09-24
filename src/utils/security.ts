@@ -36,14 +36,14 @@ export function isValidMediaUrl(url: string): boolean {
 // Password hashing using Web Crypto API SHA-256
 export async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(password + '_aerospatial_salt_2026');
+  const data = encoder.encode(password + '_ssdesigner_salt_2026');
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // Brute force protection tracker in session
-const LOGIN_ATTEMPTS_KEY = 'aerospatial_login_attempts';
+const LOGIN_ATTEMPTS_KEY = 'ssdesigner_login_attempts';
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 60 * 1000; // 1 minute lockout
 

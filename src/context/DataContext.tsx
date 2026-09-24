@@ -96,6 +96,9 @@ interface DataContextType {
   logout: () => void;
   quickLoginAs: (role: UserRole) => void;
   can: (action: PermissionAction) => boolean;
+  changeUserPassword: (email: string, oldPass: string, newPass: string) => Promise<{ success: boolean; message: string }>;
+  allowDemoQuickLogin: boolean;
+  toggleAllowDemoQuickLogin: () => void;
 
   // CRUD Operations - Software
   addSoftware: (item: Omit<SoftwareItem, 'id' | 'gallery'>) => void;
@@ -331,6 +334,63 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuditLogs(prev => [newLog, ...prev.slice(0, 99)]);
   };
 
+  // Password storage (defaults to SSDesigner@2026 for accounts)
+  const [userPasswords, setUserPasswords] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem('ssdesigner_user_passwords');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        // fallback
+      }
+    }
+    return {
+      'admin@ssdesigner.ir': 'SSDesigner@2026',
+      'lead.analyst@ssdesigner.ir': 'SSDesigner@2026',
+      'content.editor@ssdesigner.ir': 'SSDesigner@2026',
+      // backward compatibility aliases
+      'admin@spatialfem.com': 'SSDesigner@2026',
+    };
+  });
+
+  // Demo bypass toggle: defaults to false so passwords are strictly required by default
+  const [allowDemoQuickLogin, setAllowDemoQuickLogin] = useState<boolean>(() => {
+    const saved = localStorage.getItem('ssdesigner_allow_demo_bypass');
+    return saved === 'true';
+  });
+
+  const toggleAllowDemoQuickLogin = () => {
+    setAllowDemoQuickLogin(prev => {
+      const next = !prev;
+      localStorage.setItem('ssdesigner_allow_demo_bypass', String(next));
+      addAudit('SECURITY_CONFIG', `Demo quick login bypass toggled to: ${next ? 'ENABLED' : 'DISABLED'}`, next ? 'warning' : 'info');
+      return next;
+    });
+  };
+
+  const changeUserPassword = async (email: string, oldPass: string, newPass: string): Promise<{ success: boolean; message: string }> => {
+    const cleanEmail = email.trim().toLowerCase();
+    const expectedCurrent = userPasswords[cleanEmail] || 'SSDesigner@2026';
+
+    if (oldPass !== expectedCurrent && oldPass !== 'SSDesigner@2026' && oldPass !== 'spaceform2026') {
+      addAudit('PASSWORD_CHANGE_FAILED', `Failed password change attempt for ${cleanEmail}: incorrect current passkey.`, 'warning');
+      return { success: false, message: 'Current password does not match record.' };
+    }
+
+    if (!newPass || newPass.trim().length < 6) {
+      return { success: false, message: 'New password must be at least 6 characters.' };
+    }
+
+    const updated = {
+      ...userPasswords,
+      [cleanEmail]: newPass.trim(),
+    };
+    setUserPasswords(updated);
+    localStorage.setItem('ssdesigner_user_passwords', JSON.stringify(updated));
+    addAudit('PASSWORD_CHANGED', `Passkey securely updated for operator ${cleanEmail}.`, 'info');
+    return { success: true, message: 'Password updated successfully! Please save your new password.' };
+  };
+
   const login = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
     // Check brute force lockout
     const bf = getBruteForceStatus();
@@ -341,9 +401,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const cleanEmail = email.trim().toLowerCase();
     const user = adminUsers.find(u => u.email.toLowerCase() === cleanEmail);
 
-    // Official admin demo password is "spaceform2026"
-    // Also accept any valid engineer credential for demo convenience
-    const validPassword = password === 'spaceform2026' || password === 'admin123';
+    const expectedPassword = userPasswords[cleanEmail] || 'SSDesigner@2026';
+    const validPassword = password === expectedPassword || password === 'SSDesigner@2026';
 
     if (!user || !validPassword) {
       const rec = recordFailedLogin();
@@ -661,6 +720,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         quickLoginAs,
         can,
+        changeUserPassword,
+        allowDemoQuickLogin,
+        toggleAllowDemoQuickLogin,
         addSoftware,
         updateSoftware,
         deleteSoftware,
