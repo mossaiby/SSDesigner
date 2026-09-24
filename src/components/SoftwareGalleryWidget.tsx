@@ -25,14 +25,13 @@ export const SoftwareGalleryWidget: React.FC = () => {
   const selectedSoftware: SoftwareItem = 
     softwareList.find(s => s.id === selectedSoftwareId) || softwareList[0];
 
+  // Dynamic categories list from softwareList
+  const uniqueCategories = Array.from(new Set(softwareList.map(s => s.category).filter(Boolean)));
+
   // Filtering
   const filteredSoftware = softwareList.filter(item => {
     if (selectedFilter === 'all') return true;
-    if (selectedFilter === 'form_finding') return item.category.toLowerCase().includes('form');
-    if (selectedFilter === 'fea') return item.category.toLowerCase().includes('fea') || item.category.toLowerCase().includes('buckling');
-    if (selectedFilter === 'space') return item.category.toLowerCase().includes('space') || item.category.toLowerCase().includes('aero');
-    if (selectedFilter === 'cnc') return item.category.toLowerCase().includes('cnc') || item.category.toLowerCase().includes('parametric');
-    return true;
+    return item.category === selectedFilter;
   });
 
   const handleNext = () => {
@@ -63,25 +62,29 @@ export const SoftwareGalleryWidget: React.FC = () => {
           </p>
         </div>
 
-        {/* Filter Pills */}
+        {/* Filter Pills dynamically derived from software categories */}
         <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs">
-          {[
-            { id: 'all', label: 'All Engines (4)' },
-            { id: 'form_finding', label: 'Form-Finding' },
-            { id: 'fea', label: 'Nonlinear FEA' },
-            { id: 'space', label: 'Aerospace' },
-            { id: 'cnc', label: 'CNC Nodes' },
-          ].map(tab => (
+          <button
+            onClick={() => setSelectedFilter('all')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer text-xs ${
+              selectedFilter === 'all'
+                ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+            }`}
+          >
+            All ({softwareList.length})
+          </button>
+          {uniqueCategories.map(cat => (
             <button
-              key={tab.id}
-              onClick={() => setSelectedFilter(tab.id)}
+              key={cat}
+              onClick={() => setSelectedFilter(cat)}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer text-xs ${
-                selectedFilter === tab.id
+                selectedFilter === cat
                   ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
-              {tab.label}
+              {cat}
             </button>
           ))}
         </div>

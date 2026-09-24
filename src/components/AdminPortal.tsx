@@ -28,6 +28,23 @@ import { getBruteForceStatus } from '../utils/security';
 
 type AdminTab = 'software' | 'projects' | 'media' | 'blog' | 'leads' | 'audit' | 'system';
 
+const getFormField = (fd: FormData, key: string, fallback = ''): string => {
+  const val = fd.get(key);
+  return typeof val === 'string' && val.trim() ? val.trim() : fallback;
+};
+
+const getFormArrayFromCsv = (fd: FormData, key: string, fallback: string[] = []): string[] => {
+  const val = fd.get(key);
+  if (typeof val !== 'string' || !val.trim()) return fallback;
+  return val.split(',').map(s => s.trim()).filter(Boolean);
+};
+
+const getFormArrayFromLines = (fd: FormData, key: string, fallback: string[] = []): string[] => {
+  const val = fd.get(key);
+  if (typeof val !== 'string' || !val.trim()) return fallback;
+  return val.split('\n').map(s => s.trim()).filter(Boolean);
+};
+
 export const AdminPortal: React.FC = () => {
   const {
     currentUser,
@@ -206,7 +223,7 @@ export const AdminPortal: React.FC = () => {
                   required
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
-                  placeholder="admin@ssdesigner.ir"
+                  placeholder="operator@domain.com"
                   className="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none"
                 />
               </div>
@@ -235,7 +252,7 @@ export const AdminPortal: React.FC = () => {
             </form>
           )}
 
-          {/* Quick Demo Access Bar or Production Notice */}
+          {/* Quick Demo Access Bar only if explicitly activated inside System settings */}
           {allowDemoQuickLogin ? (
             <div className="pt-6 border-t border-slate-800">
               <div className="flex items-center justify-between mb-2">
@@ -275,23 +292,14 @@ export const AdminPortal: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="pt-5 border-t border-slate-800 text-center space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/50 border border-emerald-700/50 text-[11px] font-mono text-emerald-400">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Password Enforcement Active</span>
+            <div className="pt-5 border-t border-slate-800 text-center space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400">
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Restricted Engineering Console · 256-Bit SSL</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Initial Administrator: <span className="text-white font-mono">admin@ssdesigner.ir</span>
-                <br />
-                Initial Passkey: <span className="text-cyan-400 font-mono">SSDesigner@2026</span>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Authorized operators only. All login activities and IP sessions are recorded in the security audit trail.
               </p>
-              <button
-                type="button"
-                onClick={toggleAllowDemoQuickLogin}
-                className="text-[10px] text-slate-500 hover:text-cyan-400 underline transition-colors pt-1 block mx-auto"
-              >
-                (Testing? Click here to show 1-click evaluation buttons)
-              </button>
             </div>
           )}
         </div>
@@ -1165,8 +1173,8 @@ export const AdminPortal: React.FC = () => {
       {/* ===================== MODAL: ADD / EDIT SOFTWARE ===================== */}
       {(isAddingSoftware || editingSoftware) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4 sticky top-0 bg-slate-900 z-10">
               <h3 className="text-lg font-bold text-white">
                 {editingSoftware ? `Edit Software: ${editingSoftware.name}` : 'Create Engineering Software Profile'}
               </h3>
@@ -1185,24 +1193,30 @@ export const AdminPortal: React.FC = () => {
                 const fd = new FormData(form);
 
                 const softwareData = {
-                  name: fd.get('name') as string,
-                  tagline: fd.get('tagline') as string,
-                  category: fd.get('category') as any,
-                  version: fd.get('version') as string,
-                  description: fd.get('description') as string,
-                  keyFeatures: (fd.get('keyFeatures') as string).split('\n').filter(Boolean),
-                  mathematicalFoundations: (fd.get('math') as string).split('\n').filter(Boolean),
-                  thumbnail: fd.get('thumbnail') as string || '/src/assets/images/software_form_finding_1790188528595.jpg',
-                  releaseDate: fd.get('releaseDate') as string || new Date().toISOString().substring(0, 10),
+                  name: getFormField(fd, 'name'),
+                  tagline: getFormField(fd, 'tagline'),
+                  category: getFormField(fd, 'category', 'Form-Finding & Cable-Net'),
+                  version: getFormField(fd, 'version', '2026.1'),
+                  description: getFormField(fd, 'description'),
+                  keyFeatures: getFormArrayFromLines(fd, 'keyFeatures', [
+                    'Dynamic Relaxation with kinetic damping',
+                    'Automatic tension equilibrium'
+                  ]),
+                  mathematicalFoundations: getFormArrayFromLines(fd, 'math', [
+                    'Dynamic Relaxation Kinetic Damping: m_i \\frac{v_i^{t+\\Delta t/2} - v_i^{t-\\Delta t/2}}{\\Delta t} = R_i^t',
+                    'Green-Lagrange Nonlinear Strain Tensor: E_{ij} = \\frac{1}{2}(u_{i,j} + u_{j,i} + u_{k,i}u_{k,j})'
+                  ]),
+                  thumbnail: getFormField(fd, 'thumbnail', '/src/assets/images/software_form_finding_1790188528595.jpg'),
+                  releaseDate: getFormField(fd, 'releaseDate', new Date().toISOString().substring(0, 10)),
                   featured: fd.get('featured') === 'on',
                   specs: {
-                    solverType: fd.get('solverType') as string,
-                    formulation: fd.get('formulation') as string,
-                    elementsSupported: (fd.get('elements') as string).split(',').map(s => s.trim()).filter(Boolean),
-                    maxNodesTested: fd.get('maxNodes') as string,
-                    fileIOFormats: (fd.get('fileIO') as string).split(',').map(s => s.trim()).filter(Boolean),
-                    hardwareAcceleration: fd.get('hardware') as string,
-                    complianceStandards: (fd.get('standards') as string).split(',').map(s => s.trim()).filter(Boolean),
+                    solverType: getFormField(fd, 'solverType', 'Dynamic Relaxation & Sparse Cholesky'),
+                    formulation: getFormField(fd, 'formulation', 'Co-rotational 3D formulation & Green-Lagrange strain'),
+                    elementsSupported: getFormArrayFromCsv(fd, 'elements', ['Tension Cables', 'Compression Struts', 'Spatial Beams']),
+                    maxNodesTested: getFormField(fd, 'maxNodes', '100,000+ Spatial Nodes'),
+                    fileIOFormats: getFormArrayFromCsv(fd, 'fileIO', ['DXF', 'STEP', 'JSON', 'IFC 4x3']),
+                    hardwareAcceleration: getFormField(fd, 'hardware', 'OpenCL / CUDA Multithreaded'),
+                    complianceStandards: getFormArrayFromCsv(fd, 'standards', ['Eurocode 3', 'IASS Working Group 8']),
                   }
                 };
 
@@ -1225,7 +1239,7 @@ export const AdminPortal: React.FC = () => {
                     required
                     defaultValue={editingSoftware?.name || ''}
                     placeholder="e.g. FormSpace Prime"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1234,23 +1248,35 @@ export const AdminPortal: React.FC = () => {
                     name="version"
                     required
                     defaultValue={editingSoftware?.version || '2026.1'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Category</label>
-                <select
+                <label className="block text-slate-400 mb-1 font-mono">Category (Select or enter custom string) *</label>
+                <input
+                  list="software-categories-list"
                   name="category"
+                  required
                   defaultValue={editingSoftware?.category || 'Form-Finding & Cable-Net'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
-                >
-                  <option value="Form-Finding & Cable-Net">Form-Finding & Cable-Net</option>
-                  <option value="Nonlinear FEA & Buckling">Nonlinear FEA & Buckling</option>
-                  <option value="Aerospace Deployables">Aerospace Deployables</option>
-                  <option value="Parametric Detailing & CNC">Parametric Detailing & CNC</option>
-                </select>
+                  placeholder="e.g. Form-Finding & Cable-Net, or enter any custom category"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                />
+                <datalist id="software-categories-list">
+                  {Array.from(new Set(softwareList.map(s => s.category).filter(Boolean))).map(cat => (
+                    <option key={cat} value={cat} />
+                  ))}
+                  <option value="Form-Finding & Cable-Net" />
+                  <option value="Nonlinear FEA & Buckling" />
+                  <option value="Aerospace Deployables" />
+                  <option value="Parametric Detailing & CNC" />
+                  <option value="Tensile Membrane Mechanics" />
+                  <option value="Space Grid Optimization" />
+                </datalist>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Category is user-modifiable: Type any category string or select an existing one.
+                </span>
               </div>
 
               <div>
@@ -1260,7 +1286,7 @@ export const AdminPortal: React.FC = () => {
                   required
                   defaultValue={editingSoftware?.tagline || ''}
                   placeholder="e.g. Nonlinear Dynamic Relaxation & Equilibrium Solver"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1270,18 +1296,30 @@ export const AdminPortal: React.FC = () => {
                   name="description"
                   rows={3}
                   defaultValue={editingSoftware?.description || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  placeholder="Detailed description of the calculation engine, capabilities, and application domains..."
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Key Features (One per line)</label>
+                <label className="block text-slate-400 mb-1 font-mono">Key Features (One feature per line)</label>
                 <textarea
                   name="keyFeatures"
                   rows={3}
                   defaultValue={editingSoftware?.keyFeatures.join('\n') || ''}
-                  placeholder="Dynamic Relaxation with kinetic damping&#10;Slack cable auto-detection"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  placeholder="Dynamic Relaxation with kinetic damping&#10;Slack cable auto-detection&#10;Multi-point boundary constraints"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono focus:border-cyan-400 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1 font-mono">Mathematical Foundations & Formulas (One formula per line)</label>
+                <textarea
+                  name="math"
+                  rows={2}
+                  defaultValue={editingSoftware?.mathematicalFoundations.join('\n') || ''}
+                  placeholder="m_i \frac{v_i^{t+\Delta t/2} - v_i^{t-\Delta t/2}}{\Delta t} = R_i^t&#10;E_{ij} = \frac{1}{2}(u_{i,j} + u_{j,i} + u_{k,i}u_{k,j})"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1291,7 +1329,7 @@ export const AdminPortal: React.FC = () => {
                   <input
                     name="solverType"
                     defaultValue={editingSoftware?.specs.solverType || 'Dynamic Relaxation & Sparse Cholesky'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1299,7 +1337,26 @@ export const AdminPortal: React.FC = () => {
                   <input
                     name="maxNodes"
                     defaultValue={editingSoftware?.specs.maxNodesTested || '100,000+ Spatial Nodes'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-400 mb-1 font-mono">Continuum / Structural Formulation</label>
+                  <input
+                    name="formulation"
+                    defaultValue={editingSoftware?.specs.formulation || 'Co-rotational 3D formulation & Green-Lagrange strain'}
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1 font-mono">Hardware Acceleration</label>
+                  <input
+                    name="hardware"
+                    defaultValue={editingSoftware?.specs.hardwareAcceleration || 'OpenCL / CUDA Multithreaded'}
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1309,16 +1366,57 @@ export const AdminPortal: React.FC = () => {
                 <input
                   name="elements"
                   defaultValue={editingSoftware?.specs.elementsSupported.join(', ') || 'Tension Cables, Compression Struts, Beams'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 mb-1 font-mono">Thumbnail Image URL or Path</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-400 mb-1 font-mono">File I/O Formats (Comma-separated)</label>
+                  <input
+                    name="fileIO"
+                    defaultValue={editingSoftware?.specs.fileIOFormats.join(', ') || 'DXF, STEP, JSON, IFC 4x3, CSV'}
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1 font-mono">Standards (Comma-separated)</label>
+                  <input
+                    name="standards"
+                    defaultValue={editingSoftware?.specs.complianceStandards.join(', ') || 'Eurocode 3, IASS Working Group 8, AISC 360'}
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-slate-400 mb-1 font-mono">Thumbnail Image</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = ev => {
+                          const input = document.getElementById('software_thumbnail_input') as HTMLInputElement;
+                          if (input && ev.target?.result) {
+                            input.value = ev.target.result as string;
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
+                  />
+                </div>
                 <input
+                  id="software_thumbnail_input"
                   name="thumbnail"
                   defaultValue={editingSoftware?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  placeholder="URL or uploaded image path"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1332,7 +1430,7 @@ export const AdminPortal: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
                 >
                   {editingSoftware ? 'Save Profile Changes' : 'Create Software Profile'}
                 </button>
@@ -1365,25 +1463,25 @@ export const AdminPortal: React.FC = () => {
                 const fd = new FormData(form);
 
                 const projectData = {
-                  title: fd.get('title') as string,
-                  subtitle: fd.get('subtitle') as string,
-                  category: fd.get('category') as any,
-                  location: fd.get('location') as string,
-                  year: parseInt(fd.get('year') as string) || 2025,
-                  span: fd.get('span') as string,
-                  structuralSystem: fd.get('structuralSystem') as string,
-                  nodeCount: fd.get('nodeCount') as string,
-                  memberCount: fd.get('memberCount') as string,
-                  steelWeightSaved: fd.get('steelWeightSaved') as string,
-                  clientOrEngineer: fd.get('clientOrEngineer') as string,
-                  softwareUsed: (fd.get('softwareUsed') as string).split(',').map(s => s.trim()).filter(Boolean),
-                  challenge: fd.get('challenge') as string,
-                  engineeringSolution: fd.get('engineeringSolution') as string,
-                  heroImage: fd.get('heroImage') as string || '/src/assets/images/project_botanical_dome_1790188539068.jpg',
+                  title: getFormField(fd, 'title'),
+                  subtitle: getFormField(fd, 'subtitle', getFormField(fd, 'structuralSystem')),
+                  category: getFormField(fd, 'category', 'Sports & Arenas'),
+                  location: getFormField(fd, 'location', 'Global'),
+                  year: parseInt(getFormField(fd, 'year', '2025')) || 2025,
+                  span: getFormField(fd, 'span', '120 m Clear Span'),
+                  structuralSystem: getFormField(fd, 'structuralSystem'),
+                  nodeCount: getFormField(fd, 'nodeCount', '2,400 Nodes'),
+                  memberCount: getFormField(fd, 'memberCount', '8,200 Members'),
+                  steelWeightSaved: getFormField(fd, 'steelWeightSaved', '28% Saved'),
+                  clientOrEngineer: getFormField(fd, 'clientOrEngineer', 'Structural Engineering Partnership'),
+                  softwareUsed: getFormArrayFromCsv(fd, 'softwareUsed', ['FormSpace Prime', 'AeroLattice 3D']),
+                  challenge: getFormField(fd, 'challenge', 'Nonlinear geometric bifurcation and large deformation control.'),
+                  engineeringSolution: getFormField(fd, 'engineeringSolution', 'Optimized double-layer spatial topology with pre-stressed cable reinforcement.'),
+                  heroImage: getFormField(fd, 'heroImage', '/src/assets/images/project_botanical_dome_1790188539068.jpg'),
                   featured: fd.get('featured') === 'on',
                   keyMetrics: [
-                    { label: 'Clear Span', value: fd.get('metricSpan') as string || '120.0', unit: 'm' },
-                    { label: 'Steel Weight', value: fd.get('metricWeight') as string || '38.5', unit: 'kg/m²' },
+                    { label: 'Clear Span', value: getFormField(fd, 'metricSpan', '120.0'), unit: 'm' },
+                    { label: 'Steel Weight', value: getFormField(fd, 'metricWeight', '38.5'), unit: 'kg/m²' },
                   ]
                 };
 
@@ -1406,7 +1504,7 @@ export const AdminPortal: React.FC = () => {
                     required
                     defaultValue={editingProject?.title || ''}
                     placeholder="e.g. Grand Falcon International Velodrome"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1416,7 +1514,7 @@ export const AdminPortal: React.FC = () => {
                     type="number"
                     required
                     defaultValue={editingProject?.year || 2025}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1427,23 +1525,29 @@ export const AdminPortal: React.FC = () => {
                   name="location"
                   defaultValue={editingProject?.location || ''}
                   placeholder="e.g. Munich, Germany"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Category</label>
-                <select
+                <label className="block text-slate-400 mb-1 font-mono">Category (Select or enter custom category)</label>
+                <input
+                  list="project-categories-list"
                   name="category"
                   defaultValue={editingProject?.category || 'Sports & Arenas'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
-                >
-                  <option value="Sports & Arenas">Sports & Arenas</option>
-                  <option value="Botanical & Domes">Botanical & Domes</option>
-                  <option value="Aerospace & Satellites">Aerospace & Satellites</option>
-                  <option value="Transit Hubs">Transit Hubs</option>
-                  <option value="Experimental Tensegrity">Experimental Tensegrity</option>
-                </select>
+                  placeholder="e.g. Sports & Arenas, Botanical & Domes, or custom"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                />
+                <datalist id="project-categories-list">
+                  {Array.from(new Set(projectsList.map(p => p.category).filter(Boolean))).map(cat => (
+                    <option key={cat} value={cat} />
+                  ))}
+                  <option value="Sports & Arenas" />
+                  <option value="Botanical & Domes" />
+                  <option value="Aerospace & Satellites" />
+                  <option value="Transit Hubs" />
+                  <option value="Experimental Tensegrity" />
+                </datalist>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1453,7 +1557,7 @@ export const AdminPortal: React.FC = () => {
                     name="span"
                     required
                     defaultValue={editingProject?.span || '140 m Clear Span'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1461,7 +1565,7 @@ export const AdminPortal: React.FC = () => {
                   <input
                     name="nodeCount"
                     defaultValue={editingProject?.nodeCount || '3,400 Nodes'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1473,7 +1577,7 @@ export const AdminPortal: React.FC = () => {
                   required
                   defaultValue={editingProject?.structuralSystem || ''}
                   placeholder="Double-layer elliptic paraboloid space grid with spherical nodes"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1482,7 +1586,7 @@ export const AdminPortal: React.FC = () => {
                 <input
                   name="clientOrEngineer"
                   defaultValue={editingProject?.clientOrEngineer || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1492,7 +1596,7 @@ export const AdminPortal: React.FC = () => {
                   name="challenge"
                   rows={2}
                   defaultValue={editingProject?.challenge || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1502,7 +1606,7 @@ export const AdminPortal: React.FC = () => {
                   name="engineeringSolution"
                   rows={2}
                   defaultValue={editingProject?.engineeringSolution || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1511,16 +1615,38 @@ export const AdminPortal: React.FC = () => {
                 <input
                   name="softwareUsed"
                   defaultValue={editingProject?.softwareUsed.join(', ') || 'FormSpace Prime, AeroLattice 3D'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 mb-1 font-mono">Hero Image URL</label>
+              <div className="space-y-2">
+                <label className="block text-slate-400 mb-1 font-mono">Hero Project Image</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = ev => {
+                          const input = document.getElementById('project_hero_input') as HTMLInputElement;
+                          if (input && ev.target?.result) {
+                            input.value = ev.target.result as string;
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
+                  />
+                </div>
                 <input
+                  id="project_hero_input"
                   name="heroImage"
                   defaultValue={editingProject?.heroImage || '/src/assets/images/project_botanical_dome_1790188539068.jpg'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  placeholder="URL or uploaded image path"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1534,7 +1660,7 @@ export const AdminPortal: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
                 >
                   {editingProject ? 'Save Project Changes' : 'Create Project Case Study'}
                 </button>
@@ -1735,18 +1861,18 @@ export const AdminPortal: React.FC = () => {
                 const fd = new FormData(form);
 
                 const postData = {
-                  title: fd.get('title') as string,
-                  slug: (fd.get('title') as string).toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-                  category: fd.get('category') as any,
-                  readTime: fd.get('readTime') as string || '5 min read',
-                  excerpt: fd.get('excerpt') as string,
-                  content: fd.get('content') as string,
-                  coverImage: fd.get('coverImage') as string || '/src/assets/images/software_form_finding_1790188528595.jpg',
+                  title: getFormField(fd, 'title'),
+                  slug: getFormField(fd, 'title').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                  category: getFormField(fd, 'category', 'Computational Mechanics'),
+                  readTime: getFormField(fd, 'readTime', '5 min read'),
+                  excerpt: getFormField(fd, 'excerpt'),
+                  content: getFormField(fd, 'content'),
+                  coverImage: getFormField(fd, 'coverImage', '/src/assets/images/software_form_finding_1790188528595.jpg'),
                   author: {
                     name: currentUser?.name || 'AeroSpatial Lead Engineer',
                     role: currentUser?.role === 'administrator' ? 'Chief Scientist' : 'Structural Engineer',
                   },
-                  tags: (fd.get('tags') as string).split(',').map(s => s.trim()).filter(Boolean),
+                  tags: getFormArrayFromCsv(fd, 'tags', ['SpaceStructures', 'ComputationalMechanics']),
                 };
 
                 if (editingBlog) {
@@ -1766,32 +1892,45 @@ export const AdminPortal: React.FC = () => {
                   name="title"
                   required
                   defaultValue={editingBlog?.title || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Category</label>
-                  <select
+                  <label className="block text-slate-400 mb-1 font-mono">Category (Select or enter custom)</label>
+                  <input
+                    list="blog-categories-list"
                     name="category"
                     defaultValue={editingBlog?.category || 'Computational Mechanics'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
-                  >
-                    <option value="Computational Mechanics">Computational Mechanics</option>
-                    <option value="Aerospace Deployables">Aerospace Deployables</option>
-                    <option value="Structural Case Studies">Structural Case Studies</option>
-                    <option value="Product Releases">Product Releases</option>
-                  </select>
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  />
+                  <datalist id="blog-categories-list">
+                    <option value="Computational Mechanics" />
+                    <option value="Aerospace Deployables" />
+                    <option value="Structural Case Studies" />
+                    <option value="Product Releases" />
+                    <option value="Algorithms & Code" />
+                  </datalist>
                 </div>
                 <div>
                   <label className="block text-slate-400 mb-1 font-mono">Read Time</label>
                   <input
                     name="readTime"
                     defaultValue={editingBlog?.readTime || '6 min read'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1 font-mono">Tags (Comma-separated)</label>
+                <input
+                  name="tags"
+                  defaultValue={editingBlog?.tags.join(', ') || 'SpaceStructures, ComputationalMechanics, Algorithms'}
+                  placeholder="e.g. DynamicRelaxation, Cables, FEM"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                />
               </div>
 
               <div>
@@ -1800,7 +1939,7 @@ export const AdminPortal: React.FC = () => {
                   name="excerpt"
                   rows={2}
                   defaultValue={editingBlog?.excerpt || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1810,16 +1949,38 @@ export const AdminPortal: React.FC = () => {
                   name="content"
                   rows={6}
                   defaultValue={editingBlog?.content || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 mb-1 font-mono">Featured Cover Image URL</label>
+              <div className="space-y-2">
+                <label className="block text-slate-400 mb-1 font-mono">Featured Cover Image</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = ev => {
+                          const input = document.getElementById('blog_cover_input') as HTMLInputElement;
+                          if (input && ev.target?.result) {
+                            input.value = ev.target.result as string;
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
+                  />
+                </div>
                 <input
+                  id="blog_cover_input"
                   name="coverImage"
                   defaultValue={editingBlog?.coverImage || '/src/assets/images/software_form_finding_1790188528595.jpg'}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  placeholder="URL or uploaded image path"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
@@ -1833,7 +1994,7 @@ export const AdminPortal: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
                 >
                   {editingBlog ? 'Save Article' : 'Publish Article'}
                 </button>

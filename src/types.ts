@@ -39,7 +39,7 @@ export interface SoftwareItem {
   id: string;
   name: string;
   tagline: string;
-  category: 'Form-Finding & Cable-Net' | 'Nonlinear FEA & Buckling' | 'Aerospace Deployables' | 'Parametric Detailing & CNC';
+  category: string;
   version: string;
   description: string;
   keyFeatures: string[];
@@ -61,7 +61,7 @@ export interface ProjectItem {
   id: string;
   title: string;
   subtitle: string;
-  category: 'Sports & Arenas' | 'Botanical & Domes' | 'Aerospace & Satellites' | 'Transit Hubs' | 'Experimental Tensegrity';
+  category: string;
   location: string;
   year: number;
   span: string;
@@ -83,7 +83,7 @@ export interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  category: 'Computational Mechanics' | 'Aerospace Deployables' | 'Structural Case Studies' | 'Product Releases';
+  category: string;
   readTime: string;
   publishedAt: string;
   author: {
