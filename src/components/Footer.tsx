@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
                 className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors flex items-center gap-1 font-mono text-cyan-600 dark:text-cyan-400"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Admin Console {isAdminLoggedIn ? '(Active)' : ''}</span>
+                <span>Operator Portal {isAdminLoggedIn ? '(Active)' : ''}</span>
               </button>
             </li>
             <li className="pt-2 border-t border-slate-200 dark:border-slate-800">
@@ -124,7 +124,7 @@ export const Footer: React.FC = () => {
 
       <div className="max-w-7xl mx-auto pt-8 border-t border-slate-200 dark:border-slate-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-slate-500 dark:text-slate-400">
         <div>
-          © 2026 SSDesigner (ssdesigner.ir). All mathematical rights reserved.
+          © 2026 SSDesigner (ssdesigner.ir). All rights reserved.
         </div>
         <div className="flex items-center gap-4">
           <span>Precision Non-Linear Mechanics</span>

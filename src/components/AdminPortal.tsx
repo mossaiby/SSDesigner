@@ -51,11 +51,8 @@ export const AdminPortal: React.FC = () => {
     isAdminLoggedIn,
     login,
     logout,
-    quickLoginAs,
     can,
     changeUserPassword,
-    allowDemoQuickLogin,
-    toggleAllowDemoQuickLogin,
     adminUsers,
     softwareList,
     addSoftware,
@@ -267,56 +264,16 @@ export const AdminPortal: React.FC = () => {
             </form>
           )}
 
-          {/* Quick Demo Access Bar only if explicitly activated inside System settings */}
-          {allowDemoQuickLogin ? (
-            <div className="pt-6 border-t border-slate-800">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">
-                  ⚠️ Demo Bypass Active
-                </span>
-                <button
-                  type="button"
-                  onClick={toggleAllowDemoQuickLogin}
-                  className="text-[10px] text-slate-400 hover:text-white underline"
-                >
-                  Turn Off Demo Bypass
-                </button>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => quickLoginAs('administrator')}
-                  className="p-2 text-center rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 text-[11px] text-slate-300 transition-colors"
-                >
-                  <span className="font-semibold block">Admin</span>
-                  <span className="text-[9px] text-slate-500">Full Access</span>
-                </button>
-                <button
-                  onClick={() => quickLoginAs('lead_engineer')}
-                  className="p-2 text-center rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 text-[11px] text-slate-300 transition-colors"
-                >
-                  <span className="font-semibold block">Engineer</span>
-                  <span className="text-[9px] text-slate-500">Profiles/Media</span>
-                </button>
-                <button
-                  onClick={() => quickLoginAs('editor')}
-                  className="p-2 text-center rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 text-[11px] text-slate-300 transition-colors"
-                >
-                  <span className="font-semibold block">Editor</span>
-                  <span className="text-[9px] text-slate-500">Blog/Media</span>
-                </button>
-              </div>
+          {/* Secure Operator Notice */}
+          <div className="pt-5 border-t border-slate-800 text-center space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400">
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Restricted Engineering Console · 256-Bit SSL</span>
             </div>
-          ) : (
-            <div className="pt-5 border-t border-slate-800 text-center space-y-1.5">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400">
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Restricted Engineering Console · 256-Bit SSL</span>
-              </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                Authorized operators only. All login activities and IP sessions are recorded in the security audit trail.
-              </p>
-            </div>
-          )}
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Authorized operators only. All login activities and IP sessions are recorded in the security audit trail.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -1196,29 +1153,6 @@ export const AdminPortal: React.FC = () => {
                   </button>
                 </div>
               </form>
-
-              {/* Demo Mode Toggle */}
-              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div>
-                  <div className="text-xs font-semibold text-white">1-Click Evaluation Bypass on Login</div>
-                  <div className="text-[11px] text-slate-400">
-                    {allowDemoQuickLogin
-                      ? 'Currently ENABLED: Login screen shows quick access buttons without password requirement.'
-                      : 'Currently DISABLED (Recommended for Production): Login strictly requires email and password.'}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={toggleAllowDemoQuickLogin}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                    allowDemoQuickLogin
-                      ? 'bg-amber-600 hover:bg-amber-500 text-white'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
-                  }`}
-                >
-                  {allowDemoQuickLogin ? 'Disable 1-Click Bypass' : 'Enable 1-Click Bypass'}
-                </button>
-              </div>
 
               {/* Registered Operators List */}
               <div className="space-y-2">

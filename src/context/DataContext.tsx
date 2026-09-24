@@ -100,11 +100,8 @@ interface DataContextType {
   isAdminLoggedIn: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
-  quickLoginAs: (role: UserRole) => void;
   can: (action: PermissionAction) => boolean;
   changeUserPassword: (email: string, oldPass: string, newPass: string) => Promise<{ success: boolean; message: string }>;
-  allowDemoQuickLogin: boolean;
-  toggleAllowDemoQuickLogin: () => void;
 
   // Admin Mutations (saves to Database!)
   addSoftware: (item: Omit<SoftwareItem, 'id' | 'gallery'>) => Promise<void>;

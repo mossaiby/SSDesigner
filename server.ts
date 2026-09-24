@@ -17,8 +17,49 @@ const DATA_DIR = path.resolve(process.cwd(), 'data');
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-// Serve uploads
-app.use('/uploads', express.static(UPLOADS_DIR));
+// Strict Directory Listing Blocker Middleware
+// Denies direct browsing or indexing of directories across all paths
+app.use((req, res, next) => {
+  const reqPath = decodeURIComponent(req.path);
+
+  // Permit root path to pass through to application frontend
+  if (reqPath === '/' || reqPath === '') {
+    return next();
+  }
+
+  // Deny path traversal attempts
+  if (reqPath.includes('..') || reqPath.includes('/.')) {
+    return res.status(403).type('text/plain').send('403 Forbidden: Directory traversal blocked.');
+  }
+
+  // Check physical directories
+  const checkPaths = [
+    path.join(process.cwd(), reqPath),
+    path.join(process.cwd(), 'public', reqPath),
+    path.join(UPLOADS_DIR, reqPath.replace(/^\/uploads\/?/, '')),
+    path.join(DATA_DIR, reqPath.replace(/^\/data\/?/, '')),
+  ];
+
+  for (const p of checkPaths) {
+    try {
+      if (fs.existsSync(p) && fs.statSync(p).isDirectory()) {
+        return res.status(403).type('text/plain').send('403 Forbidden: Directory listing is disabled.');
+      }
+    } catch {
+      // Ignore lookup errors and proceed
+    }
+  }
+
+  // Block any URL ending in a trailing slash (other than root)
+  if (reqPath.endsWith('/')) {
+    return res.status(403).type('text/plain').send('403 Forbidden: Directory listing is disabled.');
+  }
+
+  next();
+});
+
+// Serve uploads with directory indexing disabled
+app.use('/uploads', express.static(UPLOADS_DIR, { index: false, dotfiles: 'deny' }));
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -389,7 +430,7 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.resolve(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { index: false, dotfiles: 'deny' }));
     app.get('*', (_req: Request, res: Response) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
