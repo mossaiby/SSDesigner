@@ -1,6 +1,6 @@
 {
-  "name": "AeroSpatial - Space Structures Engineering Software",
-  "description": "Comprehensive engineering software suite for space structures, spatial trusses, geodesic domes, tensegrity, and deployable aerospace systems.",
+  "name": "SSDesigner - Space Structures Engineering Software",
+  "description": "Comprehensive engineering software suite for space structures and geodesic domes.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }
