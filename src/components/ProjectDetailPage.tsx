@@ -57,7 +57,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
           className="inline-flex items-center gap-2 text-xs font-mono text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Back to Real-World Projects
+          Back to Projects
         </button>
       </div>
 

@@ -22,7 +22,7 @@ export const Hero: React.FC = () => {
           </h1>
 
           <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
-            Specialized finite-element analysis, dynamic relaxation form-finding, snap-through buckling solvers, and robotic CAM for large-span spatial trusses, geodesic domes, and aerospace deployables.
+            Specialized finite-element analysis, dynamic relaxation form-finding, snap-through buckling solvers, and robotic CAM for large-span spatial trusses, geodesic domes, tensegrity roofs, and reticulated shells.
           </p>
 
           {/* Quick CTAs */}

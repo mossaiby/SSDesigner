@@ -226,7 +226,7 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
             {software.id === 'soft_deployx' && (
               <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
                 <p>
-                  DeployX Space solves flexible multibody aerospace kinematics using the Absolute Nodal Coordinate Formulation (ANCF) with Baumgarte constraint stabilization:
+                  DeployX solves flexible multibody kinematics for retractable spatial roofs, folding canopies, and kinetic facades using the Absolute Nodal Coordinate Formulation (ANCF) with Baumgarte constraint stabilization:
                 </p>
                 <div className="space-y-3">
                   <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
@@ -235,8 +235,8 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
                     <BlockMath math="\begin{bmatrix} \mathbf{M}(\mathbf{q}) & \boldsymbol{\Phi}_{\mathbf{q}}^T \\ \boldsymbol{\Phi}_{\mathbf{q}} & \mathbf{0} \end{bmatrix} \begin{bmatrix} \ddot{\mathbf{q}} \\ \boldsymbol{\lambda} \end{bmatrix} = \begin{bmatrix} \mathbf{Q}_{\text{ext}} - \mathbf{C}\dot{\mathbf{q}} - \mathbf{K}\mathbf{q} \\ -\dot{\boldsymbol{\Phi}}_{\mathbf{q}}\dot{\mathbf{q}} - 2\alpha\dot{\boldsymbol{\Phi}} - \beta^2\boldsymbol{\Phi} \end{bmatrix}" />
                   </div>
                   <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 2: Best-Fit Parabolic Surface RMS Validation</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Validates deployable reflector surface precision against target RF telemetry standards:</p>
+                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 2: Best-Fit Surface RMS Deviation Validation</span>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Validates kinetic spatial roof geometric tolerances under operational wind and thermal loads:</p>
                     <BlockMath math="\delta_{\text{RMS}} = \sqrt{ \frac{1}{N} \sum_{k=1}^N \left( z_k - \frac{x_k^2 + y_k^2}{4 F} \right)^2 } \le 0.35\,\text{mm}" />
                   </div>
                 </div>

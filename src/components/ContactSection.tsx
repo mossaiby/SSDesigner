@@ -76,14 +76,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isStandalonePage
                 </div>
               </div>
             </div>
-
-            <div className="p-4 rounded-xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-400 shadow-sm">
-              <div className="flex items-center gap-2 text-cyan-700 dark:text-cyan-400 mb-1 font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Zero Sales Fluff Guarantee</span>
-              </div>
-              Technical inquiries are directly routed to licensed civil and aerospace structural engineers, not generic sales reps.
-            </div>
           </div>
 
           {/* Right Column: Lead Form */}
@@ -138,7 +130,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isStandalonePage
                         required
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        placeholder="m.vance@aerospace-labs.com"
+                        placeholder="m.vance@structural-consulting.com"
                         className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                       />
                     </div>

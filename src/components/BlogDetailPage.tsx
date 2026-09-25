@@ -27,7 +27,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ postId }) => {
           className="inline-flex items-center gap-2 text-xs font-mono text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Back to Technical Insights
+          Back to Insights
         </button>
       </div>
 

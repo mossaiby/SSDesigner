@@ -61,7 +61,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 System Interface Diagnostics
               </h1>
               <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                A client-side runtime exception was intercepted. You can reset stored state to default aerospace engineering benchmarks or reload the page.
+                A client-side runtime exception was intercepted. You can reset stored state to default civil engineering benchmarks or reload the page.
               </p>
             </div>
 

@@ -30,7 +30,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
             Structures Engineered with Our Solvers
           </h2>
           <p className="text-base text-slate-800 dark:text-slate-300 font-normal leading-relaxed">
-            From Olympic-class long-span sports stadia to deep-space deployable reflectors, explore structures engineered with our mathematical software.
+            From Olympic-class long-span sports stadia to expressive botanical geodesic domes and transit terminals, explore structures engineered with our mathematical software.
           </p>
         </div>
 

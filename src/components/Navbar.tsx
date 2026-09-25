@@ -54,25 +54,25 @@ export const Navbar: React.FC = () => {
             onClick={() => handleNavClick('all_software')}
             className={getNavLinkClass(currentNav.view === 'all_software' || currentNav.view === 'software')}
           >
-            Software Suite
+            Software
           </button>
           <button
             onClick={() => handleNavClick('all_projects')}
             className={getNavLinkClass(currentNav.view === 'all_projects' || currentNav.view === 'project')}
           >
-            Real-World Projects
+            Projects
           </button>
           <button
             onClick={() => handleNavClick('all_blog')}
             className={getNavLinkClass(currentNav.view === 'all_blog' || currentNav.view === 'blog')}
           >
-            Technical Insights
+            Insights
           </button>
           <button
             onClick={() => handleNavClick('contact')}
             className={getNavLinkClass(currentNav.view === 'contact')}
           >
-            Engineering Contact
+            Contact
           </button>
         </nav>
 
@@ -130,25 +130,25 @@ export const Navbar: React.FC = () => {
             onClick={() => handleNavClick('all_software')}
             className={`block w-full text-left ${getNavLinkClass(currentNav.view === 'all_software')}`}
           >
-            Software Suite
+            Software
           </button>
           <button
             onClick={() => handleNavClick('all_projects')}
             className={`block w-full text-left ${getNavLinkClass(currentNav.view === 'all_projects')}`}
           >
-            Real-World Projects
+            Projects
           </button>
           <button
             onClick={() => handleNavClick('all_blog')}
             className={`block w-full text-left ${getNavLinkClass(currentNav.view === 'all_blog')}`}
           >
-            Technical Insights
+            Insights
           </button>
           <button
             onClick={() => handleNavClick('contact')}
             className={`block w-full text-left ${getNavLinkClass(currentNav.view === 'contact')}`}
           >
-            Engineering Contact
+            Contact
           </button>
           <button
             onClick={() => {

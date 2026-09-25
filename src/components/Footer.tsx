@@ -13,13 +13,10 @@ export const Footer: React.FC = () => {
             <span className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
               SSDesigner
             </span>
-            <span className="text-[10px] font-mono text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-200 dark:border-cyan-900/50">
-              FEM Solvers
-            </span>
           </div>
 
           <p className="text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
-            Advanced computational mechanics for space structures. Form-finding, geometric nonlinearities, and tensegrity equilibrium software for extreme civil and aerospace engineering.
+            Advanced computational mechanics for space structures. Form-finding, geometric nonlinearities, and tensegrity equilibrium software for extreme civil engineering.
           </p>
 
           <div className="pt-2 font-mono text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
@@ -30,9 +27,9 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Software Suite Links */}
+        {/* Software Links */}
         <div>
-          <h4 className="text-sm font-semibold text-slate-950 dark:text-white mb-3">Engineering Software</h4>
+          <h4 className="text-sm font-semibold text-slate-950 dark:text-white mb-3">Software</h4>
           <ul className="space-y-2">
             {softwareList.map(s => (
               <li key={s.id}>
@@ -47,9 +44,9 @@ export const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* Real-World Projects */}
+        {/* Projects */}
         <div>
-          <h4 className="text-sm font-semibold text-slate-950 dark:text-white mb-3">Real-World Case Studies</h4>
+          <h4 className="text-sm font-semibold text-slate-950 dark:text-white mb-3">Projects</h4>
           <ul className="space-y-2">
             {projectsList.map(p => (
               <li key={p.id}>
@@ -73,7 +70,7 @@ export const Footer: React.FC = () => {
                 onClick={() => navigateTo({ view: 'all_blog' })}
                 className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
               >
-                Technical Blog
+                Insights
               </button>
             </li>
             <li>
@@ -81,7 +78,7 @@ export const Footer: React.FC = () => {
                 onClick={() => navigateTo({ view: 'contact' })}
                 className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
               >
-                Lead & Inquiry Desk
+                Contact
               </button>
             </li>
           </ul>
