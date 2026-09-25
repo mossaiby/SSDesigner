@@ -55,19 +55,19 @@ export const Hero: React.FC = () => {
           <div className="pt-6 border-t border-slate-200/80 dark:border-slate-900/80 flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-xs font-mono">
             <div className="text-center">
               <div className="text-slate-950 dark:text-white font-bold text-lg">0.001%</div>
-              <div className="text-slate-500 dark:text-slate-400 text-[11px]">Equilibrium Residual Norm</div>
+              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">Equilibrium Residual Norm</div>
             </div>
             <div className="text-center">
               <div className="text-slate-950 dark:text-white font-bold text-lg">240m+</div>
-              <div className="text-slate-500 dark:text-slate-400 text-[11px]">Clear Spans Engineered</div>
+              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">Clear Spans Engineered</div>
             </div>
             <div className="text-center">
               <div className="text-slate-950 dark:text-white font-bold text-lg">Eurocode 3 & IASS</div>
-              <div className="text-slate-500 dark:text-slate-400 text-[11px]">Code Verification Compliant</div>
+              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">Code Verification Compliant</div>
             </div>
             <div className="text-center">
               <div className="text-slate-950 dark:text-white font-bold text-lg">CUDA & Metal</div>
-              <div className="text-slate-500 dark:text-slate-400 text-[11px]">GPU Hardware Acceleration</div>
+              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">GPU Hardware Acceleration</div>
             </div>
           </div>
         </div>

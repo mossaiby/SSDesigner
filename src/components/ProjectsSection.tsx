@@ -11,7 +11,9 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
     projectsList, 
     mediaList, 
     navigateTo, 
-    openGalleryModal 
+    openGalleryModal,
+    openLeadModal,
+    isAdminLoggedIn
   } = useData();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -28,13 +30,13 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-700 dark:text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
               <span>Real-World Engineering Deployments</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-3">
               Structures Engineered with Our Solvers
             </h2>
-            <p className="text-base text-slate-700 dark:text-slate-300 font-normal">
+            <p className="text-base text-slate-800 dark:text-slate-300 font-normal leading-relaxed">
               From Olympic-class long-span sports stadia to deep-space deployable reflectors, explore structures engineered with our mathematical software.
             </p>
           </div>
@@ -45,10 +47,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-cyan-500 text-slate-950 font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 {cat}
@@ -59,17 +61,28 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
 
         {/* Project Cards Grid */}
         {filteredProjects.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 p-12 text-center max-w-2xl mx-auto">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Projects Published Yet</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-              Case studies, FEA models, clear spans, and erection photos published in the Admin Console will appear here.
+          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/30 p-12 text-center max-w-2xl mx-auto shadow-sm">
+            <h3 className="text-lg font-bold text-slate-950 dark:text-white mb-2">Real-World Case Studies</h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
+              {isAdminLoggedIn 
+                ? 'Case studies, FEA models, clear spans, and erection photos published in the Admin Console will appear here.'
+                : 'Case studies, finite-element models, and erection documentation are compiled regularly. Inquire with our engineering team for technical portfolios and project archives.'}
             </p>
-            <button
-              onClick={() => navigateTo({ view: 'admin' })}
-              className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
-            >
-              Add Project Case Study in Admin Console
-            </button>
+            {isAdminLoggedIn ? (
+              <button
+                onClick={() => navigateTo({ view: 'admin' })}
+                className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+              >
+                Add Project Case Study in Admin Console
+              </button>
+            ) : (
+              <button
+                onClick={() => openLeadModal({ inquiryType: 'Consulting / Engineering Partnership' })}
+                className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+              >
+                Inquire About Engineering Case Studies
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -111,7 +124,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
 
                   {/* Body Content */}
                   <div className="p-6">
-                    <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">
+                    <div className="flex items-center gap-2 text-xs font-mono text-slate-700 dark:text-slate-400 mb-2 font-medium">
                       <span className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         {proj.location}
@@ -123,24 +136,24 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
                     <h3 className="text-xl font-bold text-slate-950 dark:text-white mb-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-1">
                       {proj.title}
                     </h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mb-4 line-clamp-2">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 mb-4 line-clamp-2">
                       {proj.subtitle}
                     </p>
 
                     {/* Metric Badges */}
                     <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-xs font-mono mb-4">
                       <div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase">Clear Span</div>
+                        <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Clear Span</div>
                         <div className="font-semibold text-slate-900 dark:text-white truncate">{proj.span}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase">Saved Weight</div>
+                        <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Saved Weight</div>
                         <div className="font-semibold text-emerald-600 dark:text-emerald-400 truncate">{proj.steelWeightSaved}</div>
                       </div>
                     </div>
 
-                    <div className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
-                      <span className="text-cyan-600 dark:text-cyan-400 font-mono">Solution:</span> {proj.engineeringSolution}
+                    <div className="text-xs text-slate-700 dark:text-slate-400 line-clamp-2">
+                      <span className="text-cyan-700 dark:text-cyan-400 font-mono font-semibold">Solution:</span> {proj.engineeringSolution}
                     </div>
                   </div>
                 </div>

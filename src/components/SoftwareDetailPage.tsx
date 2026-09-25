@@ -271,33 +271,37 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
                 <h3 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Photo & Video Simulation Gallery
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Visual validation records, dynamic simulation clips, and high-resolution meshes. Click any asset to open with next / prev controls.
                 </p>
               </div>
 
-              <button
-                onClick={() => openGalleryModal(software.id, 'software', software.name)}
-                className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-500/30 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-1.5"
-              >
-                <Plus className="w-3 h-3" />
-                Manage Gallery
-              </button>
+              {can('manage_media') && (
+                <button
+                  onClick={() => openGalleryModal(software.id, 'software', software.name)}
+                  className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-500/30 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  Manage Gallery
+                </button>
+              )}
             </div>
 
             {softwareMedia.length === 0 ? (
-              <div className="p-8 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/20 text-center">
+              <div className="p-8 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/20 text-center shadow-xs">
                 <ImageIcon className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
-                <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-400 mb-1">
-                  Gallery initialized and ready for uploads
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1">
+                  Simulation & Validation Records
                 </h4>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto mb-4">
-                  Photos and video simulations can be uploaded anytime via the administrator panel.
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-sm mx-auto mb-4 leading-relaxed">
+                  {can('manage_media')
+                    ? 'Photos and video simulations can be uploaded anytime via the administrator console.'
+                    : 'High-resolution photographic validation records and dynamic simulation videos for this solver are currently being compiled.'}
                 </p>
                 {can('manage_media') && (
                   <button
                     onClick={() => openGalleryModal(software.id, 'software', software.name)}
-                    className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                    className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
                   >
                     Upload First Media Asset
                   </button>
@@ -377,25 +381,25 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
 
             <div className="space-y-4 text-xs font-sans">
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase">Solver Engine</span>
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase">Solver Engine</span>
                 <span className="font-semibold text-slate-900 dark:text-slate-200">{software.specs.solverType}</span>
               </div>
 
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase">Formulation</span>
-                <span className="text-slate-700 dark:text-slate-300">{software.specs.formulation}</span>
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase">Formulation</span>
+                <span className="text-slate-800 dark:text-slate-300">{software.specs.formulation}</span>
               </div>
 
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase">Tested Capacity</span>
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase">Tested Capacity</span>
                 <span className="font-mono text-cyan-700 dark:text-cyan-300 font-bold">{software.specs.maxNodesTested}</span>
               </div>
 
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase mb-1">Supported Elements</span>
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase mb-1">Supported Elements</span>
                 <div className="flex flex-wrap gap-1">
                   {software.specs.elementsSupported.map((elem, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[10px] text-slate-700 dark:text-slate-300">
+                    <span key={i} className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[10px] text-slate-800 dark:text-slate-300">
                       {elem}
                     </span>
                   ))}
@@ -403,10 +407,10 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
               </div>
 
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase mb-1">File I/O Interoperability</span>
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase mb-1">File I/O Interoperability</span>
                 <div className="flex flex-wrap gap-1">
                   {software.specs.fileIOFormats.map((fmt, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[10px] text-cyan-700 dark:text-cyan-400">
+                    <span key={i} className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[10px] text-cyan-700 dark:text-cyan-400 font-medium">
                       {fmt}
                     </span>
                   ))}
@@ -414,13 +418,13 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
               </div>
 
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase">Hardware Acceleration</span>
-                <span className="text-slate-700 dark:text-slate-300">{software.specs.hardwareAcceleration}</span>
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase">Hardware Acceleration</span>
+                <span className="text-slate-800 dark:text-slate-300">{software.specs.hardwareAcceleration}</span>
               </div>
 
               <div>
-                <span className="block font-mono text-[10px] text-slate-400 uppercase mb-1">Engineering Code Compliance</span>
-                <ul className="space-y-1 text-[11px] text-slate-600 dark:text-slate-300">
+                <span className="block font-mono text-[10px] text-slate-700 dark:text-slate-400 font-semibold uppercase mb-1">Engineering Code Compliance</span>
+                <ul className="space-y-1 text-[11px] text-slate-700 dark:text-slate-300">
                   {software.specs.complianceStandards.map((std, i) => (
                     <li key={i} className="flex items-center gap-1.5">
                       <span className="w-1 h-1 rounded-full bg-cyan-500" />

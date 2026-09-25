@@ -406,27 +406,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return null;
   });
 
-  const [allowDemoQuickLogin, setAllowDemoQuickLogin] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.ALLOW_DEMO);
-      return saved ? saved === 'true' : true;
-    } catch {
-      return true;
-    }
-  });
-
-  const toggleAllowDemoQuickLogin = () => {
-    setAllowDemoQuickLogin(prev => {
-      const next = !prev;
-      try {
-        localStorage.setItem(STORAGE_KEYS.ALLOW_DEMO, String(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
-  };
-
   const isAdminLoggedIn = Boolean(currentUser);
 
   useEffect(() => {
@@ -473,19 +452,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addAudit('LOGOUT', `User ${currentUser.name} logged out.`);
     }
     setCurrentUser(null);
-  };
-
-  const quickLoginAs = (role: UserRole) => {
-    const user = adminUsers.find(u => u.role === role) || {
-      id: `usr_${role}`,
-      name: role === 'administrator' ? 'Lead Admin' : 'Lead Engineer',
-      email: 'admin@ssdesigner.ir',
-      role,
-      lastLogin: new Date().toISOString(),
-    };
-    setCurrentUser(user);
-    resetLoginAttempts();
-    addAudit('QUICK_LOGIN', `Admin login activated as [${role}] - ${user.name}`);
   };
 
   const can = (action: PermissionAction): boolean => {
@@ -854,11 +820,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAdminLoggedIn,
         login,
         logout,
-        quickLoginAs,
         can,
         changeUserPassword,
-        allowDemoQuickLogin,
-        toggleAllowDemoQuickLogin,
         addSoftware,
         updateSoftware,
         deleteSoftware,

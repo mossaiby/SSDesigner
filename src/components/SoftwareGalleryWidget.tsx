@@ -17,24 +17,34 @@ import { SoftwareItem } from '../types';
 import { INITIAL_SOFTWARE_ITEMS } from '../data/initialData';
 
 export const SoftwareGalleryWidget: React.FC = () => {
-  const { softwareList, navigateTo, openLeadModal, openGalleryModal } = useData();
+  const { softwareList, navigateTo, openLeadModal, openGalleryModal, isAdminLoggedIn } = useData();
 
   if (!Array.isArray(softwareList) || softwareList.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 p-8 sm:p-12 text-center max-w-3xl mx-auto backdrop-blur-sm shadow-sm">
+      <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 p-8 sm:p-12 text-center max-w-3xl mx-auto backdrop-blur-sm shadow-sm">
         <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-cyan-600 dark:text-cyan-400">
           <Cpu className="w-6 h-6" />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Computational Solvers Matrix</h3>
-        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto mb-6 leading-relaxed">
-          No calculation engines are currently published. Structural engineers and operators can configure, benchmark, and publish proprietary finite element solvers in the Admin Console.
+        <h3 className="text-xl font-bold text-slate-950 dark:text-white mb-2">Computational Solvers Matrix</h3>
+        <p className="text-sm text-slate-700 dark:text-slate-300 max-w-lg mx-auto mb-6 leading-relaxed">
+          {isAdminLoggedIn
+            ? 'No calculation engines are currently published. Structural engineers and operators can configure, benchmark, and publish proprietary finite element solvers in the Admin Console.'
+            : 'Explore our specialized dynamic relaxation, non-linear FEM, and parametric space structure calculation engines. Contact our engineering team for customized benchmark runs and solver licenses.'}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
+          {isAdminLoggedIn && (
+            <button
+              onClick={() => navigateTo({ view: 'admin' })}
+              className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+            >
+              Manage Software in Admin Console
+            </button>
+          )}
           <button
-            onClick={() => navigateTo({ view: 'admin' })}
+            onClick={() => openLeadModal({ inquiryType: 'Software Demo' })}
             className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
           >
-            Manage Software in Admin Console
+            Request Technical Evaluation
           </button>
           <button
             onClick={() => openLeadModal({ inquiryType: 'Consulting / Engineering Partnership' })}
@@ -307,21 +317,21 @@ export const SoftwareGalleryWidget: React.FC = () => {
 
               {/* Card Body */}
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-2 leading-relaxed">
                   {software.tagline || ''}
                 </p>
 
                 {/* Technical specs teaser */}
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5 text-[11px] font-mono">
-                  <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 font-medium">
                     <span>Capacity:</span>
-                    <span className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[140px]">
+                    <span className="text-slate-900 dark:text-slate-200 font-semibold truncate max-w-[140px]">
                       {itemSpecs.maxNodesTested || '100,000+ Nodes'}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 font-medium">
                     <span>Acceleration:</span>
-                    <span className="text-cyan-600 dark:text-cyan-400 font-medium">
+                    <span className="text-cyan-700 dark:text-cyan-400 font-semibold">
                       CUDA / Metal
                     </span>
                   </div>

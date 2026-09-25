@@ -12,38 +12,50 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
     mediaList, 
     navigateTo, 
     openGalleryModal, 
-    openLeadModal 
+    openLeadModal,
+    isAdminLoggedIn
   } = useData();
 
   return (
-    <section className={`py-16 sm:py-24 bg-slate-50 dark:bg-slate-950 transition-colors ${isStandalonePage ? 'min-h-screen' : 'border-b border-slate-200 dark:border-slate-900'}`}>
+    <section className={`py-16 sm:py-24 bg-slate-100/50 dark:bg-slate-950 transition-colors ${isStandalonePage ? 'min-h-screen' : 'border-b border-slate-200 dark:border-slate-900'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-700 dark:text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
             <span>Engineering Calculation Engines</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-4">
             Specialized Software for Spatial Systems
           </h2>
-          <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+          <p className="text-base text-slate-800 dark:text-slate-300 leading-relaxed font-normal">
             Each solver is purpose-engineered to address geometric nonlinearities, kinematic bifurcations, and pre-stress equilibrium across space structures.
           </p>
         </div>
 
         {/* Software Cards Grid */}
         {softwareList.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 p-12 text-center max-w-2xl mx-auto">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Computational Solvers Published</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-              Engineering solvers, dynamic relaxation tools, and CAD/CAM links configured in the database will be presented here.
+          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/30 p-12 text-center max-w-2xl mx-auto shadow-sm">
+            <h3 className="text-lg font-bold text-slate-950 dark:text-white mb-2">Computational Solvers Matrix</h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
+              {isAdminLoggedIn 
+                ? 'Engineering solvers, dynamic relaxation tools, and CAD/CAM links configured in the database will be presented here.'
+                : 'Our proprietary computational engines for form-finding, dynamic relaxation, and cable-strut equilibrium are updated regularly. Contact our team to request an evaluation build or custom solver demo.'}
             </p>
-            <button
-              onClick={() => navigateTo({ view: 'admin' })}
-              className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
-            >
-              Add Solver in Admin Console
-            </button>
+            {isAdminLoggedIn ? (
+              <button
+                onClick={() => navigateTo({ view: 'admin' })}
+                className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+              >
+                Add Solver in Admin Console
+              </button>
+            ) : (
+              <button
+                onClick={() => openLeadModal({ inquiryType: 'Software Demo' })}
+                className="px-5 py-2.5 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-md cursor-pointer"
+              >
+                Request Technical Evaluation
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -58,10 +70,10 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
                 <div>
                   {/* Category & Version */}
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs font-mono">
-                    <span className="text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40 px-2.5 py-0.5 rounded border border-cyan-200 dark:border-cyan-900/40">
+                    <span className="text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40 px-2.5 py-0.5 rounded border border-cyan-200 dark:border-cyan-900/40 font-medium">
                       {soft.category}
                     </span>
-                    <span className="text-slate-500 dark:text-slate-400">
+                    <span className="text-slate-700 dark:text-slate-400 font-medium">
                       v{soft.version}
                     </span>
                   </div>
@@ -70,7 +82,7 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
                   <h3 className="text-2xl font-bold text-slate-950 dark:text-white mb-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                     {soft.name}
                   </h3>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-300 mb-4">
                     {soft.tagline}
                   </p>
 
@@ -96,7 +108,7 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
                   {/* Key Capabilities Bullet Points */}
                   <div className="space-y-2 mb-6">
                     {(soft?.keyFeatures || []).slice(0, 3).map((feat, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+                      <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-800 dark:text-slate-300">
                         <Check className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </div>
@@ -104,7 +116,7 @@ export const SoftwareSection: React.FC<SoftwareSectionProps> = ({ isStandalonePa
                   </div>
 
                   {/* Technical Specifications Spec Pill */}
-                  <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 mb-6 font-mono text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
+                  <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 mb-6 font-mono text-[11px] text-slate-700 dark:text-slate-300 space-y-1">
                     <div><span className="text-cyan-700 dark:text-cyan-400 font-semibold">Solver:</span> {soft?.specs?.solverType || 'Dynamic Relaxation'}</div>
                     <div><span className="text-cyan-700 dark:text-cyan-400 font-semibold">Capacity:</span> {soft?.specs?.maxNodesTested || '100,000+ Spatial Nodes'}</div>
                   </div>

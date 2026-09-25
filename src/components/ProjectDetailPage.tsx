@@ -174,33 +174,37 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
                 <h3 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Project Gallery: Photos & Verification Footage
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Construction phases, site photography, and dynamic FEA simulation videos. Click to browse with next / prev controls.
                 </p>
               </div>
 
-              <button
-                onClick={() => openGalleryModal(project.id, 'project', project.title)}
-                className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-500/30 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-1.5"
-              >
-                <Plus className="w-3 h-3" />
-                Manage Media
-              </button>
+              {can('manage_media') && (
+                <button
+                  onClick={() => openGalleryModal(project.id, 'project', project.title)}
+                  className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-500/30 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  Manage Media
+                </button>
+              )}
             </div>
 
             {projectMedia.length === 0 ? (
-              <div className="p-8 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/20 text-center">
+              <div className="p-8 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/20 text-center shadow-xs">
                 <ImageIcon className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
-                <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-400 mb-1">
-                  Project gallery initialized and awaiting media assets
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1">
+                  Case Study Media Verification
                 </h4>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto mb-4">
-                  Add photos, architectural photography, and simulation videos through the admin account.
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-sm mx-auto mb-4 leading-relaxed">
+                  {can('manage_media')
+                    ? 'Add photos, architectural photography, and simulation videos through the admin console.'
+                    : 'Site photography, erection phase documentation, and FEA verification footage for this case study will be available soon.'}
                 </p>
                 {can('manage_media') && (
                   <button
                     onClick={() => openGalleryModal(project.id, 'project', project.title)}
-                    className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                    className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
                   >
                     Upload First Media Asset
                   </button>
@@ -256,7 +260,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
 
             <div className="space-y-4 text-xs font-mono">
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase">Clear Span</div>
+                <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Clear Span</div>
                 <div className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">{project.span}</div>
               </div>
 
@@ -267,22 +271,22 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] text-slate-400 uppercase">Spatial Nodes</div>
+                  <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Spatial Nodes</div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">{project.nodeCount}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] text-slate-400 uppercase">Members</div>
+                  <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Members</div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">{project.memberCount}</div>
                 </div>
               </div>
 
               <div>
-                <div className="text-[10px] text-slate-400 uppercase mb-1">Structural System</div>
+                <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold mb-1">Structural System</div>
                 <div className="text-xs text-slate-800 dark:text-slate-300 font-sans">{project.structuralSystem}</div>
               </div>
 
               <div>
-                <div className="text-[10px] text-slate-400 uppercase mb-1">Authority / Lead Engineer</div>
+                <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold mb-1">Authority / Lead Engineer</div>
                 <div className="text-xs text-slate-800 dark:text-slate-300 font-sans">{project.clientOrEngineer}</div>
               </div>
             </div>

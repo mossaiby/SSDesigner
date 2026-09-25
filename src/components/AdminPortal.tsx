@@ -199,10 +199,10 @@ export const AdminPortal: React.FC = () => {
               <Lock className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">
+              <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                 Engineering Admin Portal
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-400">
                 Authorized Personnel & System Operators Only
               </p>
             </div>
@@ -227,7 +227,7 @@ export const AdminPortal: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">
+                <label className="block text-xs font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">
                   Operator Email
                 </label>
                 <input
@@ -236,12 +236,12 @@ export const AdminPortal: React.FC = () => {
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
                   placeholder="operator@domain.com"
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">
+                <label className="block text-xs font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">
                   Security Passkey
                 </label>
                 <input
@@ -250,14 +250,14 @@ export const AdminPortal: React.FC = () => {
                   value={loginPassword}
                   onChange={e => setLoginPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmittingLogin}
-                className="w-full py-2.5 px-4 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors disabled:opacity-50"
+                className="w-full py-2.5 px-4 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
               >
                 {isSubmittingLogin ? 'Authenticating...' : 'Authenticate Operator'}
               </button>
@@ -265,12 +265,12 @@ export const AdminPortal: React.FC = () => {
           )}
 
           {/* Secure Operator Notice */}
-          <div className="pt-5 border-t border-slate-800 text-center space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="pt-5 border-t border-slate-200 dark:border-slate-800 text-center space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-400">
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               <span>Restricted Engineering Console · 256-Bit SSL</span>
             </div>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
+            <p className="text-[11px] text-slate-700 dark:text-slate-400 leading-relaxed">
               Authorized operators only. All login activities and IP sessions are recorded in the security audit trail.
             </p>
           </div>
@@ -291,15 +291,15 @@ export const AdminPortal: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold text-white tracking-tight">
+                <h1 className="text-base font-bold text-slate-950 dark:text-white tracking-tight">
                   SSDesigner Master Admin Console
                 </h1>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/40">
                   {currentUser?.role}
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
-                Logged in as <span className="text-slate-200">{currentUser?.name}</span> ({currentUser?.email})
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                Logged in as <span className="text-slate-900 dark:text-slate-200 font-semibold">{currentUser?.name}</span> ({currentUser?.email})
               </p>
             </div>
           </div>
@@ -307,13 +307,13 @@ export const AdminPortal: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigateTo({ view: 'home' })}
-              className="px-3 py-1.5 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="px-3 py-1.5 text-xs text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
               View Public Website
             </button>
             <button
               onClick={logout}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-rose-400 hover:text-rose-300 rounded-lg hover:bg-rose-950/40 border border-rose-900/40 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 transition-colors cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
@@ -322,25 +322,25 @@ export const AdminPortal: React.FC = () => {
         </div>
 
         {/* Database Engine Status Strip */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl mb-4 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl mb-4 text-xs shadow-xs">
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>{dbStatus?.engine || 'Database Persistence (Active)'}</span>
             </span>
-            <span className="text-slate-700">|</span>
-            <span className="text-slate-400 font-mono text-[11px]">
-              Database: <span className="text-cyan-400">{dbStatus?.database || 'ssdesigner_db'}</span>
+            <span className="text-slate-300 dark:text-slate-700">|</span>
+            <span className="text-slate-700 dark:text-slate-400 font-mono text-[11px]">
+              Database: <span className="text-cyan-700 dark:text-cyan-400 font-semibold">{dbStatus?.database || 'ssdesigner_db'}</span>
             </span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-slate-400 font-mono text-[11px] hidden md:inline">
+            <span className="text-slate-700 dark:text-slate-400 font-mono text-[11px] hidden md:inline">
               Records: {softwareList.length} Solvers · {projectsList.length} Projects · {blogPosts.length} Articles · {mediaList.length} Media · {leads.length} Leads
             </span>
             <button
               onClick={() => refreshFromDb()}
-              className="px-2.5 py-1 text-[11px] font-mono rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-[11px] font-mono rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-200 dark:border-transparent"
               title="Synchronize state from database"
             >
               <RefreshCw className="w-3 h-3" />
@@ -350,11 +350,11 @@ export const AdminPortal: React.FC = () => {
         </div>
 
         {/* Tab Navigation Navigation Bar */}
-        <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-900/80 border border-slate-800 rounded-xl mb-8 overflow-x-auto text-xs">
+        <div className="flex flex-wrap items-center gap-2 p-1.5 bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl mb-8 overflow-x-auto text-xs shadow-xs">
           <button
             onClick={() => setActiveTab('software')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'software' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === 'software' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -363,8 +363,8 @@ export const AdminPortal: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('projects')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'projects' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === 'projects' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
@@ -373,8 +373,8 @@ export const AdminPortal: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('media')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'media' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === 'media' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <ImageIcon className="w-3.5 h-3.5" />
@@ -383,8 +383,8 @@ export const AdminPortal: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('blog')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'blog' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === 'blog' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
@@ -393,8 +393,8 @@ export const AdminPortal: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('leads')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'leads' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === 'leads' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -404,8 +404,8 @@ export const AdminPortal: React.FC = () => {
           {can('view_audit_logs') && (
             <button
               onClick={() => setActiveTab('audit')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-                activeTab === 'audit' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                activeTab === 'audit' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               <Activity className="w-3.5 h-3.5" />
@@ -416,8 +416,8 @@ export const AdminPortal: React.FC = () => {
           {can('system_reset') && (
             <button
               onClick={() => setActiveTab('system')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-                activeTab === 'system' ? 'bg-cyan-500 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                activeTab === 'system' ? 'bg-cyan-500 text-slate-950 font-semibold shadow-xs' : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               <RefreshCw className="w-3.5 h-3.5" />
@@ -431,10 +431,10 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Engineering Software Profiles
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Manage spatial structure calculation engines, solvers, and mathematical specifications.
                 </p>
               </div>
@@ -442,7 +442,7 @@ export const AdminPortal: React.FC = () => {
               {can('manage_software') && (
                 <button
                   onClick={() => setIsAddingSoftware(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-sm cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   Add Software Profile
@@ -451,16 +451,16 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {softwareList.length === 0 ? (
-              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
-                <Layers className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
-                <h3 className="text-base font-bold text-white mb-1">No Software Profiles in Database</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
-                  All sample data has been cleared. Add your first calculation engine or finite element solver and it will be saved directly into the MySQL database.
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 shadow-sm">
+                <Layers className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mx-auto mb-3 opacity-70" />
+                <h3 className="text-base font-bold text-slate-950 dark:text-white mb-1">No Software Profiles in Database</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-md mx-auto mb-4 leading-relaxed">
+                  All sample data has been cleared. Add your first calculation engine or finite element solver and it will be saved directly into the database.
                 </p>
                 {can('manage_software') && (
                   <button
                     onClick={() => setIsAddingSoftware(true)}
-                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer shadow-sm"
                   >
                     + Add Software Profile
                   </button>
@@ -473,42 +473,42 @@ export const AdminPortal: React.FC = () => {
                   return (
                     <div
                       key={soft.id}
-                      className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col justify-between"
+                      className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 flex flex-col justify-between shadow-sm"
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
+                          <span className="text-[11px] font-mono text-cyan-700 dark:text-cyan-400 uppercase tracking-wider font-semibold">
                             {soft.category} · v{soft.version}
                           </span>
-                          <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                          <span className="text-[11px] font-mono text-slate-700 dark:text-slate-400 bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
                             {mediaCount} Media Assets
                           </span>
                         </div>
 
-                        <h3 className="text-lg font-bold text-white mb-1">
+                        <h3 className="text-lg font-bold text-slate-950 dark:text-white mb-1">
                           {soft.name}
                         </h3>
-                        <p className="text-xs text-slate-300 font-medium mb-3">
+                        <p className="text-xs text-slate-800 dark:text-slate-300 font-medium mb-3">
                           {soft.tagline}
                         </p>
-                        <p className="text-xs text-slate-400 line-clamp-3 mb-4 leading-relaxed">
+                        <p className="text-xs text-slate-700 dark:text-slate-400 line-clamp-3 mb-4 leading-relaxed">
                           {soft.description}
                         </p>
 
-                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px]">
-                          <div className="text-slate-400 font-mono">
-                            <span className="text-cyan-400 font-semibold">Solver:</span> {soft.specs.solverType}
+                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 text-[11px]">
+                          <div className="text-slate-700 dark:text-slate-400 font-mono">
+                            <span className="text-cyan-700 dark:text-cyan-400 font-semibold">Solver:</span> {soft.specs.solverType}
                           </div>
-                          <div className="text-slate-400 font-mono">
-                            <span className="text-cyan-400 font-semibold">Capacity:</span> {soft.specs.maxNodesTested}
+                          <div className="text-slate-700 dark:text-slate-400 font-mono">
+                            <span className="text-cyan-700 dark:text-cyan-400 font-semibold">Capacity:</span> {soft.specs.maxNodesTested}
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 text-xs">
                         <button
                           onClick={() => navigateTo({ view: 'software', id: soft.id })}
-                          className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono cursor-pointer"
+                          className="text-cyan-600 dark:text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono cursor-pointer font-medium"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           Preview Showcase Page
@@ -518,7 +518,7 @@ export const AdminPortal: React.FC = () => {
                           {can('manage_software') && (
                             <button
                               onClick={() => setEditingSoftware(soft)}
-                              className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                              className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                               title="Edit Profile"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -527,7 +527,7 @@ export const AdminPortal: React.FC = () => {
                           {can('manage_software') && (
                             <button
                               onClick={() => setConfirmDelete({ type: 'software', id: soft.id, name: soft.name })}
-                              className="p-1.5 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors cursor-pointer"
+                              className="p-1.5 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                               title="Delete Software"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -548,10 +548,10 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Real-World Space Structure Projects
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Case studies, clear spans, client endorsements, and structural solutions.
                 </p>
               </div>
@@ -559,7 +559,7 @@ export const AdminPortal: React.FC = () => {
               {can('manage_projects') && (
                 <button
                   onClick={() => setIsAddingProject(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-sm cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   Add Project Case Study
@@ -568,16 +568,16 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {projectsList.length === 0 ? (
-              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
-                <Building2 className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
-                <h3 className="text-base font-bold text-white mb-1">No Projects in Database</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 shadow-sm">
+                <Building2 className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mx-auto mb-3 opacity-70" />
+                <h3 className="text-base font-bold text-slate-950 dark:text-white mb-1">No Projects in Database</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-md mx-auto mb-4 leading-relaxed">
                   Document your architectural case studies, clear spans, and finite element models. All projects are saved permanently in the database.
                 </p>
                 {can('manage_projects') && (
                   <button
                     onClick={() => setIsAddingProject(true)}
-                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer shadow-sm"
                   >
                     + Add Project Case Study
                   </button>
@@ -590,42 +590,42 @@ export const AdminPortal: React.FC = () => {
                   return (
                     <div
                       key={proj.id}
-                      className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col justify-between"
+                      className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 flex flex-col justify-between shadow-sm"
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
+                          <span className="text-[11px] font-mono text-cyan-700 dark:text-cyan-400 uppercase tracking-wider font-semibold">
                             {proj.category} · {proj.year}
                           </span>
-                          <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                          <span className="text-[11px] font-mono text-slate-700 dark:text-slate-400 bg-slate-100 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
                             {mediaCount} Media Assets
                           </span>
                         </div>
 
-                        <h3 className="text-lg font-bold text-white mb-1">
+                        <h3 className="text-lg font-bold text-slate-950 dark:text-white mb-1">
                           {proj.title}
                         </h3>
-                        <p className="text-xs text-slate-300 font-medium mb-3">
+                        <p className="text-xs text-slate-800 dark:text-slate-300 font-medium mb-3">
                           {proj.location} · {proj.span}
                         </p>
 
-                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px]">
-                          <div className="text-slate-400">
-                            <span className="text-cyan-400 font-mono font-semibold">Structural System:</span> {proj.structuralSystem}
+                        <div className="space-y-2 mb-4 p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 text-[11px]">
+                          <div className="text-slate-700 dark:text-slate-400">
+                            <span className="text-cyan-700 dark:text-cyan-400 font-mono font-semibold">Structural System:</span> {proj.structuralSystem}
                           </div>
-                          <div className="text-slate-400">
-                            <span className="text-cyan-400 font-mono font-semibold">Lead Client:</span> {proj.clientOrEngineer}
+                          <div className="text-slate-700 dark:text-slate-400">
+                            <span className="text-cyan-700 dark:text-cyan-400 font-mono font-semibold">Lead Client:</span> {proj.clientOrEngineer}
                           </div>
-                          <div className="text-slate-400">
-                            <span className="text-emerald-400 font-mono font-semibold">Material Saved:</span> {proj.steelWeightSaved}
+                          <div className="text-slate-700 dark:text-slate-400">
+                            <span className="text-emerald-700 dark:text-emerald-400 font-mono font-semibold">Material Saved:</span> {proj.steelWeightSaved}
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 text-xs">
                         <button
                           onClick={() => navigateTo({ view: 'project', id: proj.id })}
-                          className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono cursor-pointer"
+                          className="text-cyan-600 dark:text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono cursor-pointer font-medium"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           Preview Case Study Page
@@ -635,7 +635,7 @@ export const AdminPortal: React.FC = () => {
                           {can('manage_projects') && (
                             <button
                               onClick={() => setEditingProject(proj)}
-                              className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                              className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                               title="Edit Project"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -644,7 +644,7 @@ export const AdminPortal: React.FC = () => {
                           {can('manage_projects') && (
                             <button
                               onClick={() => setConfirmDelete({ type: 'project', id: proj.id, name: proj.title })}
-                              className="p-1.5 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors cursor-pointer"
+                              className="p-1.5 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                               title="Delete Project"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -665,10 +665,10 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Central Media & Gallery Repository
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Upload, inspect, and organize photo assets and video simulations for all software and projects.
                 </p>
               </div>
@@ -676,7 +676,7 @@ export const AdminPortal: React.FC = () => {
               {can('manage_media') && (
                 <button
                   onClick={() => setIsAddingMedia(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-sm cursor-pointer"
                 >
                   <UploadCloud className="w-4 h-4" />
                   Upload Photo / Video
@@ -685,13 +685,13 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {/* Media Filter Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
               <div className="flex items-center gap-2">
-                <span className="text-slate-400 font-mono text-[11px]">Filter by Target:</span>
+                <span className="text-slate-700 dark:text-slate-400 font-mono text-[11px] font-medium">Filter by Target:</span>
                 <select
                   value={mediaTargetFilter}
                   onChange={e => setMediaTargetFilter(e.target.value)}
-                  className="px-2.5 py-1 text-xs rounded-lg bg-slate-950 border border-slate-700 text-slate-200"
+                  className="px-2.5 py-1 text-xs rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-200"
                 >
                   <option value="all">All Targets ({mediaList.length})</option>
                   <optgroup label="Software Packages">
@@ -707,7 +707,7 @@ export const AdminPortal: React.FC = () => {
                 </select>
               </div>
 
-              <div className="text-slate-500 font-mono text-[11px]">
+              <div className="text-slate-700 dark:text-slate-400 font-mono text-[11px]">
                 Showing {
                   mediaList.filter(m => {
                     if (mediaTargetFilter === 'all') return true;
@@ -720,16 +720,16 @@ export const AdminPortal: React.FC = () => {
 
             {/* Media Grid */}
             {mediaList.length === 0 ? (
-              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
-                <UploadCloud className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
-                <h3 className="text-base font-bold text-white mb-1">No Media Assets in Database</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 shadow-sm">
+                <UploadCloud className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mx-auto mb-3 opacity-70" />
+                <h3 className="text-base font-bold text-slate-950 dark:text-white mb-1">No Media Assets in Database</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-md mx-auto mb-4 leading-relaxed">
                   Upload CAD screenshots, FEA color stress contours, and site erection photography to populate your project and solver galleries.
                 </p>
                 {can('manage_media') && (
                   <button
                     onClick={() => setIsAddingMedia(true)}
-                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer shadow-sm"
                   >
                     + Upload Photo / Video
                   </button>
@@ -751,7 +751,7 @@ export const AdminPortal: React.FC = () => {
                   return (
                     <div
                       key={item.id}
-                      className="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden flex flex-col justify-between"
+                      className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 overflow-hidden flex flex-col justify-between shadow-sm"
                     >
                       <div 
                         onClick={() => openMediaLightbox(item)}
@@ -773,31 +773,31 @@ export const AdminPortal: React.FC = () => {
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
                         <div>
-                          <div className="text-[10px] font-mono text-cyan-400 mb-1 truncate">
+                          <div className="text-[10px] font-mono text-cyan-700 dark:text-cyan-400 mb-1 truncate font-medium">
                             Attached to: {targetName}
                           </div>
-                          <h4 className="text-sm font-semibold text-white truncate mb-1">
+                          <h4 className="text-sm font-semibold text-slate-950 dark:text-white truncate mb-1">
                             {item.title}
                           </h4>
-                          <p className="text-xs text-slate-400 line-clamp-2 mb-2">
+                          <p className="text-xs text-slate-700 dark:text-slate-400 line-clamp-2 mb-2">
                             {item.caption}
                           </p>
                           {item.technicalNote && (
-                            <p className="text-[11px] font-mono text-slate-400 bg-slate-950 p-1.5 rounded border border-slate-800/80 truncate mb-2">
+                            <p className="text-[11px] font-mono text-slate-700 dark:text-slate-400 bg-slate-100 dark:bg-slate-950 p-1.5 rounded border border-slate-200 dark:border-slate-800/80 truncate mb-2">
                               {item.technicalNote}
                             </p>
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
-                          <span className="text-[11px] font-mono text-slate-500">
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800/80 text-xs">
+                          <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400">
                             {item.createdAt}
                           </span>
 
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => openMediaLightbox(item)}
-                              className="p-1 text-cyan-400 hover:text-cyan-300"
+                              className="p-1 text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 cursor-pointer"
                               title="Inspect Full"
                             >
                               <Eye className="w-3.5 h-3.5" />
@@ -805,7 +805,7 @@ export const AdminPortal: React.FC = () => {
                             {can('manage_media') && (
                               <button
                                 onClick={() => setEditingMedia(item)}
-                                className="p-1 text-slate-400 hover:text-white"
+                                className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white cursor-pointer"
                                 title="Edit Metadata"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
@@ -814,7 +814,7 @@ export const AdminPortal: React.FC = () => {
                             {can('manage_media') && (
                               <button
                                 onClick={() => setConfirmDelete({ type: 'media', id: item.id, name: item.title })}
-                                className="p-1 text-rose-400 hover:text-rose-300"
+                                className="p-1 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 cursor-pointer"
                                 title="Delete Media"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -836,10 +836,10 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Industry Insights & Technical Publications
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Publish whitepapers, release notes, and computational research papers.
                 </p>
               </div>
@@ -847,7 +847,7 @@ export const AdminPortal: React.FC = () => {
               {can('manage_blog') && (
                 <button
                   onClick={() => setIsAddingBlog(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-sm cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   Publish Article
@@ -856,16 +856,16 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {blogPosts.length === 0 ? (
-              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
-                <FileText className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
-                <h3 className="text-base font-bold text-white mb-1">No Technical Articles in Database</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 shadow-sm">
+                <FileText className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mx-auto mb-3 opacity-70" />
+                <h3 className="text-base font-bold text-slate-950 dark:text-white mb-1">No Technical Articles in Database</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-md mx-auto mb-4 leading-relaxed">
                   Publish dynamic relaxation formulations, numerical convergence studies, and structural engineering insights.
                 </p>
                 {can('manage_blog') && (
                   <button
                     onClick={() => setIsAddingBlog(true)}
-                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer"
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors cursor-pointer shadow-sm"
                   >
                     + Publish Article
                   </button>
@@ -876,21 +876,21 @@ export const AdminPortal: React.FC = () => {
               {blogPosts.map(post => (
                 <div
                   key={post.id}
-                  className="p-6 rounded-2xl border border-slate-800 bg-slate-900/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
                 >
                   <div className="max-w-3xl">
-                    <div className="flex items-center gap-2 text-xs font-mono text-slate-400 mb-1">
-                      <span className="text-cyan-400">{post.category}</span>
+                    <div className="flex items-center gap-2 text-xs font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">
+                      <span className="text-cyan-700 dark:text-cyan-400">{post.category}</span>
                       <span>·</span>
                       <span>{post.publishedAt}</span>
                       <span>·</span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="text-base font-bold text-white hover:text-cyan-400 transition-colors">
+                    <h3 className="text-base font-bold text-slate-950 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
                       {post.title}
                     </h3>
-                    <p className="text-xs text-slate-400 line-clamp-2 mt-1">
+                    <p className="text-xs text-slate-700 dark:text-slate-400 line-clamp-2 mt-1">
                       {post.excerpt}
                     </p>
                   </div>
@@ -898,14 +898,14 @@ export const AdminPortal: React.FC = () => {
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => navigateTo({ view: 'blog', id: post.id })}
-                      className="px-3 py-1.5 text-xs text-cyan-400 border border-slate-700 rounded-lg hover:border-cyan-500 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 text-xs text-cyan-700 dark:text-cyan-400 border border-slate-300 dark:border-slate-700 rounded-lg hover:border-cyan-500 transition-colors cursor-pointer font-medium"
                     >
                       Read Post
                     </button>
                     {can('manage_blog') && (
                       <button
                         onClick={() => setEditingBlog(post)}
-                        className="p-2 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                        className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
@@ -913,7 +913,7 @@ export const AdminPortal: React.FC = () => {
                     {can('manage_blog') && (
                       <button
                         onClick={() => setConfirmDelete({ type: 'blog', id: post.id, name: post.title })}
-                        className="p-2 text-rose-400 hover:text-rose-300 rounded hover:bg-rose-950/40 transition-colors cursor-pointer"
+                        className="p-2 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -931,10 +931,10 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   Lead Inquiries & Inbound Opportunities
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400">
                   Structural engineers, aerospace analysts, and universities requesting demos or quotes.
                 </p>
               </div>
@@ -950,7 +950,7 @@ export const AdminPortal: React.FC = () => {
                   a.download = `aerospatial_leads_${new Date().toISOString().substring(0, 10)}.csv`;
                   a.click();
                 }}
-                className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
+                className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:border-slate-400 transition-colors shadow-xs cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 Export CSV
@@ -958,17 +958,17 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {leads.length === 0 ? (
-              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
-                <Users className="w-10 h-10 text-cyan-400 mx-auto mb-3 opacity-60" />
-                <h3 className="text-base font-bold text-white mb-1">No Inbound Inquiries Yet</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto">
+              <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/40 shadow-sm">
+                <Users className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mx-auto mb-3 opacity-70" />
+                <h3 className="text-base font-bold text-slate-950 dark:text-white mb-1">No Inbound Inquiries Yet</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
                   Client inquiries, demo requests, and consulting messages submitted from the public contact forms will be automatically captured into the database and shown here.
                 </p>
               </div>
             ) : (
-            <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase">
+                <thead className="bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 font-mono text-[11px] uppercase">
                   <tr>
                     <th className="py-3 px-4">Contact</th>
                     <th className="py-3 px-4">Organization & Role</th>
@@ -979,28 +979,28 @@ export const AdminPortal: React.FC = () => {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800 text-slate-300">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-300">
                   {leads.map(lead => (
-                    <tr key={lead.id} className="hover:bg-slate-800/40 transition-colors">
+                    <tr key={lead.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                       <td className="py-3 px-4">
-                        <div className="font-semibold text-white">{lead.name}</div>
-                        <div className="font-mono text-cyan-400 text-[11px]">{lead.email}</div>
+                        <div className="font-semibold text-slate-950 dark:text-white">{lead.name}</div>
+                        <div className="font-mono text-cyan-700 dark:text-cyan-400 text-[11px] font-medium">{lead.email}</div>
                       </td>
                       <td className="py-3 px-4">
-                        <div>{lead.organization}</div>
-                        <div className="text-slate-500 text-[11px]">{lead.role}</div>
+                        <div className="font-medium text-slate-900 dark:text-slate-200">{lead.organization}</div>
+                        <div className="text-slate-600 dark:text-slate-400 text-[11px]">{lead.role}</div>
                       </td>
                       <td className="py-3 px-4 font-mono text-[11px]">
                         {lead.inquiryType}
                       </td>
-                      <td className="py-3 px-4 text-slate-200">
+                      <td className="py-3 px-4 text-slate-900 dark:text-slate-200">
                         {lead.softwareInterest}
                       </td>
                       <td className="py-3 px-4">
                         <select
                           value={lead.status}
                           onChange={e => updateLeadStatus(lead.id, e.target.value as any)}
-                          className="px-2 py-1 text-xs rounded bg-slate-950 border border-slate-700 text-slate-200"
+                          className="px-2 py-1 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-200 cursor-pointer"
                         >
                           <option value="New">New</option>
                           <option value="Contacted">Contacted</option>
@@ -1008,14 +1008,14 @@ export const AdminPortal: React.FC = () => {
                           <option value="Archived">Archived</option>
                         </select>
                       </td>
-                      <td className="py-3 px-4 font-mono text-slate-400 text-[11px]">
+                      <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400 text-[11px]">
                         {lead.createdAt}
                       </td>
                       <td className="py-3 px-4 text-right">
                         {can('delete_leads') && (
                           <button
                             onClick={() => deleteLead(lead.id)}
-                            className="p-1 text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
+                            className="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                             title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1035,31 +1035,31 @@ export const AdminPortal: React.FC = () => {
         {activeTab === 'audit' && can('view_audit_logs') && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">
+              <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                 Security & Audit Ledger
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-400">
                 Tamper-resistant record of administrative actions, data edits, and security events.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden font-mono text-xs">
-              <div className="divide-y divide-slate-800">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden font-mono text-xs shadow-sm">
+              <div className="divide-y divide-slate-200 dark:divide-slate-800">
                 {auditLogs.map(log => (
-                  <div key={log.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-slate-800/40">
+                  <div key={log.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <div className="flex items-center gap-3">
                       <span className={`w-2 h-2 rounded-full ${
-                        log.severity === 'critical' ? 'bg-rose-500' : log.severity === 'warning' ? 'bg-amber-400' : 'bg-cyan-400'
+                        log.severity === 'critical' ? 'bg-rose-500' : log.severity === 'warning' ? 'bg-amber-400' : 'bg-cyan-500'
                       }`} />
                       <div>
-                        <span className="font-semibold text-white">{log.action}</span>
-                        <span className="text-slate-400 ml-2">by {log.actor}</span>
-                        <div className="text-slate-400 text-[11px] font-sans mt-0.5">
+                        <span className="font-semibold text-slate-950 dark:text-white">{log.action}</span>
+                        <span className="text-slate-600 dark:text-slate-400 ml-2 font-medium">by {log.actor}</span>
+                        <div className="text-slate-700 dark:text-slate-400 text-[11px] font-sans mt-0.5">
                           {log.details}
                         </div>
                       </div>
                     </div>
-                    <span className="text-[11px] text-slate-500 shrink-0">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
                       {log.timestamp}
                     </span>
                   </div>
@@ -1073,73 +1073,73 @@ export const AdminPortal: React.FC = () => {
         {activeTab === 'system' && can('system_reset') && (
           <div className="space-y-8 max-w-2xl">
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">
+              <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                 System Security & Database Administration
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-400">
                 Manage operator passwords, configure access controls, export JSON snapshots, and inspect technical SEO manifest.
               </p>
             </div>
 
             {/* Operator Accounts & Password Management */}
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900 space-y-5">
+            <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-cyan-400" />
+                  <h3 className="text-sm font-semibold text-slate-950 dark:text-white flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                     Operator Passwords & Access Control
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-700 dark:text-slate-400 mt-1">
                     Update your account passkey and configure production security mode.
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-700/60 text-cyan-300">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-700/60 text-cyan-700 dark:text-cyan-300 font-semibold">
                     Active: {currentUser?.email}
                   </span>
                 </div>
               </div>
 
               {/* Password Change Form */}
-              <form onSubmit={handlePasswordChange} className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
-                <h4 className="text-xs font-semibold text-white">Change Passkey for {currentUser?.email}</h4>
+              <form onSubmit={handlePasswordChange} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
+                <h4 className="text-xs font-semibold text-slate-950 dark:text-white">Change Passkey for {currentUser?.email}</h4>
                 {passwordFeedback && (
-                  <div className={`p-2.5 rounded-lg text-xs ${passwordFeedback.type === 'success' ? 'bg-emerald-950/60 border border-emerald-800 text-emerald-300' : 'bg-rose-950/60 border border-rose-800 text-rose-300'}`}>
+                  <div className={`p-2.5 rounded-lg text-xs ${passwordFeedback.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 font-medium' : 'bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 font-medium'}`}>
                     {passwordFeedback.text}
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-400 mb-1">Current Passkey</label>
+                    <label className="block text-[10px] font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">Current Passkey</label>
                     <input
                       type="password"
                       required
                       value={oldPassword}
                       onChange={e => setOldPassword(e.target.value)}
                       placeholder="Current passkey"
-                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-400 mb-1">New Passkey</label>
+                    <label className="block text-[10px] font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">New Passkey</label>
                     <input
                       type="password"
                       required
                       value={newPassword}
                       onChange={e => setNewPassword(e.target.value)}
                       placeholder="Min 6 characters"
-                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-400 mb-1">Confirm New Passkey</label>
+                    <label className="block text-[10px] font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">Confirm New Passkey</label>
                     <input
                       type="password"
                       required
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       placeholder="Repeat new passkey"
-                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1147,7 +1147,7 @@ export const AdminPortal: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isChangingPass}
-                    className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors disabled:opacity-50"
+                    className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
                   >
                     {isChangingPass ? 'Updating...' : 'Update Passkey'}
                   </button>
@@ -1156,22 +1156,22 @@ export const AdminPortal: React.FC = () => {
 
               {/* Registered Operators List */}
               <div className="space-y-2">
-                <div className="text-xs font-semibold text-slate-300">Registered System Operators:</div>
+                <div className="text-xs font-semibold text-slate-800 dark:text-slate-300">Registered System Operators:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {adminUsers.map(u => (
-                    <div key={u.id} className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs">
-                      <div className="font-semibold text-white truncate">{u.name}</div>
-                      <div className="text-[11px] font-mono text-cyan-400 truncate">{u.email}</div>
-                      <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">{u.role}</div>
+                    <div key={u.id} className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs">
+                      <div className="font-semibold text-slate-900 dark:text-white truncate">{u.name}</div>
+                      <div className="text-[11px] font-mono text-cyan-700 dark:text-cyan-400 truncate">{u.email}</div>
+                      <div className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-wider mt-0.5">{u.role}</div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900 space-y-4">
-              <h3 className="text-sm font-semibold text-white">Database Snapshot Export</h3>
-              <p className="text-xs text-slate-400">
+            <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Database Snapshot Export</h3>
+              <p className="text-xs text-slate-700 dark:text-slate-400">
                 Download a complete, offline JSON bundle containing all profiles, galleries, and blog articles.
               </p>
               <button
@@ -1184,32 +1184,32 @@ export const AdminPortal: React.FC = () => {
                   a.download = `ssdesigner_backup_${new Date().toISOString().substring(0, 10)}.json`;
                   a.click();
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-sm cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 Download JSON Backup
               </button>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900 space-y-4">
-              <h3 className="text-sm font-semibold text-white">Technical SEO, Schema.org & LLM Index Inspector</h3>
-              <p className="text-xs text-slate-400">
+            <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Technical SEO, Schema.org & LLM Index Inspector</h3>
+              <p className="text-xs text-slate-700 dark:text-slate-400">
                 Audit JSON-LD structured data, metadata tags, and the public <code>/llms.txt</code> AI indexing manifest for this page.
               </p>
               <button
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent('open-seo-audit'));
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-cyan-400 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-cyan-700 dark:text-cyan-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-950 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
               >
                 <Search className="w-4 h-4" />
                 Open SEO & LLM Metadata Inspector
               </button>
             </div>
 
-            <div className="p-6 rounded-2xl border border-rose-950/40 bg-rose-950/10 space-y-4">
-              <h3 className="text-sm font-semibold text-rose-300">Factory Reset Database</h3>
-              <p className="text-xs text-slate-400">
+            <div className="p-6 rounded-2xl border border-rose-200 dark:border-rose-950/40 bg-rose-50/50 dark:bg-rose-950/10 space-y-4 shadow-sm">
+              <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-300">Factory Reset Database</h3>
+              <p className="text-xs text-slate-700 dark:text-slate-400">
                 Resets all software packages, projects, media items, and blog articles to the original factory seed dataset.
               </p>
               <button
@@ -1219,7 +1219,7 @@ export const AdminPortal: React.FC = () => {
                     alert('Database has been reset to official demo seed data.');
                   }
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-500 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-500 transition-colors cursor-pointer shadow-sm"
               >
                 <RefreshCw className="w-4 h-4" />
                 Reset to Seed Dataset

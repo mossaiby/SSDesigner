@@ -557,7 +557,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                   <h2 className="text-sm sm:text-base font-bold text-slate-950 dark:text-white tracking-tight">
                     Engineering Calculator & Unit Converter
                   </h2>
-                  <p className="text-[11px] text-slate-500 font-mono">
+                  <p className="text-[11px] text-slate-700 dark:text-slate-400 font-mono">
                     High-precision mathematical & structural tools
                   </p>
                 </div>
@@ -566,7 +566,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={closeCalcSidebar}
-                  className="p-2 rounded-lg text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="p-2 rounded-lg text-slate-500 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   title="Close Drawer"
                 >
                   <X className="w-5 h-5" />
@@ -581,7 +581,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                 className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                   activeTab === 'calculator'
                     ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs border border-slate-200 dark:border-slate-700'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <Calculator className="w-3.5 h-3.5 text-cyan-500" />
@@ -592,7 +592,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                 className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                   activeTab === 'converter'
                     ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs border border-slate-200 dark:border-slate-700'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <ArrowRightLeft className="w-3.5 h-3.5 text-cyan-500" />
