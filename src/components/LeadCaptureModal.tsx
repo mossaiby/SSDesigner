@@ -170,7 +170,7 @@ export const LeadCaptureModal: React.FC = () => {
                     {softwareList.map(s => (
                       <option key={s.id} value={s.name}>{s.name}</option>
                     ))}
-                    <option value="Complete AeroSpatial Suite">Complete Software Suite</option>
+                    <option value="Complete SSDesigner Suite">Complete SSDesigner Suite</option>
                   </select>
                 </div>
               </div>

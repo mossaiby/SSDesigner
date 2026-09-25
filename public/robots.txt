@@ -1,4 +1,4 @@
-# Robots.txt for AeroSpatial Systems
+# Robots.txt for SSDesigner Systems (ssdesigner.ir)
 User-agent: *
 Allow: /
 
@@ -33,4 +33,4 @@ Allow: /llms-full.txt
 LLM-Full-Content: /llms-full.txt
 LLM-Summary: /llms.txt
 
-Sitemap: /sitemap.xml
+Sitemap: https://ssdesigner.ir/sitemap.xml

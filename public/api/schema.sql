@@ -1,5 +1,5 @@
 -- ==============================================================
--- AeroSpatial / SSDesigner Production MySQL Database Schema
+-- SSDesigner Production MySQL Database Schema
 -- Run this in cPanel phpMyAdmin or visit /api/setup.php to auto-create
 -- ==============================================================
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `excerpt` TEXT,
   `content` LONGTEXT,
   `cover_image` TEXT,
-  `author_name` VARCHAR(128) DEFAULT 'AeroSpatial Lead Engineer',
+  `author_name` VARCHAR(128) DEFAULT 'SSDesigner Lead Engineer',
   `author_role` VARCHAR(128) DEFAULT 'Chief Scientist',
   `tags` LONGTEXT,
   `published_at` VARCHAR(64),

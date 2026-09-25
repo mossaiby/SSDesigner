@@ -1,6 +1,6 @@
 <?php
 /**
- * AeroSpatial Engineering Suite - Database Configuration & PDO Helper
+ * SSDesigner Engineering Suite - Database Configuration & PDO Helper
  * Configured for cPanel + MySQL deployment on ssdesigner.ir
  */
 

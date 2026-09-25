@@ -1126,7 +1126,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
             {/* Bottom Footer Info */}
             <div className="p-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
               <span>IEEE 754 High-Precision Engine</span>
-              <span>AeroSpatial Mechanics</span>
+              <span>SSDesigner Mechanics</span>
             </div>
           </div>
         </div>

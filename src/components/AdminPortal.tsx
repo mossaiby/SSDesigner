@@ -947,7 +947,7 @@ export const AdminPortal: React.FC = () => {
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a');
                   a.href = url;
-                  a.download = `aerospatial_leads_${new Date().toISOString().substring(0, 10)}.csv`;
+                  a.download = `ssdesigner_leads_${new Date().toISOString().substring(0, 10)}.csv`;
                   a.click();
                 }}
                 className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:border-slate-400 transition-colors shadow-xs cursor-pointer"
@@ -1906,7 +1906,7 @@ export const AdminPortal: React.FC = () => {
                   content: getFormField(fd, 'content'),
                   coverImage: getFormField(fd, 'coverImage', '/src/assets/images/software_form_finding_1790188528595.jpg'),
                   author: {
-                    name: currentUser?.name || 'AeroSpatial Lead Engineer',
+                    name: currentUser?.name || 'SSDesigner Lead Engineer',
                     role: currentUser?.role === 'administrator' ? 'Chief Scientist' : 'Structural Engineer',
                   },
                   tags: getFormArrayFromCsv(fd, 'tags', ['SpaceStructures', 'ComputationalMechanics']),

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <radialGradient id="spaceBg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </radialGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background tile -->
+  <rect width="512" height="512" rx="112" fill="url(#spaceBg)" stroke="#1e293b" stroke-width="8" />
+
+  <!-- Subtly etched engineering grid -->
+  <path d="M64 256 H448 M256 64 V448 M128 128 L384 384 M384 128 L128 384" stroke="#0ea5e9" stroke-opacity="0.12" stroke-width="2" />
+
+  <!-- Space Frame Tetrahedron / Octahedral Geometry -->
+  <g filter="url(#glow)">
+    <!-- Struts -->
+    <line x1="256" y1="96" x2="120" y2="330" stroke="url(#cyanGrad)" stroke-width="12" stroke-linecap="round" />
+    <line x1="256" y1="96" x2="392" y2="330" stroke="url(#cyanGrad)" stroke-width="12" stroke-linecap="round" />
+    <line x1="120" y1="330" x2="392" y2="330" stroke="url(#cyanGrad)" stroke-width="12" stroke-linecap="round" />
+    
+    <!-- Central Spatial Node Struts (3D Depth) -->
+    <line x1="256" y1="96" x2="256" y2="248" stroke="#7dd3fc" stroke-width="10" stroke-linecap="round" />
+    <line x1="120" y1="330" x2="256" y2="248" stroke="#38bdf8" stroke-width="10" stroke-linecap="round" />
+    <line x1="392" y1="330" x2="256" y2="248" stroke="#38bdf8" stroke-width="10" stroke-linecap="round" />
+    <line x1="256" y1="248" x2="256" y2="416" stroke="#0284c7" stroke-width="8" stroke-dasharray="8 6" stroke-linecap="round" />
+    <line x1="120" y1="330" x2="256" y2="416" stroke="#0284c7" stroke-width="6" stroke-dasharray="6 6" />
+    <line x1="392" y1="330" x2="256" y2="416" stroke="#0284c7" stroke-width="6" stroke-dasharray="6 6" />
+  </g>
+
+  <!-- Solid Spherical MERO Nodes -->
+  <!-- Top Node -->
+  <circle cx="256" cy="96" r="22" fill="#e0f2fe" stroke="#0284c7" stroke-width="6" />
+  <circle cx="251" cy="91" r="7" fill="#ffffff" />
+
+  <!-- Left Base Node -->
+  <circle cx="120" cy="330" r="22" fill="#e0f2fe" stroke="#0284c7" stroke-width="6" />
+  <circle cx="115" cy="325" r="7" fill="#ffffff" />
+
+  <!-- Right Base Node -->
+  <circle cx="392" cy="330" r="22" fill="#e0f2fe" stroke="#0284c7" stroke-width="6" />
+  <circle cx="387" cy="325" r="7" fill="#ffffff" />
+
+  <!-- Center Spatial Core Node -->
+  <circle cx="256" cy="248" r="28" fill="#38bdf8" stroke="#ffffff" stroke-width="7" />
+  <circle cx="250" cy="242" r="9" fill="#ffffff" />
+
+  <!-- Bottom Apex Node -->
+  <circle cx="256" cy="416" r="16" fill="#0369a1" stroke="#38bdf8" stroke-width="5" />
+</svg>

@@ -32,7 +32,12 @@ export class ErrorBoundary extends Component<Props, State> {
         'aerospatial_projects_v4',
         'aerospatial_media_v3',
         'aerospatial_blog_v3',
-        'aerospatial_leads_v3'
+        'aerospatial_leads_v3',
+        'ssdesigner_software_v1',
+        'ssdesigner_projects_v1',
+        'ssdesigner_media_v1',
+        'ssdesigner_blog_v1',
+        'ssdesigner_leads_v1'
       ];
       keys.forEach(k => localStorage.removeItem(k));
     } catch (e) {
