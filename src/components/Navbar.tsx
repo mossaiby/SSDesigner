@@ -46,9 +46,6 @@ export const Navbar: React.FC = () => {
           >
             SSDesigner
           </button>
-          <span className="hidden lg:inline text-[11px] font-mono text-cyan-700 dark:text-cyan-400 px-2 py-0.5 rounded bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-900/40">
-            Space Structures FEM
-          </span>
         </div>
 
         {/* Zone 2: 4–6 clean text navigation links */}
@@ -81,15 +78,14 @@ export const Navbar: React.FC = () => {
 
         {/* Zone 3: 1–2 primary actions + theme & admin toggle */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Scientific Calculator & Unit Converter Button */}
+          {/* Scientific Calculator & Unit Converter Button (Icon Only) */}
           <button
             onClick={openCalcSidebar}
-            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-cyan-400 dark:hover:text-slate-950 transition-all flex items-center gap-1.5 cursor-pointer"
+            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-cyan-400 dark:hover:text-slate-950 transition-all cursor-pointer"
             title="Scientific Calculator & Engineering Unit Converter"
             aria-label="Calculator & Unit Converter"
           >
             <Calculator className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-            <span className="hidden lg:inline text-xs font-mono font-medium">Calc & Units</span>
           </button>
 
           {/* Dark / Light Toggle */}
@@ -100,25 +96,6 @@ export const Navbar: React.FC = () => {
             aria-label="Toggle theme"
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-cyan-600" />}
-          </button>
-
-          {/* Admin Operator Portal Button */}
-          <button
-            onClick={() => handleNavClick('admin')}
-            className={`p-2 rounded-lg border transition-all flex items-center gap-1.5 ${
-              isAdminLoggedIn 
-                ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300' 
-                : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-cyan-400 dark:hover:text-slate-950'
-            }`}
-            title={isAdminLoggedIn ? `Admin: ${currentUser?.name} (${currentUser?.role})` : 'Operator Admin Portal'}
-            aria-label="Admin Portal"
-          >
-            <ShieldCheck className="w-4 h-4" />
-            {isAdminLoggedIn && (
-              <span className="hidden xl:inline text-[11px] font-mono uppercase">
-                {currentUser?.role === 'administrator' ? 'Admin' : 'Operator'}
-              </span>
-            )}
           </button>
 
           {/* Primary CTA */}
@@ -172,12 +149,6 @@ export const Navbar: React.FC = () => {
             className={`block w-full text-left ${getNavLinkClass(currentNav.view === 'contact')}`}
           >
             Engineering Contact
-          </button>
-          <button
-            onClick={() => handleNavClick('admin')}
-            className={`block w-full text-left ${getNavLinkClass(currentNav.view === 'admin')}`}
-          >
-            Admin Operator Console
           </button>
           <button
             onClick={() => {

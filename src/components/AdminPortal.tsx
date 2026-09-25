@@ -200,7 +200,7 @@ export const AdminPortal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
-                Engineering Admin Portal
+                Admin Portal
               </h2>
               <p className="text-xs text-slate-700 dark:text-slate-400">
                 Authorized Personnel & System Operators Only
@@ -265,11 +265,7 @@ export const AdminPortal: React.FC = () => {
           )}
 
           {/* Secure Operator Notice */}
-          <div className="pt-5 border-t border-slate-200 dark:border-slate-800 text-center space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-400">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-              <span>Restricted Engineering Console · 256-Bit SSL</span>
-            </div>
+          <div className="pt-5 border-t border-slate-200 dark:border-slate-800 text-center">
             <p className="text-[11px] text-slate-700 dark:text-slate-400 leading-relaxed">
               Authorized operators only. All login activities and IP sessions are recorded in the security audit trail.
             </p>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useData } from '../context/DataContext';
-import { ArrowRight, Calculator } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { SoftwareGalleryWidget } from './SoftwareGalleryWidget';
 
 export const Hero: React.FC = () => {
-  const { navigateTo, openLeadModal, openCalcSidebar } = useData();
+  const { navigateTo, openLeadModal } = useData();
 
   return (
     <section className="relative overflow-hidden bg-slate-100/60 dark:bg-slate-950 pt-10 pb-16 lg:pt-14 lg:pb-20 border-b border-slate-200 dark:border-slate-900 transition-colors">
@@ -28,47 +28,19 @@ export const Hero: React.FC = () => {
           {/* Quick CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => openLeadModal({ inquiryType: 'Software Demo' })}
+              onClick={() => navigateTo({ view: 'all_software' })}
               className="px-6 py-3 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-950/20 flex items-center gap-2 cursor-pointer"
             >
-              <span>Request Technical Evaluation</span>
+              <span>View Full Software Suite</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             <button
-              onClick={openCalcSidebar}
-              className="px-5 py-3 text-xs font-semibold rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-300 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/50 transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
+              onClick={() => openLeadModal({ inquiryType: 'Software Demo' })}
+              className="px-6 py-3 text-xs font-medium rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-700 transition-colors shadow-sm cursor-pointer"
             >
-              <Calculator className="w-4 h-4" />
-              <span>Scientific Calc & Unit Converter</span>
+              Request Technical Evaluation
             </button>
-
-            <button
-              onClick={() => navigateTo({ view: 'all_software' })}
-              className="px-5 py-3 text-xs font-medium rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-700 transition-colors shadow-sm cursor-pointer"
-            >
-              View Full Suite Matrix
-            </button>
-          </div>
-
-          {/* Standards & Metrics Proof Strip */}
-          <div className="pt-6 border-t border-slate-200/80 dark:border-slate-900/80 flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-xs font-mono">
-            <div className="text-center">
-              <div className="text-slate-950 dark:text-white font-bold text-lg">0.001%</div>
-              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">Equilibrium Residual Norm</div>
-            </div>
-            <div className="text-center">
-              <div className="text-slate-950 dark:text-white font-bold text-lg">240m+</div>
-              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">Clear Spans Engineered</div>
-            </div>
-            <div className="text-center">
-              <div className="text-slate-950 dark:text-white font-bold text-lg">Eurocode 3 & IASS</div>
-              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">Code Verification Compliant</div>
-            </div>
-            <div className="text-center">
-              <div className="text-slate-950 dark:text-white font-bold text-lg">CUDA & Metal</div>
-              <div className="text-slate-700 dark:text-slate-400 text-[11px] font-medium">GPU Hardware Acceleration</div>
-            </div>
           </div>
         </div>
 

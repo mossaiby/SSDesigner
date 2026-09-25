@@ -557,9 +557,6 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                   <h2 className="text-sm sm:text-base font-bold text-slate-950 dark:text-white tracking-tight">
                     Engineering Calculator & Unit Converter
                   </h2>
-                  <p className="text-[11px] text-slate-700 dark:text-slate-400 font-mono">
-                    High-precision mathematical & structural tools
-                  </p>
                 </div>
               </div>
 
@@ -608,8 +605,8 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
               {/* ------------------------------------------------------------- */}
               {activeTab === 'calculator' && (
                 <div className="space-y-4">
-                  {/* Digital Screen Display */}
-                  <div className="p-4 rounded-2xl bg-slate-900 dark:bg-slate-950 border border-slate-800 text-right shadow-inner relative group">
+                  {/* Digital Screen Display (Remains dark in light mode) */}
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-right shadow-inner relative group">
                     <div className="flex items-center justify-between mb-2">
                       {/* Deg / Rad toggle badge */}
                       <button
@@ -1124,9 +1121,8 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
             </div>
 
             {/* Bottom Footer Info */}
-            <div className="p-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
-              <span>IEEE 754 High-Precision Engine</span>
-              <span>SSDesigner Mechanics</span>
+            <div className="p-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-end text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <span>SSDesigner (ssdesigner.ir)</span>
             </div>
           </div>
         </div>

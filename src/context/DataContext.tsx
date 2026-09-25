@@ -214,6 +214,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Navigation State
   const [currentNav, setCurrentNav] = useState<NavigationTarget>(() => {
+    const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+    if (path === '/admin') return { view: 'admin' };
+
     const hash = window.location.hash;
     if (hash.startsWith('#/software/')) {
       return { view: 'software', id: hash.replace('#/software/', '') };
@@ -267,7 +270,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+      if (path === '/admin') {
+        setCurrentNav({ view: 'admin' });
+        return;
+      }
+
       const hash = window.location.hash;
       if (hash.startsWith('#/software/')) {
         setCurrentNav({ view: 'software', id: hash.replace('#/software/', '') });
@@ -290,8 +299,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, []);
 
   // Database Connection Status

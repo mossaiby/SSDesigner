@@ -27,6 +27,11 @@ app.use((req, res, next) => {
     return next();
   }
 
+  // Redirect /admin and /admin/ to /#/admin
+  if (reqPath.toLowerCase() === '/admin' || reqPath.toLowerCase() === '/admin/') {
+    return res.redirect('/#/admin');
+  }
+
   // Deny path traversal attempts
   if (reqPath.includes('..') || reqPath.includes('/.')) {
     return res.status(403).type('text/plain').send('403 Forbidden: Directory traversal blocked.');

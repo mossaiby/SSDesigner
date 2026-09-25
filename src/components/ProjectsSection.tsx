@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useData } from '../context/DataContext';
 import { ArrowRight, Image as ImageIcon, MapPin } from 'lucide-react';
 
@@ -11,52 +11,27 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
     projectsList, 
     mediaList, 
     navigateTo, 
-    openGalleryModal,
+    openGalleryModal, 
     openLeadModal,
     isAdminLoggedIn
   } = useData();
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-
-  const categories = ['All', 'Sports & Arenas', 'Botanical & Domes', 'Aerospace & Satellites', 'Transit Hubs'];
-
-  const filteredProjects = selectedCategory === 'All'
-    ? projectsList
-    : projectsList.filter(p => p.category === selectedCategory);
+  const filteredProjects = projectsList;
 
   return (
     <section className={`py-16 sm:py-24 bg-slate-100/50 dark:bg-slate-950 transition-colors ${isStandalonePage ? 'min-h-screen' : 'border-b border-slate-200 dark:border-slate-900'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-700 dark:text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
-              <span>Real-World Engineering Deployments</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-3">
-              Structures Engineered with Our Solvers
-            </h2>
-            <p className="text-base text-slate-800 dark:text-slate-300 font-normal leading-relaxed">
-              From Olympic-class long-span sports stadia to deep-space deployable reflectors, explore structures engineered with our mathematical software.
-            </p>
+        <div className="mb-12 sm:mb-16 max-w-3xl">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-700 dark:text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
+            <span>Real-World Engineering Deployments</span>
           </div>
-
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 self-start md:self-auto shadow-sm">
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                  selectedCategory === cat
-                    ? 'bg-cyan-500 text-slate-950 font-semibold'
-                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-3">
+            Structures Engineered with Our Solvers
+          </h2>
+          <p className="text-base text-slate-800 dark:text-slate-300 font-normal leading-relaxed">
+            From Olympic-class long-span sports stadia to deep-space deployable reflectors, explore structures engineered with our mathematical software.
+          </p>
         </div>
 
         {/* Project Cards Grid */}
