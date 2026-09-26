@@ -546,125 +546,73 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // CRUD Software -> Persists to Database
   // -------------------------------------------------------------
   const addSoftware = async (item: Omit<SoftwareItem, 'id' | 'gallery'>) => {
-    try {
-      const created = await api.createSoftware({ ...item, gallery: [] });
-      setSoftwareList(prev => [created, ...prev]);
-      addAudit('CREATE_SOFTWARE', `Created and saved software in database: ${created.name}`);
-    } catch (err: any) {
-      // Local optimistic fallback
-      const id = `soft_${Date.now()}`;
-      const newItem: SoftwareItem = {
-        ...item,
-        id,
-        gallery: [],
-      };
-      setSoftwareList(prev => [newItem, ...prev]);
-      addAudit('CREATE_SOFTWARE_LOCAL', `Saved software locally (${err.message}): ${newItem.name}`, 'warning');
-    }
+    const created = await api.createSoftware({ ...item, gallery: [] });
+    setSoftwareList(prev => [created, ...prev]);
+    addAudit('CREATE_SOFTWARE', `Created and saved software in database: ${created.name}`);
+    await refreshFromDb();
   };
 
   const updateSoftware = async (id: string, updates: Partial<SoftwareItem>) => {
-    try {
-      const updated = await api.updateSoftware(id, updates);
-      setSoftwareList(prev => prev.map(s => s.id === id ? updated : s));
-      addAudit('UPDATE_SOFTWARE', `Updated software in database ID: ${id}`);
-    } catch {
-      setSoftwareList(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
-      addAudit('UPDATE_SOFTWARE_LOCAL', `Updated software locally ID: ${id}`);
-    }
+    const updated = await api.updateSoftware(id, updates);
+    setSoftwareList(prev => prev.map(s => s.id === id ? updated : s));
+    addAudit('UPDATE_SOFTWARE', `Updated software in database ID: ${id}`);
+    await refreshFromDb();
   };
 
   const deleteSoftware = async (id: string) => {
-    try {
-      await api.deleteSoftware(id);
-      setSoftwareList(prev => prev.filter(s => s.id !== id));
-      setMediaList(prev => prev.filter(m => !(m.targetType === 'software' && m.targetId === id)));
-      addAudit('DELETE_SOFTWARE', `Deleted software from database ID: ${id}`, 'warning');
-    } catch {
-      setSoftwareList(prev => prev.filter(s => s.id !== id));
-      setMediaList(prev => prev.filter(m => !(m.targetType === 'software' && m.targetId === id)));
-      addAudit('DELETE_SOFTWARE_LOCAL', `Deleted software locally ID: ${id}`, 'warning');
-    }
+    await api.deleteSoftware(id);
+    setSoftwareList(prev => prev.filter(s => s.id !== id));
+    setMediaList(prev => prev.filter(m => !(m.targetType === 'software' && m.targetId === id)));
+    addAudit('DELETE_SOFTWARE', `Deleted software from database ID: ${id}`, 'warning');
+    await refreshFromDb();
   };
 
   // -------------------------------------------------------------
   // CRUD Projects -> Persists to Database
   // -------------------------------------------------------------
   const addProject = async (item: Omit<ProjectItem, 'id' | 'gallery'>) => {
-    try {
-      const created = await api.createProject(item);
-      setProjectsList(prev => [created, ...prev]);
-      addAudit('CREATE_PROJECT', `Saved project case study in database: ${created.title}`);
-    } catch (err: any) {
-      const id = `proj_${Date.now()}`;
-      const newItem: ProjectItem = {
-        ...item,
-        id,
-        gallery: [],
-      };
-      setProjectsList(prev => [newItem, ...prev]);
-      addAudit('CREATE_PROJECT_LOCAL', `Saved project locally (${err.message}): ${newItem.title}`, 'warning');
-    }
+    const created = await api.createProject(item);
+    setProjectsList(prev => [created, ...prev]);
+    addAudit('CREATE_PROJECT', `Saved project case study in database: ${created.title}`);
+    await refreshFromDb();
   };
 
   const updateProject = async (id: string, updates: Partial<ProjectItem>) => {
-    try {
-      const updated = await api.updateProject(id, updates);
-      setProjectsList(prev => prev.map(p => p.id === id ? updated : p));
-      addAudit('UPDATE_PROJECT', `Updated project in database ID: ${id}`);
-    } catch {
-      setProjectsList(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
-      addAudit('UPDATE_PROJECT_LOCAL', `Updated project locally ID: ${id}`);
-    }
+    const updated = await api.updateProject(id, updates);
+    setProjectsList(prev => prev.map(p => p.id === id ? updated : p));
+    addAudit('UPDATE_PROJECT', `Updated project in database ID: ${id}`);
+    await refreshFromDb();
   };
 
   const deleteProject = async (id: string) => {
-    try {
-      await api.deleteProject(id);
-      setProjectsList(prev => prev.filter(p => p.id !== id));
-      setMediaList(prev => prev.filter(m => !(m.targetType === 'project' && m.targetId === id)));
-      addAudit('DELETE_PROJECT', `Deleted project from database ID: ${id}`, 'warning');
-    } catch {
-      setProjectsList(prev => prev.filter(p => p.id !== id));
-      setMediaList(prev => prev.filter(m => !(m.targetType === 'project' && m.targetId === id)));
-      addAudit('DELETE_PROJECT_LOCAL', `Deleted project locally ID: ${id}`, 'warning');
-    }
+    await api.deleteProject(id);
+    setProjectsList(prev => prev.filter(p => p.id !== id));
+    setMediaList(prev => prev.filter(m => !(m.targetType === 'project' && m.targetId === id)));
+    addAudit('DELETE_PROJECT', `Deleted project from database ID: ${id}`, 'warning');
+    await refreshFromDb();
   };
 
   // -------------------------------------------------------------
   // CRUD Media -> Persists to Database
   // -------------------------------------------------------------
   const addMediaItem = async (item: Omit<MediaItem, 'id' | 'createdAt'>) => {
-    try {
-      const created = await api.createMedia(item);
-      setMediaList(prev => [created, ...prev]);
-      addAudit('ADD_MEDIA', `Saved media to database: ${created.title}`);
-    } catch (err: any) {
-      const id = `med_${Date.now()}`;
-      const newMedia: MediaItem = {
-        ...item,
-        id,
-        createdAt: new Date().toISOString().substring(0, 10),
-      };
-      setMediaList(prev => [newMedia, ...prev]);
-      addAudit('ADD_MEDIA_LOCAL', `Saved media locally: ${newMedia.title}`);
-    }
+    const created = await api.createMedia(item);
+    setMediaList(prev => [created, ...prev]);
+    addAudit('ADD_MEDIA', `Saved media to database: ${created.title}`);
+    await refreshFromDb();
   };
 
   const updateMediaItem = async (id: string, updates: Partial<MediaItem>) => {
     setMediaList(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m));
     addAudit('UPDATE_MEDIA', `Updated media ID: ${id}`);
+    await refreshFromDb();
   };
 
   const deleteMediaItem = async (id: string) => {
-    try {
-      await api.deleteMedia(id);
-      setMediaList(prev => prev.filter(m => m.id !== id));
-      addAudit('DELETE_MEDIA', `Deleted media from database ID: ${id}`);
-    } catch {
-      setMediaList(prev => prev.filter(m => m.id !== id));
-      addAudit('DELETE_MEDIA_LOCAL', `Deleted media locally ID: ${id}`);
-    }
+    await api.deleteMedia(id);
+    setMediaList(prev => prev.filter(m => m.id !== id));
+    addAudit('DELETE_MEDIA', `Deleted media from database ID: ${id}`);
+    await refreshFromDb();
   };
 
   // -------------------------------------------------------------
@@ -674,18 +622,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const created = await api.createArticle(post);
     setBlogPosts(prev => [created, ...prev]);
     addAudit('PUBLISH_BLOG', `Published article to database: ${created.title}`);
+    await refreshFromDb();
   };
 
   const updateBlogPost = async (id: string, updates: Partial<BlogPost>) => {
     const updated = await api.updateArticle(id, updates);
     setBlogPosts(prev => prev.map(b => b.id === id ? updated : b));
     addAudit('UPDATE_BLOG', `Updated article in database ID: ${id}`);
+    await refreshFromDb();
   };
 
   const deleteBlogPost = async (id: string) => {
     await api.deleteArticle(id);
     setBlogPosts(prev => prev.filter(b => b.id !== id));
     addAudit('DELETE_BLOG', `Deleted article from database ID: ${id}`, 'warning');
+    await refreshFromDb();
   };
 
   // -------------------------------------------------------------
@@ -701,18 +652,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const created = await api.createLead(sanitized);
     setLeads(prev => [created, ...prev]);
     addAudit('NEW_LEAD', `Inbound inquiry saved to database from ${created.email}`, 'info');
+    await refreshFromDb();
   };
 
   const updateLeadStatus = async (id: string, status: LeadInquiry['status']) => {
     await api.updateLeadStatus(id, status);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
     addAudit('UPDATE_LEAD_STATUS', `Status updated in database for lead ID ${id} to ${status}`);
+    await refreshFromDb();
   };
 
   const deleteLead = async (id: string) => {
     await api.deleteLead(id);
     setLeads(prev => prev.filter(l => l.id !== id));
     addAudit('DELETE_LEAD', `Deleted lead inquiry from database ID: ${id}`, 'warning');
+    await refreshFromDb();
   };
 
   // Reset & Backup

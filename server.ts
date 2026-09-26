@@ -129,7 +129,16 @@ function loadDatabase(): DatabaseStore {
 
 function saveDatabase(data: DatabaseStore) {
   try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    const cleaned = {
+      software: Array.isArray(data.software) ? data.software : [],
+      projects: Array.isArray(data.projects) ? data.projects : [],
+      articles: Array.isArray(data.articles) ? data.articles : [],
+      media: Array.isArray(data.media) ? data.media : [],
+      leads: Array.isArray(data.leads) ? data.leads : [],
+      users: Array.isArray(data.users) ? data.users : [],
+      auditLogs: Array.isArray(data.auditLogs) ? data.auditLogs : [],
+    };
+    fs.writeFileSync(DB_FILE, JSON.stringify(cleaned, null, 2), 'utf-8');
   } catch (err) {
     console.error('Error writing DB file:', err);
   }
