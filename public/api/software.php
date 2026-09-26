@@ -9,22 +9,40 @@ if (!$pdo) {
 }
 
 // Ensure table exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS `software` (
-  `id` VARCHAR(64) NOT NULL PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL,
-  `tagline` TEXT,
-  `category` VARCHAR(128) NOT NULL,
-  `version` VARCHAR(64) NOT NULL,
-  `description` TEXT,
-  `key_features` LONGTEXT,
-  `mathematical_foundations` LONGTEXT,
-  `specs` LONGTEXT,
-  `thumbnail` TEXT,
-  `release_date` VARCHAR(64),
-  `featured` TINYINT(1) DEFAULT 0,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `software` (
+      `id` VARCHAR(64) NOT NULL PRIMARY KEY,
+      `name` VARCHAR(255) NOT NULL,
+      `tagline` TEXT,
+      `category` VARCHAR(128) NOT NULL,
+      `version` VARCHAR(64) NOT NULL,
+      `description` TEXT,
+      `key_features` LONGTEXT,
+      `mathematical_foundations` LONGTEXT,
+      `specs` LONGTEXT,
+      `thumbnail` TEXT,
+      `release_date` VARCHAR(64),
+      `featured` TINYINT(1) DEFAULT 0,
+      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+    $cols = [
+        "ALTER TABLE `software` ADD COLUMN `tagline` TEXT",
+        "ALTER TABLE `software` ADD COLUMN `category` VARCHAR(128) DEFAULT 'Structural Solver'",
+        "ALTER TABLE `software` ADD COLUMN `version` VARCHAR(64) DEFAULT '1.0.0'",
+        "ALTER TABLE `software` ADD COLUMN `description` TEXT",
+        "ALTER TABLE `software` ADD COLUMN `key_features` LONGTEXT",
+        "ALTER TABLE `software` ADD COLUMN `mathematical_foundations` LONGTEXT",
+        "ALTER TABLE `software` ADD COLUMN `specs` LONGTEXT",
+        "ALTER TABLE `software` ADD COLUMN `thumbnail` TEXT",
+        "ALTER TABLE `software` ADD COLUMN `release_date` VARCHAR(64)",
+        "ALTER TABLE `software` ADD COLUMN `featured` TINYINT(1) DEFAULT 0"
+    ];
+    foreach ($cols as $c) {
+        try { $pdo->exec($c); } catch (Throwable $ex) {}
+    }
+} catch (Throwable $e) {}
 
 function formatSoftwareRow($row) {
     if (!$row) return null;

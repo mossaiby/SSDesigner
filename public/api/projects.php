@@ -9,28 +9,52 @@ if (!$pdo) {
 }
 
 // Ensure table exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS `projects` (
-  `id` VARCHAR(64) NOT NULL PRIMARY KEY,
-  `title` VARCHAR(255) NOT NULL,
-  `subtitle` TEXT,
-  `category` VARCHAR(128) NOT NULL,
-  `location` VARCHAR(255),
-  `year` INT DEFAULT 2026,
-  `span` VARCHAR(128),
-  `structural_system` TEXT,
-  `node_count` VARCHAR(64),
-  `member_count` VARCHAR(64),
-  `steel_weight_saved` VARCHAR(64),
-  `client_or_engineer` VARCHAR(255),
-  `software_used` LONGTEXT,
-  `challenge` TEXT,
-  `engineering_solution` TEXT,
-  `hero_image` TEXT,
-  `key_metrics` LONGTEXT,
-  `featured` TINYINT(1) DEFAULT 0,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `projects` (
+      `id` VARCHAR(64) NOT NULL PRIMARY KEY,
+      `title` VARCHAR(255) NOT NULL,
+      `subtitle` TEXT,
+      `category` VARCHAR(128) NOT NULL,
+      `location` VARCHAR(255),
+      `year` INT DEFAULT 2026,
+      `span` VARCHAR(128),
+      `structural_system` TEXT,
+      `node_count` VARCHAR(64),
+      `member_count` VARCHAR(64),
+      `steel_weight_saved` VARCHAR(64),
+      `client_or_engineer` VARCHAR(255),
+      `software_used` LONGTEXT,
+      `challenge` TEXT,
+      `engineering_solution` TEXT,
+      `hero_image` TEXT,
+      `key_metrics` LONGTEXT,
+      `featured` TINYINT(1) DEFAULT 0,
+      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+    $cols = [
+        "ALTER TABLE `projects` ADD COLUMN `subtitle` TEXT",
+        "ALTER TABLE `projects` ADD COLUMN `category` VARCHAR(128) DEFAULT 'Structural Design'",
+        "ALTER TABLE `projects` ADD COLUMN `location` VARCHAR(255)",
+        "ALTER TABLE `projects` ADD COLUMN `year` INT DEFAULT 2026",
+        "ALTER TABLE `projects` ADD COLUMN `span` VARCHAR(128)",
+        "ALTER TABLE `projects` ADD COLUMN `structural_system` TEXT",
+        "ALTER TABLE `projects` ADD COLUMN `node_count` VARCHAR(64)",
+        "ALTER TABLE `projects` ADD COLUMN `member_count` VARCHAR(64)",
+        "ALTER TABLE `projects` ADD COLUMN `steel_weight_saved` VARCHAR(64)",
+        "ALTER TABLE `projects` ADD COLUMN `client_or_engineer` VARCHAR(255)",
+        "ALTER TABLE `projects` ADD COLUMN `software_used` LONGTEXT",
+        "ALTER TABLE `projects` ADD COLUMN `challenge` TEXT",
+        "ALTER TABLE `projects` ADD COLUMN `engineering_solution` TEXT",
+        "ALTER TABLE `projects` ADD COLUMN `hero_image` TEXT",
+        "ALTER TABLE `projects` ADD COLUMN `key_metrics` LONGTEXT",
+        "ALTER TABLE `projects` ADD COLUMN `featured` TINYINT(1) DEFAULT 0"
+    ];
+    foreach ($cols as $c) {
+        try { $pdo->exec($c); } catch (Throwable $ex) {}
+    }
+} catch (Throwable $e) {}
 
 function formatProjectRow($row) {
     if (!$row) return null;

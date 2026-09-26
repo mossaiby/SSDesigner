@@ -27,6 +27,22 @@ try {
       `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       INDEX `idx_articles_slug` (`slug`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+    $cols = [
+        "ALTER TABLE `articles` ADD COLUMN `read_time` VARCHAR(64) DEFAULT '5 min read'",
+        "ALTER TABLE `articles` ADD COLUMN `slug` VARCHAR(191) DEFAULT ''",
+        "ALTER TABLE `articles` ADD COLUMN `category` VARCHAR(128) DEFAULT 'Computational Mechanics'",
+        "ALTER TABLE `articles` ADD COLUMN `excerpt` TEXT",
+        "ALTER TABLE `articles` ADD COLUMN `content` LONGTEXT",
+        "ALTER TABLE `articles` ADD COLUMN `cover_image` TEXT",
+        "ALTER TABLE `articles` ADD COLUMN `author_name` VARCHAR(128) DEFAULT 'SSDesigner Lead Engineer'",
+        "ALTER TABLE `articles` ADD COLUMN `author_role` VARCHAR(128) DEFAULT 'Chief Scientist'",
+        "ALTER TABLE `articles` ADD COLUMN `tags` LONGTEXT",
+        "ALTER TABLE `articles` ADD COLUMN `published_at` VARCHAR(64)"
+    ];
+    foreach ($cols as $c) {
+        try { $pdo->exec($c); } catch (Throwable $ex) {}
+    }
 } catch (Throwable $e) {
     // Non-fatal: table may already exist or DDL restricted
 }
