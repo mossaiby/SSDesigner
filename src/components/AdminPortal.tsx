@@ -96,14 +96,10 @@ export const AdminPortal: React.FC = () => {
         input.value = res.url;
         input.placeholder = 'Uploaded';
       }
-    } catch {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        if (input && ev.target?.result) {
-          input.value = ev.target.result as string;
-        }
-      };
-      reader.readAsDataURL(file);
+    } catch (err: any) {
+      console.error('File upload failed:', err);
+      alert(`File upload failed: ${err.message || 'Please check server connection'}. Please try again.`);
+      if (input) input.placeholder = 'Upload failed';
     } finally {
       setIsUploading(false);
     }

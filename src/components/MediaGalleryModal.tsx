@@ -11,7 +11,8 @@ export const MediaGalleryModal: React.FC = () => {
     addMediaItem, 
     can, 
     isAdminLoggedIn, 
-    openMediaLightbox 
+    openMediaLightbox,
+    uploadMediaFile,
   } = useData();
 
   const [activeTab, setActiveTab] = useState<'all' | 'photo' | 'video'>('all');
@@ -25,6 +26,7 @@ export const MediaGalleryModal: React.FC = () => {
   const [newTechnicalNote, setNewTechnicalNote] = useState('');
   const [newTags, setNewTags] = useState('');
   const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   if (!activeGalleryTarget) return null;
 
@@ -39,25 +41,24 @@ export const MediaGalleryModal: React.FC = () => {
     return true;
   });
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setIsUploadingFile(true);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const result = event.target?.result as string;
-      setNewUrl(result);
+    setUploadError(null);
+    try {
+      const res = await uploadMediaFile(file);
+      setNewUrl(res.url);
       if (!newTitle) {
         setNewTitle(file.name.replace(/\.[^/.]+$/, ''));
       }
+    } catch (err: any) {
+      console.error('Gallery file upload failed:', err);
+      setUploadError(err.message || 'File upload failed. Please verify server storage.');
+    } finally {
       setIsUploadingFile(false);
-    };
-    reader.onerror = () => {
-      alert('Failed to read selected file.');
-      setIsUploadingFile(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleAddSubmit = (e: React.FormEvent) => {
@@ -227,7 +228,9 @@ export const MediaGalleryModal: React.FC = () => {
                     onChange={handleFileUpload}
                     className="w-full text-xs text-slate-700 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-slate-200 dark:file:bg-slate-800 file:text-cyan-700 dark:file:text-cyan-400 hover:file:bg-slate-300 dark:hover:file:bg-slate-700 cursor-pointer"
                   />
-                  {isUploadingFile && <span className="text-[11px] text-cyan-600 dark:text-cyan-400 mt-1 block">Reading file...</span>}
+                  {isUploadingFile && <span className="text-[11px] text-cyan-600 dark:text-cyan-400 mt-1 block">Uploading asset to storage...</span>}
+                  {uploadError && <span className="text-[11px] text-rose-500 mt-1 block">{uploadError}</span>}
+                  {newUrl && !isUploadingFile && <span className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block truncate">Uploaded: {newUrl}</span>}
                 </div>
 
                 <div>

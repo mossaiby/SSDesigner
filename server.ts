@@ -94,21 +94,24 @@ interface DatabaseStore {
 }
 
 function loadDatabase(): DatabaseStore {
+  let db: any = {};
   try {
     if (fs.existsSync(DB_FILE)) {
       const data = fs.readFileSync(DB_FILE, 'utf-8');
-      return JSON.parse(data);
+      db = JSON.parse(data) || {};
     }
   } catch (err) {
     console.error('Error loading DB file, reinitializing:', err);
   }
-  return {
-    software: [],
-    projects: [],
-    articles: [],
-    media: [],
-    leads: [],
-    users: [
+
+  // Ensure all collections are guaranteed arrays and support backward compatibility
+  const ensured: DatabaseStore = {
+    software: Array.isArray(db.software) ? db.software : [],
+    projects: Array.isArray(db.projects) ? db.projects : [],
+    articles: Array.isArray(db.articles) ? db.articles : (Array.isArray(db.blog) ? db.blog : (Array.isArray(db.posts) ? db.posts : [])),
+    media: Array.isArray(db.media) ? db.media : [],
+    leads: Array.isArray(db.leads) ? db.leads : [],
+    users: Array.isArray(db.users) && db.users.length > 0 ? db.users : [
       {
         id: 'usr_admin_master',
         name: 'System Administrator',
@@ -118,8 +121,10 @@ function loadDatabase(): DatabaseStore {
         lastLogin: new Date().toISOString(),
       },
     ],
-    auditLogs: [],
+    auditLogs: Array.isArray(db.auditLogs) ? db.auditLogs : [],
   };
+
+  return ensured;
 }
 
 function saveDatabase(data: DatabaseStore) {
@@ -245,44 +250,81 @@ app.delete('/api/projects/:id', (req: Request, res: Response) => {
 });
 
 // Articles CRUD
-app.get('/api/articles', (_req: Request, res: Response) => {
-  const db = loadDatabase();
-  res.json(db.articles);
+app.get(['/api/articles', '/articles'], (req: Request, res: Response, next) => {
+  // If requested directly as HTML page via browser navigation, let Vite SPA handle it
+  if (req.path === '/articles' && !req.headers.accept?.includes('application/json')) {
+    return next();
+  }
+  try {
+    const db = loadDatabase();
+    res.json(Array.isArray(db.articles) ? db.articles : []);
+  } catch (err: any) {
+    console.error('Error fetching articles:', err);
+    res.status(500).json({ error: 'Failed to retrieve articles' });
+  }
 });
 
-app.get('/api/articles/:id', (req: Request, res: Response) => {
-  const db = loadDatabase();
-  const item = db.articles.find((a) => a.id === req.params.id || a.slug === req.params.id);
-  if (!item) return res.status(404).json({ error: 'Article not found' });
-  res.json(item);
+app.get(['/api/articles/:id', '/articles/:id'], (req: Request, res: Response, next) => {
+  if (req.path.startsWith('/articles/') && !req.headers.accept?.includes('application/json')) {
+    return next();
+  }
+  try {
+    const db = loadDatabase();
+    const articles = Array.isArray(db.articles) ? db.articles : [];
+    const item = articles.find((a) => a.id === req.params.id || a.slug === req.params.id);
+    if (!item) return res.status(404).json({ error: 'Article not found' });
+    res.json(item);
+  } catch (err: any) {
+    console.error('Error fetching article item:', err);
+    res.status(500).json({ error: 'Failed to retrieve article' });
+  }
 });
 
 app.post('/api/articles', (req: Request, res: Response) => {
-  const db = loadDatabase();
-  const newItem = {
-    id: req.body.id || `post_${Date.now()}`,
-    publishedAt: req.body.publishedAt || new Date().toISOString().split('T')[0],
-    ...req.body,
-  };
-  db.articles.unshift(newItem);
-  saveDatabase(db);
-  res.status(201).json(newItem);
+  try {
+    const db = loadDatabase();
+    if (!Array.isArray(db.articles)) db.articles = [];
+    const newItem = {
+      id: req.body?.id || `post_${Date.now()}`,
+      publishedAt: req.body?.publishedAt || new Date().toISOString().split('T')[0],
+      title: req.body?.title || 'Untitled Technical Article',
+      ...req.body,
+    };
+    db.articles.unshift(newItem);
+    saveDatabase(db);
+    res.status(201).json(newItem);
+  } catch (err: any) {
+    console.error('Error creating article:', err);
+    res.status(500).json({ error: 'Failed to create article' });
+  }
 });
 
 app.put('/api/articles/:id', (req: Request, res: Response) => {
-  const db = loadDatabase();
-  const idx = db.articles.findIndex((a) => a.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Article not found' });
-  db.articles[idx] = { ...db.articles[idx], ...req.body };
-  saveDatabase(db);
-  res.json(db.articles[idx]);
+  try {
+    const db = loadDatabase();
+    if (!Array.isArray(db.articles)) db.articles = [];
+    const idx = db.articles.findIndex((a) => a.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Article not found' });
+    db.articles[idx] = { ...db.articles[idx], ...req.body };
+    saveDatabase(db);
+    res.json(db.articles[idx]);
+  } catch (err: any) {
+    console.error('Error updating article:', err);
+    res.status(500).json({ error: 'Failed to update article' });
+  }
 });
 
 app.delete('/api/articles/:id', (req: Request, res: Response) => {
-  const db = loadDatabase();
-  db.articles = db.articles.filter((a) => a.id !== req.params.id);
-  saveDatabase(db);
-  res.json({ success: true });
+  try {
+    const db = loadDatabase();
+    if (!Array.isArray(db.articles)) db.articles = [];
+    db.articles = db.articles.filter((a) => a.id !== req.params.id);
+    saveDatabase(db);
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('Error deleting article:', err);
+    res.status(500).json({ error: 'Failed to delete article' });
+  }
 });
 
 // Media CRUD
