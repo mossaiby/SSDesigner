@@ -9,18 +9,32 @@ if (!$pdo) {
 }
 
 // Ensure table exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS `leads` (
-  `id` VARCHAR(64) NOT NULL PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `organization` VARCHAR(255),
-  `inquiry_type` VARCHAR(128),
-  `message` TEXT,
-  `software_interest` VARCHAR(255),
-  `status` VARCHAR(64) DEFAULT 'new',
-  `submitted_at` VARCHAR(64) DEFAULT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `leads` (
+      `id` VARCHAR(64) NOT NULL PRIMARY KEY,
+      `name` VARCHAR(255) NOT NULL,
+      `email` VARCHAR(255) NOT NULL,
+      `organization` VARCHAR(255),
+      `inquiry_type` VARCHAR(128),
+      `message` TEXT,
+      `software_interest` VARCHAR(255),
+      `status` VARCHAR(64) DEFAULT 'new',
+      `submitted_at` VARCHAR(64) DEFAULT NULL,
+      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+    $cols = [
+        "ALTER TABLE `leads` ADD COLUMN `organization` VARCHAR(255)",
+        "ALTER TABLE `leads` ADD COLUMN `inquiry_type` VARCHAR(128)",
+        "ALTER TABLE `leads` ADD COLUMN `message` TEXT",
+        "ALTER TABLE `leads` ADD COLUMN `software_interest` VARCHAR(255)",
+        "ALTER TABLE `leads` ADD COLUMN `status` VARCHAR(64) DEFAULT 'new'",
+        "ALTER TABLE `leads` ADD COLUMN `submitted_at` VARCHAR(64) DEFAULT NULL"
+    ];
+    foreach ($cols as $c) {
+        try { $pdo->exec($c); } catch (Throwable $ex) {}
+    }
+} catch (Throwable $e) {}
 
 function formatLeadRow($row) {
     if (!$row) return null;

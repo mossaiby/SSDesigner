@@ -9,15 +9,26 @@ if (!$pdo) {
 }
 
 // Ensure users table exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS `users` (
-  `id` VARCHAR(64) NOT NULL PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL UNIQUE,
-  `password_hash` VARCHAR(255) NOT NULL,
-  `role` VARCHAR(64) NOT NULL DEFAULT 'administrator',
-  `last_login` VARCHAR(64) DEFAULT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `users` (
+      `id` VARCHAR(64) NOT NULL PRIMARY KEY,
+      `name` VARCHAR(255) NOT NULL,
+      `email` VARCHAR(255) NOT NULL UNIQUE,
+      `password_hash` VARCHAR(255) NOT NULL,
+      `role` VARCHAR(64) NOT NULL DEFAULT 'administrator',
+      `last_login` VARCHAR(64) DEFAULT NULL,
+      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+    $cols = [
+        "ALTER TABLE `users` ADD COLUMN `password_hash` VARCHAR(255) DEFAULT ''",
+        "ALTER TABLE `users` ADD COLUMN `role` VARCHAR(64) DEFAULT 'administrator'",
+        "ALTER TABLE `users` ADD COLUMN `last_login` VARCHAR(64) DEFAULT NULL"
+    ];
+    foreach ($cols as $c) {
+        try { $pdo->exec($c); } catch (Throwable $ex) {}
+    }
+} catch (Throwable $e) {}
 
 // Check if any admin exists; if zero users, create primary admin
 $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
