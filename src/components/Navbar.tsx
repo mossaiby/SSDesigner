@@ -42,9 +42,12 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => handleNavClick('home')}
-            className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-950 dark:text-white px-2 py-1 rounded-lg hover:bg-slate-900 hover:text-white dark:hover:bg-cyan-400 dark:hover:text-slate-950 transition-all whitespace-nowrap"
+            className="flex items-center gap-2.5 text-lg sm:text-xl font-extrabold tracking-tight text-slate-950 dark:text-white px-2.5 py-1 rounded-lg hover:bg-slate-900 hover:text-white dark:hover:bg-cyan-400 dark:hover:text-slate-950 transition-all whitespace-nowrap group"
           >
-            SSDesigner
+            <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/30 flex items-center justify-center text-amber-500 dark:text-amber-400 shadow-sm group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
+              <img src="favicon-16x16.png"></img>
+            </div>
+            <span>SSDesigner</span>
           </button>
         </div>
 
