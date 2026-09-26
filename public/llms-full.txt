@@ -5,7 +5,7 @@
 1. Suite Architecture & Mathematical Foundations
 2. SSDesigner FormSpace (Form-Finding & Dynamic Relaxation)
 3. SSDesigner Lattice3D (Nonlinear Space Grid FEA & Post-Buckling)
-4. SSDesigner DeployX (Multibody Orbital Kinematics)
+4. SSDesigner DeployX (Multibody Kinematics for Kinetic & Retractable Roofs)
 5. SSDesigner NodeCAM (MERO Solid Ball Joint Detailing & CAM)
 6. Real-World Case Studies & Empirical Telemetry
 7. Industry Compliance & Structural Standards
@@ -19,7 +19,7 @@ SSDesigner (ssdesigner.ir) is a unified software platform designed for the struc
 - Single-layer and double-layer reticulated geodesic domes
 - Cable-supported roofs and prestressed membrane cable networks
 - Tensegrity prisms, masts, and tensegrity grids
-- Deployable aerospace mechanisms (satellite antennas, solar booms, pantographic reflectors)
+- Kinetic and retractable spatial mechanisms (retractable stadium roofs, folding canopies, kinetic facades)
 
 ### Tangent Stiffness Decomposition
 Across all non-linear modules, the spatial structure tangent stiffness matrix [K_T] is decomposed into three distinct components:
@@ -78,7 +78,7 @@ Where:
 ---
 
 ## 4. SSDesigner DeployX
-- **Target Applications**: Deployable space antennas, high-strain composite booms, expandable space habitats, solar array trusses.
+- **Target Applications**: Large-scale retractable stadium roofs, operable architectural canopies, scissor-pantograph mechanisms, and kinetic spatial facades.
 - **Formulation**: Flexible Multibody Dynamics using Absolute Nodal Coordinate Formulation (ANCF) coupled with Lagrangian Differential-Algebraic Equations (DAE):
   `M(q) * q̈ + C(q, q̇) * q̇ + K * q + Φ_q^T * λ = Q_ext`
   
@@ -89,8 +89,8 @@ Where:
   Baumgarte penalty stabilization prevents numerical drift in closed kinematic loops:
   `Φ̈ + 2 * α * Φ̇ + β^2 * Φ = 0`
 
-- **Thermo-Elastic Distortions**:
-  Coupled orbital thermal analysis accounts for solar radiation flux (`~1361 W/m²`) causing differential member expansion in low Earth orbit (LEO) and geostationary orbit (GEO).
+- **Thermo-Mechanical & Wind Buffeting**:
+  Coupled ambient thermal expansion analysis accounts for extreme seasonal temperature differentials (EN 1991-1-5) and transient wind buffeting during roof transit operations.
 
 ---
 
@@ -111,10 +111,10 @@ Where:
    - Engineering Challenge: Extreme desert diurnal thermal swing (-2°C to +52°C) combined with high wind suction.
    - Outcome: Saved 142 tonnes structural steel (21% reduction) via SSDesigner Lattice3D post-buckling optimization.
 
-2. **Helios-9 Orbital Reflector** (ESA / Commercial Telecom)
-   - Aperture: 18.4 m aperture deployable carbon-fiber ring truss antenna stowing inside a 1.6 m rocket fairing.
-   - Engineering Challenge: Deployment kinematics in zero-g without cable snags or velocity overshoot.
-   - Outcome: Zero-G deployment verified with SSDesigner DeployX with surface RMS deviation < 0.35 mm across the entire Ku/Ka-band reflecting mesh.
+2. **Caspian Terminal Retractable Canopy** (Baku, Azerbaijan)
+   - Span: 64.0 m kinetic folding spatial canopy over high-speed rail terminal.
+   - Engineering Challenge: Smooth scissor-pantograph actuation under strong Caspian coastal wind shear and dynamic member inertial loads.
+   - Outcome: Kinematic clearance and actuator drive torques verified with SSDesigner DeployX, keeping structural alignment within 0.35 mm tolerance.
 
 3. **Grand Falcon Velodrome Roof** (Abu Dhabi, UAE)
    - Geometry: 142.0 m x 98.0 m double-layer spatial grid covering 12,000 seats with zero interior columns.

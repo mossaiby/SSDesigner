@@ -1,7 +1,7 @@
 {
   "name": "SSDesigner – Space Structures Engineering Software",
   "short_name": "SSDesigner",
-  "description": "High-performance computational mechanics and nonlinear FEA software for spatial grids, geodesic domes, tensegrity systems, and deployable aerospace structures.",
+  "description": "High-performance computational mechanics and nonlinear FEA software for spatial grids, geodesic domes, tensegrity systems, and large-span civil structures.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

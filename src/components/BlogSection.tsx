@@ -19,7 +19,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ isStandalonePage = fal
             <span>Research & Industry Whitepapers</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-4">
-            Technical Insights in Spatial Mechanics
+            Insights in Spatial Mechanics
           </h2>
           <p className="text-base text-slate-800 dark:text-slate-300 font-normal leading-relaxed">
             Deep-dives into nonlinear structural analysis, tensegrity prestress stability, and computational geometry by our structural engineering research group.

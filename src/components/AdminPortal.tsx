@@ -364,7 +364,7 @@ export const AdminPortal: React.FC = () => {
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
-            <span>Real-World Projects ({projectsList.length})</span>
+            <span>Projects ({projectsList.length})</span>
           </button>
 
           <button
@@ -931,7 +931,7 @@ export const AdminPortal: React.FC = () => {
                   Lead Inquiries & Inbound Opportunities
                 </h2>
                 <p className="text-xs text-slate-700 dark:text-slate-400">
-                  Structural engineers, aerospace analysts, and universities requesting demos or quotes.
+                  Structural engineers, civil engineering consultants, and universities requesting demos or quotes.
                 </p>
               </div>
 
@@ -1324,7 +1324,7 @@ export const AdminPortal: React.FC = () => {
                   ))}
                   <option value="Form-Finding & Cable-Net" />
                   <option value="Nonlinear FEA & Buckling" />
-                  <option value="Aerospace Deployables" />
+                  <option value="Kinetic & Retractable Roofs" />
                   <option value="Parametric Detailing & CNC" />
                   <option value="Tensile Membrane Mechanics" />
                   <option value="Space Grid Optimization" />
@@ -1591,7 +1591,7 @@ export const AdminPortal: React.FC = () => {
                   ))}
                   <option value="Sports & Arenas" />
                   <option value="Botanical & Domes" />
-                  <option value="Aerospace & Satellites" />
+                  <option value="Canopies & Retractable Roofs" />
                   <option value="Transit Hubs" />
                   <option value="Experimental Tensegrity" />
                 </datalist>
@@ -1940,7 +1940,7 @@ export const AdminPortal: React.FC = () => {
                   />
                   <datalist id="blog-categories-list">
                     <option value="Computational Mechanics" />
-                    <option value="Aerospace Deployables" />
+                    <option value="Kinetic & Retractable Roofs" />
                     <option value="Structural Case Studies" />
                     <option value="Product Releases" />
                     <option value="Algorithms & Code" />

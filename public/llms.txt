@@ -1,11 +1,11 @@
-# SSDesigner — Space Structures Engineering Software Suite
-> Advanced computational mechanics, nonlinear FEA, dynamic relaxation form-finding, and tensegrity stability solvers for spatial grids, geodesic domes, and deployable aerospace systems.
+# SSDesigner — Space Structures Engineering Software
+> Advanced computational mechanics, nonlinear FEA, dynamic relaxation form-finding, and tensegrity stability solvers for spatial grids, geodesic domes, and large-span civil structures.
 
 ## Overview
-SSDesigner (ssdesigner.ir) provides high-precision structural analysis and parametric software engineered specifically for large-span spatial systems, tensegrity structures, cable-nets, reticulated shells, and space deployables. The suite bridges rigorous theoretical mechanics with industrial 5-axis CNC manufacturing.
+SSDesigner (ssdesigner.ir) provides high-precision structural analysis and parametric software engineered specifically for large-span spatial systems, tensegrity structures, cable-nets, reticulated shells, and retractable kinetic roofs. The suite bridges rigorous theoretical mechanics with industrial 5-axis CNC manufacturing.
 
 - **Official Platform**: https://ssdesigner.ir/
-- **Domain**: Space Structures, Computational Mechanics, Aerospace Deployables, Tensile Architecture
+- **Domain**: Space Structures, Computational Mechanics, Retractable & Kinetic Roofs, Tensile Architecture
 - **Compliance Standards**: Eurocode 3 (EN 1993-1-1 / EN 1993-1-11), ASCE/SEI 7-22, IASS Spatial Structures Recommendations
 - **Full LLM Knowledge Base**: https://ssdesigner.ir/llms-full.txt
 - **Primary Inquiry / Contact**: contact@ssdesigner.ir
@@ -27,9 +27,9 @@ SSDesigner (ssdesigner.ir) provides high-precision structural analysis and param
 - **Capacity**: Up to 80,000 framework nodes with Sturm sequence eigenvalue tracking.
 
 ### 3. SSDesigner DeployX
-- **Category**: Aerospace Deployables & Kinematic Dynamics (v2026.1 SP2)
-- **Primary Function**: Flexible multibody dynamics solver for articulating satellite antennas, scissor-pantograph booms, solar sail trusses, and bistable tape-spring composites in zero-g orbital environments.
-- **Key Algorithms**: Lagrangian DAE formulation with Baumgarte constraint stabilization, origami-based tessellation kinematics (Miura-ori), thermo-elastic solar distortion.
+- **Category**: Kinetic Roofs & Spatial Kinematics (v2026.1 SP2)
+- **Primary Function**: Flexible multibody dynamics solver for retractable stadium roofs, folding canopies, scissor-pantograph architectural mechanisms, and kinetic spatial facades.
+- **Key Algorithms**: Lagrangian DAE formulation with Baumgarte constraint stabilization, folding tessellation kinematics, thermal gradient expansion and operational wind buffet kinematics.
 - **Formulation**: M(q) q̈ + C(q, q̇) q̇ + K q + Φ_q^T λ = Q_ext subject to kinematic holonomic constraints Φ(q, t) = 0.
 - **Capacity**: 35,000 multibody coordinate degrees of freedom.
 
@@ -43,9 +43,9 @@ SSDesigner (ssdesigner.ir) provides high-precision structural analysis and param
 1. **Al-Miraj Bioclimatic Dome** (Riyadh, Saudi Arabia)
    - 118.0 m clear span geodesic Schwedler dome.
    - Saved 142 tonnes structural steel (21% reduction) via SSDesigner Lattice3D post-buckling optimization.
-2. **Helios-9 Orbital Reflector** (ESA / Commercial Telecom)
-   - 18.4 m aperture deployable carbon-fiber ring truss antenna stowing inside 1.6m launcher fairing.
-   - Zero-G deployment verified with SSDesigner DeployX with surface RMS error < 0.35 mm.
+2. **Caspian Terminal Retractable Canopy** (Baku, Azerbaijan)
+   - 64.0 m span kinetic folding spatial canopy over high-speed rail terminal.
+   - Kinematic mechanism clearance and motor actuation torque verified with SSDesigner DeployX with RMS deviation < 0.35 mm.
 3. **Grand Falcon Velodrome Roof** (Abu Dhabi, UAE)
    - 142.0 m x 98.0 m double-layer spatial grid covering 12,000 seats with zero interior columns.
    - SSDesigner FormSpace form-finding saved 194 tonnes steel.
@@ -54,6 +54,6 @@ SSDesigner (ssdesigner.ir) provides high-precision structural analysis and param
 
 ## Licensing & Engineering Support
 - **Technical Demos & Evaluation Builds**: Available on request via the SSDesigner portal.
-- **Commercial Licenses**: Tailored for structural consulting firms, general contractors, and aerospace labs.
-- **Academic Program**: Free research and educational licenses for accredited civil and aerospace engineering institutions.
+- **Commercial Licenses**: Tailored for structural consulting firms, general contractors, and civil engineering consultancies.
+- **Academic Program**: Free research and educational licenses for accredited civil and structural engineering institutions.
 - **Contact**: contact@ssdesigner.ir | https://ssdesigner.ir/
