@@ -31,7 +31,7 @@ export const Hero: React.FC = () => {
               onClick={() => navigateTo({ view: 'all_software' })}
               className="px-6 py-3 text-xs font-semibold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-950/20 flex items-center gap-2 cursor-pointer"
             >
-              <span>View Full Software</span>
+              <span>View Full Software Suite</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 

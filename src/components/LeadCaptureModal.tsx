@@ -20,7 +20,7 @@ export const LeadCaptureModal: React.FC = () => {
     leadModalPreset.inquiryType || 'Software Demo'
   );
   const [softwareInterest, setSoftwareInterest] = useState<string>(
-    leadModalPreset.softwareInterest || softwareList[0]?.name || 'FormSpace Prime'
+    leadModalPreset.softwareInterest || softwareList[0]?.name || ''
   );
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);

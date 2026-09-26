@@ -15,7 +15,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isStandalonePage
   const [organization, setOrganization] = useState('');
   const [role, setRole] = useState('');
   const [inquiryType, setInquiryType] = useState<LeadInquiry['inquiryType']>('Software Demo');
-  const [softwareInterest, setSoftwareInterest] = useState<string>(softwareList[0]?.name || 'FormSpace Prime');
+  const [softwareInterest, setSoftwareInterest] = useState<string>(softwareList[0]?.name || '');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 

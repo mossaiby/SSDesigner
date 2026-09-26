@@ -89,16 +89,16 @@ export const SoftwareGalleryWidget: React.FC = () => {
     setSelectedSoftwareId(validSoftwareList[prevIndex]?.id || validSoftwareList[0]?.id);
   };
 
-  const currentThumbnail = selectedSoftware?.thumbnail || '/src/assets/images/software_form_finding_1790188528595.jpg';
+  const currentThumbnail = selectedSoftware?.thumbnail || '';
   const currentFeatures = Array.isArray(selectedSoftware?.keyFeatures) ? selectedSoftware.keyFeatures : [];
   const currentSpecs = selectedSoftware?.specs || {
-    solverType: 'Dynamic Relaxation',
-    formulation: 'Co-rotational 3D',
-    elementsSupported: ['Cables', 'Struts'],
-    maxNodesTested: '100,000+ Spatial Nodes',
-    fileIOFormats: ['DXF', 'STEP', 'JSON'],
-    hardwareAcceleration: 'CUDA & Apple Metal',
-    complianceStandards: ['Eurocode 3']
+    solverType: '',
+    formulation: '',
+    elementsSupported: [],
+    maxNodesTested: '',
+    fileIOFormats: [],
+    hardwareAcceleration: '',
+    complianceStandards: []
   };
 
   return (
@@ -151,7 +151,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
         <div className="relative aspect-21/9 min-h-[360px] max-h-[480px] w-full overflow-hidden">
           <img
             src={currentThumbnail}
-            alt={selectedSoftware?.name || 'FormSpace Prime'}
+            alt={selectedSoftware?.name || ''}
             className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover:scale-105"
             referrerPolicy="no-referrer"
           />
@@ -165,13 +165,13 @@ export const SoftwareGalleryWidget: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-500 text-slate-950 shadow-sm">
-                  {selectedSoftware?.version || '2026.1'}
+                  {selectedSoftware?.version || ''}
                 </span>
                 <span className="px-3 py-1 rounded-full text-xs font-mono bg-slate-800/90 text-cyan-300 border border-slate-700/80 backdrop-blur-xs">
                   {selectedSoftware?.category || 'General'}
                 </span>
                 <span className="hidden sm:inline-flex px-3 py-1 rounded-full text-xs font-mono bg-slate-900/80 text-slate-300 border border-slate-700/80">
-                  {currentSpecs?.solverType || 'Dynamic Relaxation'}
+                  {currentSpecs?.solverType || ''}
                 </span>
               </div>
 
@@ -197,7 +197,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
             {/* Middle / Bottom Software Info */}
             <div className="max-w-2xl space-y-3 pt-4">
               <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
-                {selectedSoftware?.name || 'Computational Solver'}
+                {selectedSoftware?.name || ''}
               </h3>
               
               <p className="text-cyan-300 font-mono text-xs sm:text-sm font-medium">
@@ -296,14 +296,14 @@ export const SoftwareGalleryWidget: React.FC = () => {
                 {/* Category chip over image */}
                 <div className="absolute top-3 left-3">
                   <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-slate-900/90 text-cyan-300 border border-slate-700 backdrop-blur-xs">
-                    {software.category || 'Engineering'}
+                    {software.category || ''}
                   </span>
                 </div>
 
                 {/* Version badge */}
                 <div className="absolute top-3 right-3">
                   <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500 text-slate-950 font-bold">
-                    {(software.version || '2026').split(' ')[0]}
+                    {(software.version || '').split(' ')[0]}
                   </span>
                 </div>
 
@@ -326,7 +326,7 @@ export const SoftwareGalleryWidget: React.FC = () => {
                   <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 font-medium">
                     <span>Capacity:</span>
                     <span className="text-slate-900 dark:text-slate-200 font-semibold truncate max-w-[140px]">
-                      {itemSpecs.maxNodesTested || '100,000+ Nodes'}
+                      {itemSpecs.maxNodesTested || ''}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 font-medium">
@@ -365,38 +365,6 @@ export const SoftwareGalleryWidget: React.FC = () => {
             </div>
           );
         })}
-      </div>
-
-      {/* Bottom Full Suite Action Bar */}
-      <div className="mt-8 p-4 rounded-2xl bg-gradient-to-r from-slate-100 via-slate-50 to-cyan-50/40 dark:from-slate-900 dark:via-slate-900 dark:to-cyan-950/20 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-            <Cpu className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-950 dark:text-white">
-              Looking for Custom Nonlinear Analysis or Code Integration?
-            </h4>
-            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-              All 4 solvers provide C++ SDKs, Python bindings, and Grasshopper parametric components.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            onClick={() => navigateTo({ view: 'all_software' })}
-            className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-white font-medium text-xs transition-colors cursor-pointer shadow-xs"
-          >
-            Compare All 4 Solvers
-          </button>
-          <button
-            onClick={() => openLeadModal({ inquiryType: 'Software Demo' })}
-            className="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-semibold text-xs transition-colors cursor-pointer shadow-sm shadow-cyan-900/20"
-          >
-            Request Trial License
-          </button>
-        </div>
       </div>
     </div>
   );

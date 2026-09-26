@@ -322,7 +322,7 @@ export const AdminPortal: React.FC = () => {
             </span>
             <span className="text-slate-300 dark:text-slate-700">|</span>
             <span className="text-slate-700 dark:text-slate-400 font-mono text-[11px]">
-              Database: <span className="text-cyan-700 dark:text-cyan-400 font-semibold">{dbStatus?.database || 'ssdesigner_db'}</span>
+              Database: <span className="text-cyan-700 dark:text-cyan-400 font-semibold">{dbStatus?.database || 'ssdesign_db'}</span>
             </span>
           </div>
 
@@ -1248,7 +1248,7 @@ export const AdminPortal: React.FC = () => {
                 const softwareData = {
                   name: getFormField(fd, 'name'),
                   tagline: getFormField(fd, 'tagline'),
-                  category: getFormField(fd, 'category', editingSoftware?.category || 'Form-Finding & Cable-Net'),
+                  category: getFormField(fd, 'category', editingSoftware?.category || ''),
                   version: getFormField(fd, 'version', editingSoftware?.version || ''),
                   description: getFormField(fd, 'description'),
                   keyFeatures: getFormArrayFromLines(fd, 'keyFeatures', []),
@@ -1500,7 +1500,7 @@ export const AdminPortal: React.FC = () => {
                 const projectData = {
                   title: getFormField(fd, 'title'),
                   subtitle: getFormField(fd, 'subtitle', getFormField(fd, 'structuralSystem')),
-                  category: getFormField(fd, 'category', editingProject?.category || 'Sports & Arenas'),
+                  category: getFormField(fd, 'category', editingProject?.category || ''),
                   location: getFormField(fd, 'location', editingProject?.location || ''),
                   year: parseInt(getFormField(fd, 'year', String(new Date().getFullYear()))) || new Date().getFullYear(),
                   span: getFormField(fd, 'span', editingProject?.span || ''),

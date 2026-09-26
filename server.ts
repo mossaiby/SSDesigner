@@ -145,7 +145,7 @@ app.get('/api/status', (_req: Request, res: Response) => {
   res.json({
     connected: true,
     engine: 'Server Database Engine (Ready for MySQL)',
-    database: process.env.DB_NAME || 'ssdesigner_db',
+    database: process.env.DB_NAME || 'ssdesign_db',
     counts: {
       software: db.software.length,
       projects: db.projects.length,
