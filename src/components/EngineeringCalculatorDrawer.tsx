@@ -578,7 +578,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                 className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                   activeTab === 'calculator'
                     ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs border border-slate-200 dark:border-slate-700'
-                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/50'
                 }`}
               >
                 <Calculator className="w-3.5 h-3.5 text-cyan-500" />
@@ -589,7 +589,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                 className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                   activeTab === 'converter'
                     ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs border border-slate-200 dark:border-slate-700'
-                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                    : 'text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/50'
                 }`}
               >
                 <ArrowRightLeft className="w-3.5 h-3.5 text-cyan-500" />
@@ -976,7 +976,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                           className={`p-2 rounded-xl text-left border text-xs font-medium transition-all cursor-pointer ${
                             selectedCategory === key
                               ? 'bg-cyan-500/10 dark:bg-cyan-400/10 border-cyan-500 text-cyan-600 dark:text-cyan-300 font-semibold shadow-xs'
-                              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white'
                           }`}
                         >
                           <span className="block truncate">{cat.name}</span>
@@ -1027,7 +1027,7 @@ export const EngineeringCalculatorDrawer: React.FC = () => {
                     <div className="flex items-center justify-center">
                       <button
                         onClick={handleSwapUnits}
-                        className="p-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-cyan-600 dark:text-cyan-400 hover:scale-110 active:scale-95 transition-all shadow-xs cursor-pointer"
+                        className="p-2.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/50 hover:border-cyan-300 dark:hover:border-cyan-700 hover:scale-110 active:scale-95 transition-all shadow-xs cursor-pointer"
                         title="Swap Units"
                       >
                         <ArrowRightLeft className="w-4 h-4" />

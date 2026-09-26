@@ -1225,15 +1225,15 @@ export const AdminPortal: React.FC = () => {
 
       {/* ===================== MODAL: ADD / EDIT SOFTWARE ===================== */}
       {(isAddingSoftware || editingSoftware) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4 sticky top-0 bg-slate-900 z-10">
-              <h3 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 dark:bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto transition-colors">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-4 sticky top-0 bg-white dark:bg-slate-900 z-10">
+              <h3 className="text-lg font-bold text-slate-950 dark:text-white">
                 {editingSoftware ? `Edit Software: ${editingSoftware.name}` : 'Create Engineering Software Profile'}
               </h3>
               <button
                 onClick={() => { setIsAddingSoftware(false); setEditingSoftware(null); }}
-                className="text-slate-400 hover:text-white"
+                className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1280,35 +1280,35 @@ export const AdminPortal: React.FC = () => {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Software Name *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Software Name *</label>
                   <input
                     name="name"
                     required
                     defaultValue={editingSoftware?.name || ''}
                     placeholder="e.g. FormSpace Prime"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Version *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Version *</label>
                   <input
                     name="version"
                     required
                     defaultValue={editingSoftware?.version || '2026.1'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Category (Select or enter custom string) *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Category (Select or enter custom string) *</label>
                 <input
                   list="software-categories-list"
                   name="category"
                   required
                   defaultValue={editingSoftware?.category || 'Form-Finding & Cable-Net'}
                   placeholder="e.g. Form-Finding & Cable-Net, or enter any custom category"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
                 <datalist id="software-categories-list">
                   {Array.from(new Set(softwareList.map(s => s.category).filter(Boolean))).map(cat => (
@@ -1321,119 +1321,119 @@ export const AdminPortal: React.FC = () => {
                   <option value="Tensile Membrane Mechanics" />
                   <option value="Space Grid Optimization" />
                 </datalist>
-                <span className="text-[10px] text-slate-500 mt-1 block">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 block">
                   Category is user-modifiable: Type any category string or select an existing one.
                 </span>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Tagline / Summary *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Tagline / Summary *</label>
                 <input
                   name="tagline"
                   required
                   defaultValue={editingSoftware?.tagline || ''}
                   placeholder="e.g. Nonlinear Dynamic Relaxation & Equilibrium Solver"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Detailed Description</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Detailed Description</label>
                 <textarea
                   name="description"
                   rows={3}
                   defaultValue={editingSoftware?.description || ''}
                   placeholder="Detailed description of the calculation engine, capabilities, and application domains..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Key Features (One feature per line)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Key Features (One feature per line)</label>
                 <textarea
                   name="keyFeatures"
                   rows={3}
                   defaultValue={editingSoftware?.keyFeatures.join('\n') || ''}
                   placeholder="Dynamic Relaxation with kinetic damping&#10;Slack cable auto-detection&#10;Multi-point boundary constraints"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 font-mono focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Solver Engine</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Solver Engine</label>
                   <input
                     name="solverType"
                     defaultValue={editingSoftware?.specs.solverType || ''}
                     placeholder="e.g. Dynamic Relaxation & Sparse Cholesky"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Tested Node Capacity</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Tested Node Capacity</label>
                   <input
                     name="maxNodes"
                     defaultValue={editingSoftware?.specs.maxNodesTested || ''}
                     placeholder="e.g. 100,000+ Spatial Nodes"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Continuum / Structural Formulation</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Continuum / Structural Formulation</label>
                   <input
                     name="formulation"
                     defaultValue={editingSoftware?.specs.formulation || ''}
                     placeholder="e.g. Co-rotational 3D formulation & Green-Lagrange strain"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Hardware Acceleration</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Hardware Acceleration</label>
                   <input
                     name="hardware"
                     defaultValue={editingSoftware?.specs.hardwareAcceleration || ''}
                     placeholder="e.g. OpenCL / CUDA Multithreaded"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Supported Elements (Comma-separated)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Supported Elements (Comma-separated)</label>
                 <input
                   name="elements"
                   defaultValue={editingSoftware?.specs.elementsSupported.join(', ') || ''}
                   placeholder="e.g. Tension Cables, Compression Struts, Beams"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">File I/O Formats (Comma-separated)</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">File I/O Formats (Comma-separated)</label>
                   <input
                     name="fileIO"
                     defaultValue={editingSoftware?.specs.fileIOFormats.join(', ') || ''}
                     placeholder="e.g. DXF, STEP, JSON, IFC 4x3, CSV"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Standards (Comma-separated)</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Standards (Comma-separated)</label>
                   <input
                     name="standards"
                     defaultValue={editingSoftware?.specs.complianceStandards.join(', ') || ''}
                     placeholder="e.g. Eurocode 3, IASS Working Group 8, AISC 360"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="block text-slate-400 mb-1 font-mono">Thumbnail Image</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Thumbnail Image</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -1442,30 +1442,30 @@ export const AdminPortal: React.FC = () => {
                       const file = e.target.files?.[0];
                       if (file) handleFileUpload(file, 'software_thumbnail_input');
                     }}
-                    className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
+                    className="text-xs text-slate-600 dark:text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-100 dark:file:bg-slate-800 file:text-cyan-700 dark:file:text-cyan-400 file:text-xs cursor-pointer"
                   />
-                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono">Uploading...</span>}
+                  {isUploading && <span className="text-xs text-cyan-600 dark:text-cyan-400 animate-pulse font-mono">Uploading...</span>}
                 </div>
                 <input
                   id="software_thumbnail_input"
                   name="thumbnail"
                   defaultValue={editingSoftware?.thumbnail || ''}
                   placeholder="URL or uploaded image path"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => { setIsAddingSoftware(false); setEditingSoftware(null); }}
-                  className="px-4 py-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                  className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
+                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-sm transition-colors cursor-pointer"
                 >
                   {editingSoftware ? 'Save Profile Changes' : 'Create Software Profile'}
                 </button>
@@ -1477,15 +1477,15 @@ export const AdminPortal: React.FC = () => {
 
       {/* ===================== MODAL: ADD / EDIT PROJECT ===================== */}
       {(isAddingProject || editingProject) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
-              <h3 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 dark:bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto transition-colors">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-4 sticky top-0 bg-white dark:bg-slate-900 z-10">
+              <h3 className="text-lg font-bold text-slate-950 dark:text-white">
                 {editingProject ? `Edit Project: ${editingProject.title}` : 'Add Real-World Space Structure Project'}
               </h3>
               <button
                 onClick={() => { setIsAddingProject(false); setEditingProject(null); }}
-                className="text-slate-400 hover:text-white"
+                className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1530,45 +1530,45 @@ export const AdminPortal: React.FC = () => {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Project Title *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Project Title *</label>
                   <input
                     name="title"
                     required
                     defaultValue={editingProject?.title || ''}
                     placeholder="e.g. Grand Falcon International Velodrome"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Completion Year *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Completion Year *</label>
                   <input
                     name="year"
                     type="number"
                     required
                     defaultValue={editingProject?.year || new Date().getFullYear()}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Location</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Location</label>
                 <input
                   name="location"
                   defaultValue={editingProject?.location || ''}
                   placeholder="e.g. Munich, Germany"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Category (Select or enter custom category)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Category (Select or enter custom category)</label>
                 <input
                   list="project-categories-list"
                   name="category"
                   defaultValue={editingProject?.category || 'Sports & Arenas'}
                   placeholder="e.g. Sports & Arenas, Botanical & Domes, or custom"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
                 <datalist id="project-categories-list">
                   {Array.from(new Set(projectsList.map(p => p.category).filter(Boolean))).map(cat => (
@@ -1583,92 +1583,92 @@ export const AdminPortal: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Clear Span / Aperture *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Clear Span / Aperture *</label>
                 <input
                   name="span"
                   required
                   defaultValue={editingProject?.span || ''}
                   placeholder="e.g. 140 m Clear Span"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Spatial Nodes Count</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Spatial Nodes Count</label>
                   <input
                     name="nodeCount"
                     defaultValue={editingProject?.nodeCount || ''}
                     placeholder="e.g. 3,400 Nodes"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Members Count</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Members Count</label>
                   <input
                     name="memberCount"
                     defaultValue={editingProject?.memberCount || ''}
                     placeholder="e.g. 8,200 Members"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Structural System Description *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Structural System Description *</label>
                 <input
                   name="structuralSystem"
                   required
                   defaultValue={editingProject?.structuralSystem || ''}
                   placeholder="Double-layer elliptic paraboloid space grid with spherical nodes"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Lead Client / Engineering Entity</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Lead Client / Engineering Entity</label>
                 <input
                   name="clientOrEngineer"
                   defaultValue={editingProject?.clientOrEngineer || ''}
                   placeholder="e.g. Munich Stadium Authority & Schlaich Bergermann"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Engineering Challenges</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Engineering Challenges</label>
                 <textarea
                   name="challenge"
                   rows={2}
                   defaultValue={editingProject?.challenge || ''}
                   placeholder="Nonlinear geometric bifurcation and large deformation control..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Engineering Solution & Software Role</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Engineering Solution & Software Role</label>
                 <textarea
                   name="engineeringSolution"
                   rows={2}
                   defaultValue={editingProject?.engineeringSolution || ''}
                   placeholder="Optimized double-layer spatial topology with pre-stressed cable reinforcement..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Software Used (Comma-separated)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Software Used (Comma-separated)</label>
                 <input
                   name="softwareUsed"
                   defaultValue={editingProject?.softwareUsed?.join(', ') || ''}
                   placeholder="e.g. FormSpace Prime, AeroLattice 3D"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-slate-400 mb-1 font-mono">Hero Project Image</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Hero Project Image</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -1677,30 +1677,30 @@ export const AdminPortal: React.FC = () => {
                       const file = e.target.files?.[0];
                       if (file) handleFileUpload(file, 'project_hero_input');
                     }}
-                    className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
+                    className="text-xs text-slate-600 dark:text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-100 dark:file:bg-slate-800 file:text-cyan-700 dark:file:text-cyan-400 file:text-xs cursor-pointer"
                   />
-                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono">Uploading...</span>}
+                  {isUploading && <span className="text-xs text-cyan-600 dark:text-cyan-400 animate-pulse font-mono">Uploading...</span>}
                 </div>
                 <input
                   id="project_hero_input"
                   name="heroImage"
                   defaultValue={editingProject?.heroImage || ''}
                   placeholder="URL or uploaded image path"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => { setIsAddingProject(false); setEditingProject(null); }}
-                  className="px-4 py-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                  className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
+                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-sm transition-colors cursor-pointer"
                 >
                   {editingProject ? 'Save Project Changes' : 'Create Project Case Study'}
                 </button>
@@ -1712,15 +1712,15 @@ export const AdminPortal: React.FC = () => {
 
       {/* ===================== MODAL: ADD / EDIT MEDIA ===================== */}
       {(isAddingMedia || editingMedia) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur overflow-y-auto">
-          <div className="relative w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
-              <h3 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 dark:bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
+          <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto transition-colors">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-4 sticky top-0 bg-white dark:bg-slate-900 z-10">
+              <h3 className="text-lg font-bold text-slate-950 dark:text-white">
                 {editingMedia ? 'Edit Media Asset' : 'Upload Gallery Photo / Video Simulation'}
               </h3>
               <button
                 onClick={() => { setIsAddingMedia(false); setEditingMedia(null); }}
-                className="text-slate-400 hover:text-white"
+                className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1760,12 +1760,12 @@ export const AdminPortal: React.FC = () => {
               className="space-y-4 text-xs"
             >
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Assign to Software or Project *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Assign to Software or Project *</label>
                 <select
                   name="target"
                   required
                   defaultValue={editingMedia ? `${editingMedia.targetType}:${editingMedia.targetId}` : `software:${softwareList[0]?.id}`}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 >
                   <optgroup label="Engineering Software Profiles">
                     {softwareList.map(s => (
@@ -1782,30 +1782,30 @@ export const AdminPortal: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Asset Type</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Asset Type</label>
                   <select
                     name="type"
                     defaultValue={editingMedia?.type || 'photo'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   >
                     <option value="photo">Photo / High-Res Render</option>
                     <option value="video">Movie / Simulation Video</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Asset Title *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Asset Title *</label>
                   <input
                     name="title"
                     required
                     defaultValue={editingMedia?.title || ''}
                     placeholder="e.g. Snap-Through Buckling Mode #1"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Option A: Upload Local File (Images / Simulation Videos)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Option A: Upload Local File (Images / Simulation Videos)</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -1814,55 +1814,55 @@ export const AdminPortal: React.FC = () => {
                       const file = e.target.files?.[0];
                       if (file) handleFileUpload(file, 'media_url_input');
                     }}
-                    className="w-full text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 cursor-pointer text-xs"
+                    className="w-full text-slate-600 dark:text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-100 dark:file:bg-slate-800 file:text-cyan-700 dark:file:text-cyan-400 cursor-pointer text-xs"
                   />
-                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono whitespace-nowrap">Uploading...</span>}
+                  {isUploading && <span className="text-xs text-cyan-600 dark:text-cyan-400 animate-pulse font-mono whitespace-nowrap">Uploading...</span>}
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Option B: Media URL / Cloud Path *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Option B: Media URL / Cloud Path *</label>
                 <input
                   id="media_url_input"
                   name="url"
                   required
                   defaultValue={editingMedia?.url || ''}
                   placeholder="https://... or /src/assets/images/..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Caption / Context</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Caption / Context</label>
                 <textarea
                   name="caption"
                   rows={2}
                   defaultValue={editingMedia?.caption || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Technical Specification Note</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Technical Specification Note</label>
                 <input
                   name="technicalNote"
                   defaultValue={editingMedia?.technicalNote || ''}
                   placeholder="e.g. Iteration #240 | Residual norm < 1e-8"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => { setIsAddingMedia(false); setEditingMedia(null); }}
-                  className="px-4 py-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                  className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-sm transition-colors cursor-pointer"
                 >
                   {editingMedia ? 'Save Asset' : 'Upload to Gallery'}
                 </button>
@@ -1874,15 +1874,15 @@ export const AdminPortal: React.FC = () => {
 
       {/* ===================== MODAL: ADD / EDIT BLOG ===================== */}
       {(isAddingBlog || editingBlog) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
-              <h3 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 dark:bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto transition-colors">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-4 sticky top-0 bg-white dark:bg-slate-900 z-10">
+              <h3 className="text-lg font-bold text-slate-950 dark:text-white">
                 {editingBlog ? 'Edit Technical Article' : 'Publish Technical Blog Post'}
               </h3>
               <button
                 onClick={() => { setIsAddingBlog(false); setEditingBlog(null); }}
-                className="text-slate-400 hover:text-white"
+                className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1921,23 +1921,23 @@ export const AdminPortal: React.FC = () => {
               className="space-y-4 text-xs"
             >
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Article Title *</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Article Title *</label>
                 <input
                   name="title"
                   required
                   defaultValue={editingBlog?.title || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Category (Select or enter custom)</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Category (Select or enter custom)</label>
                   <input
                     list="blog-categories-list"
                     name="category"
                     defaultValue={editingBlog?.category || 'Computational Mechanics'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                   <datalist id="blog-categories-list">
                     <option value="Computational Mechanics" />
@@ -1948,48 +1948,48 @@ export const AdminPortal: React.FC = () => {
                   </datalist>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Read Time</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Read Time</label>
                   <input
                     name="readTime"
                     defaultValue={editingBlog?.readTime || ''}
                     placeholder="e.g. 6 min read"
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Tags (Comma-separated)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Tags (Comma-separated)</label>
                 <input
                   name="tags"
                   defaultValue={editingBlog?.tags?.join(', ') || ''}
                   placeholder="e.g. SpaceStructures, ComputationalMechanics, Algorithms"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Executive Summary / Excerpt</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Executive Summary / Excerpt</label>
                 <textarea
                   name="excerpt"
                   rows={2}
                   defaultValue={editingBlog?.excerpt || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-mono">Article Content (Markdown Supported)</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Article Content (Markdown Supported)</label>
                 <textarea
                   name="content"
                   rows={6}
                   defaultValue={editingBlog?.content || ''}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 font-mono focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-slate-400 mb-1 font-mono">Featured Cover Image</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1 font-mono text-xs font-semibold">Featured Cover Image</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -1998,30 +1998,30 @@ export const AdminPortal: React.FC = () => {
                       const file = e.target.files?.[0];
                       if (file) handleFileUpload(file, 'blog_cover_input');
                     }}
-                    className="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-800 file:text-cyan-400 file:text-xs cursor-pointer"
+                    className="text-xs text-slate-600 dark:text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:bg-slate-100 dark:file:bg-slate-800 file:text-cyan-700 dark:file:text-cyan-400 file:text-xs cursor-pointer"
                   />
-                  {isUploading && <span className="text-xs text-cyan-400 animate-pulse font-mono">Uploading...</span>}
+                  {isUploading && <span className="text-xs text-cyan-600 dark:text-cyan-400 animate-pulse font-mono">Uploading...</span>}
                 </div>
                 <input
                   id="blog_cover_input"
                   name="coverImage"
                   defaultValue={editingBlog?.coverImage || ''}
                   placeholder="URL or uploaded image path"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => { setIsAddingBlog(false); setEditingBlog(null); }}
-                  className="px-4 py-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                  className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"
+                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-sm transition-colors cursor-pointer"
                 >
                   {editingBlog ? 'Save Article' : 'Publish Article'}
                 </button>
@@ -2033,21 +2033,21 @@ export const AdminPortal: React.FC = () => {
 
       {/* ===================== CONFIRM DELETE MODAL ===================== */}
       {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur">
-          <div className="w-full max-w-sm bg-slate-900 border border-rose-900/60 rounded-2xl p-6 shadow-2xl">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 dark:bg-slate-950/80 backdrop-blur-xs">
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/60 rounded-2xl p-6 shadow-2xl transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-4">
               <AlertTriangle className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white mb-1">
+            <h3 className="text-base font-bold text-slate-950 dark:text-white mb-1">
               Confirm Record Deletion
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
-              Are you sure you want to permanently delete <span className="text-white font-semibold">"{confirmDelete.name}"</span>? Associated gallery media will also be unlinked.
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
+              Are you sure you want to permanently delete <span className="text-slate-900 dark:text-white font-semibold">"{confirmDelete.name}"</span>? Associated gallery media will also be unlinked.
             </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="px-3 py-1.5 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -2059,7 +2059,7 @@ export const AdminPortal: React.FC = () => {
                   if (confirmDelete.type === 'blog') deleteBlogPost(confirmDelete.id);
                   setConfirmDelete(null);
                 }}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-500"
+                className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-500 transition-colors cursor-pointer"
               >
                 Delete Record
               </button>
