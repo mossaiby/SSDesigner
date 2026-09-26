@@ -2,5 +2,7 @@
   "name": "SSDesigner - Space Structures Engineering Software",
   "description": "Comprehensive engineering software suite for space structures and geodesic domes.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

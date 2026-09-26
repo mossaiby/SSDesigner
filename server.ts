@@ -386,7 +386,7 @@ app.put('/api/leads/:id', (req: Request, res: Response) => {
 });
 
 // File Upload endpoint
-app.post('/api/upload', upload.single('file'), (req: Request, res: Response) => {
+app.post('/api/upload', upload.single('file') as any, (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file received for upload' });
   }
