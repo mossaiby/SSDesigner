@@ -43,7 +43,7 @@ export interface SoftwareItem {
   version: string;
   description: string;
   keyFeatures: string[];
-  mathematicalFoundations: string[];
+  mathematicalFoundations?: string[];
   specs: SoftwareSpecs;
   thumbnail: string;
   gallery: MediaItem[];
@@ -67,8 +67,8 @@ export interface ProjectItem {
   span: string;
   structuralSystem: string;
   nodeCount: string;
-  memberCount: string;
-  steelWeightSaved: string;
+  memberCount?: string;
+  steelWeightSaved?: string;
   clientOrEngineer: string;
   softwareUsed: string[];
   challenge: string;

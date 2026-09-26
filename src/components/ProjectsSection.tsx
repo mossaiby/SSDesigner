@@ -122,8 +122,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ isStandalonePa
                         <div className="font-semibold text-slate-900 dark:text-white truncate">{proj.span}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Saved Weight</div>
-                        <div className="font-semibold text-emerald-600 dark:text-emerald-400 truncate">{proj.steelWeightSaved}</div>
+                        <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">
+                          {proj.nodeCount ? 'Spatial Nodes' : proj.memberCount ? 'Members' : 'Category'}
+                        </div>
+                        <div className="font-semibold text-slate-900 dark:text-white truncate">
+                          {proj.nodeCount || proj.memberCount || proj.category}
+                        </div>
                       </div>
                     </div>
 

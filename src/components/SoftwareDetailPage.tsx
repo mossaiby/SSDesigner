@@ -3,7 +3,6 @@ import { useData } from '../context/DataContext';
 import { 
   ArrowLeft, 
   Layers, 
-  Cpu, 
   FileCode2, 
   CheckCircle2, 
   Image as ImageIcon, 
@@ -15,10 +14,9 @@ import {
   ShieldCheck, 
   Compass, 
   Plus,
-  BookOpen,
   Sigma
 } from 'lucide-react';
-import { MathRenderer, FormattedMathText, BlockMath, InlineMath } from './MathRenderer';
+import { MarkdownArticleView } from './MathRenderer';
 import { INITIAL_SOFTWARE_ITEMS } from '../data/initialData';
 
 interface SoftwareDetailPageProps {
@@ -112,157 +110,29 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
             <h2 className="text-2xl font-bold text-slate-950 dark:text-white tracking-tight mb-4">
               Structural Engineering Capabilities
             </h2>
-            <div className="whitespace-pre-line text-slate-700 dark:text-slate-300 leading-relaxed">
-              <FormattedMathText text={software.description} />
+            <div className="text-slate-700 dark:text-slate-300 leading-relaxed">
+              <MarkdownArticleView content={software.description} />
             </div>
           </section>
 
-          {/* Key Capabilities Grid */}
-          <section>
-            <h3 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight mb-4">
-              Core Solver Features & Modules
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {software.keyFeatures.map((feat, idx) => (
-                <div key={idx} className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 flex items-start gap-3 shadow-sm">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
-                  <span className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-snug">
-                    {feat}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Mathematical Foundations with KaTeX renderer */}
-          <section className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-slate-950 dark:text-white tracking-tight flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                Mathematical Foundations & Formulations
+          {/* Key Capabilities */}
+          {software.keyFeatures && software.keyFeatures.length > 0 && (
+            <section>
+              <h3 className="text-xl font-bold text-slate-950 dark:text-white tracking-tight mb-4">
+                Core Solver Features & Modules
               </h3>
-              <span className="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-300 dark:border-cyan-800">
-                react-katex Verified
-              </span>
-            </div>
-            <div className="space-y-3">
-              {software.mathematicalFoundations.map((formula, idx) => (
-                <MathRenderer key={idx} formula={formula} />
-              ))}
-            </div>
-          </section>
-
-          {/* Solver Numerical Pipeline & TeX Derivations Documentation */}
-          <section className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-sm">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400">
-                  <BookOpen className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-950 dark:text-white tracking-tight">
-                    Solver Numerical Documentation & Algorithmic Pipeline
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Step-by-step state transition equations and convergence criteria executed by {software.name}.
-                  </p>
-                </div>
+              <div className="space-y-3">
+                {software.keyFeatures.map((feat, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
+                    <span className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-snug">
+                      {feat}
+                    </span>
+                  </div>
+                ))}
               </div>
-              <span className="text-[11px] font-mono text-cyan-600 dark:text-cyan-400 px-2 py-1 rounded bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200 dark:border-cyan-800">
-                react-katex Engine
-              </span>
-            </div>
-
-            {software.id === 'soft_formspace' && (
-              <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <p>
-                  FormSpace Prime integrates a central difference kinetic damping time-stepping algorithm that operates without inverting large structural stiffness matrices:
-                </p>
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 1: Out-of-Balance Nodal Residual</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Calculates residual vector <InlineMath math="\mathbf{R}_i^t" /> across all connected cables <InlineMath math="j \in \mathcal{N}_i" />:</p>
-                    <BlockMath math="\mathbf{R}_i^t = \mathbf{F}_i^{\text{ext}} - \sum_{j \in \mathcal{N}_i} \frac{T_{ij}^t}{L_{ij}^t} (\mathbf{x}_j^t - \mathbf{x}_i^t)" />
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 2: Half-Interval Velocity & Coordinate Leapfrog</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Integrates velocity at mid-steps to guarantee second-order symplectic phase accuracy:</p>
-                    <BlockMath math="\mathbf{v}_i^{t + \Delta t/2} = \mathbf{v}_i^{t - \Delta t/2} + \frac{\Delta t}{m_i} \mathbf{R}_i^t \quad \implies \quad \mathbf{x}_i^{t + \Delta t} = \mathbf{x}_i^t + \Delta t \, \mathbf{v}_i^{t + \Delta t/2}" />
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 3: Kinetic Energy Peak Reset & Convergence Check</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">When total kinetic energy begins to decelerate, velocity is snapped to zero to eliminate kinetic overshoot:</p>
-                    <BlockMath math="E_k(t) = \frac{1}{2} \sum_{i=1}^n m_i \|\mathbf{v}_i^t\|^2 \quad \text{with} \quad E_k(t) < E_k(t - \Delta t) \implies \mathbf{v}_i \leftarrow \mathbf{0}, \quad \|\mathbf{R}\|_\infty \le 10^{-10}\,\text{N}" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {software.id === 'soft_aerolattice' && (
-              <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <p>
-                  AeroLattice 3D utilizes the modified Riks-Crisfield cylindrical arc-length method to trace through unstable post-buckling snap-through paths:
-                </p>
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 1: Tangent Predictor Step</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Evaluates initial displacement direction along the tangent stiffness gradient:</p>
-                    <BlockMath math="\Delta \mathbf{u}_0 = \Delta \lambda_0 \mathbf{K}_T^{-1} \mathbf{P}_{\text{ref}} \quad \text{where} \quad \Delta \lambda_0 = \pm \frac{\Delta l}{\sqrt{\mathbf{P}_{\text{ref}}^T \mathbf{K}_T^{-T} \mathbf{K}_T^{-1} \mathbf{P}_{\text{ref}} + \psi^2 \|\mathbf{P}_{\text{ref}}\|^2}}" />
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 2: Constrained Newton-Raphson Orthogonal Corrector</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Restricts corrective iterations to lie on a cylindrical hypersurface in displacement-load space:</p>
-                    <BlockMath math="\begin{bmatrix} \mathbf{K}_T & -\mathbf{P} \\ 2\Delta\mathbf{u}^T & 2\psi^2 \Delta\lambda (\mathbf{P}^T\mathbf{P}) \end{bmatrix} \begin{bmatrix} \delta\mathbf{u} \\ \delta\lambda \end{bmatrix} = \begin{bmatrix} \mathbf{R} \\ \Delta l^2 - \|\Delta\mathbf{u}\|^2 - \psi^2 \Delta\lambda^2 \|\mathbf{P}\|^2 \end{bmatrix}" />
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 3: Bifurcation Detection & Tangent Determinant</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Captures shell snap-through at the singular limit point where tangent stiffness determinant approaches zero:</p>
-                    <BlockMath math="\det\left(\mathbf{K}_T\right) = 0 \quad \text{where} \quad \mathbf{K}_T = \mathbf{K}_e + \mathbf{K}_g(\boldsymbol{\sigma}) + \mathbf{K}_{uL}(\mathbf{u})" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {software.id === 'soft_deployx' && (
-              <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <p>
-                  DeployX solves flexible multibody kinematics for retractable spatial roofs, folding canopies, and kinetic facades using the Absolute Nodal Coordinate Formulation (ANCF) with Baumgarte constraint stabilization:
-                </p>
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 1: Index-3 Differential-Algebraic Equations (DAE)</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Couples flexible coordinate dynamics with spatial kinematic joint constraints <InlineMath math="\boldsymbol{\Phi}(\mathbf{q}) = \mathbf{0}" />:</p>
-                    <BlockMath math="\begin{bmatrix} \mathbf{M}(\mathbf{q}) & \boldsymbol{\Phi}_{\mathbf{q}}^T \\ \boldsymbol{\Phi}_{\mathbf{q}} & \mathbf{0} \end{bmatrix} \begin{bmatrix} \ddot{\mathbf{q}} \\ \boldsymbol{\lambda} \end{bmatrix} = \begin{bmatrix} \mathbf{Q}_{\text{ext}} - \mathbf{C}\dot{\mathbf{q}} - \mathbf{K}\mathbf{q} \\ -\dot{\boldsymbol{\Phi}}_{\mathbf{q}}\dot{\mathbf{q}} - 2\alpha\dot{\boldsymbol{\Phi}} - \beta^2\boldsymbol{\Phi} \end{bmatrix}" />
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 2: Best-Fit Surface RMS Deviation Validation</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Validates kinetic spatial roof geometric tolerances under operational wind and thermal loads:</p>
-                    <BlockMath math="\delta_{\text{RMS}} = \sqrt{ \frac{1}{N} \sum_{k=1}^N \left( z_k - \frac{x_k^2 + y_k^2}{4 F} \right)^2 } \le 0.35\,\text{mm}" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {software.id === 'soft_nodegen' && (
-              <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <p>
-                  NodeGen Parametric checks inter-member collision envelopes on solid spherical nodes and checks local notch stress concentrations:
-                </p>
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 1: 3D Spatial Member Non-Collision Angular Cone</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Guarantees that tubular members and wrenches have sufficient clearance during site assembly:</p>
-                    <BlockMath math="\theta_{ij} = \arccos\left(\frac{\mathbf{v}_i \cdot \mathbf{v}_j}{\|\mathbf{v}_i\| \|\mathbf{v}_j\|}\right) \ge \arcsin\left(\frac{r_i}{R}\right) + \arcsin\left(\frac{r_j}{R}\right) + \theta_{\text{clearance}}" />
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
-                    <span className="font-mono text-xs font-semibold text-cyan-700 dark:text-cyan-400">Step 2: Neuber Notch Plasticity Rule</span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Computes peak localized stresses around internal tapped threads in MERO joints:</p>
-                    <BlockMath math="\sigma_{\text{max}} \cdot \epsilon_{\text{max}} = K_t^2 \cdot S \cdot e \quad \implies \quad \sigma_{\text{max}} = \sqrt{E \cdot S \cdot e \cdot K_t^2}" />
-                  </div>
-                </div>
-              </div>
-            )}
-          </section>
+            </section>
+          )}
 
           {/* Dedicated Photo & Video Gallery Section */}
           <section className="border-t border-slate-200 dark:border-slate-800 pt-8">
@@ -363,7 +233,7 @@ export const SoftwareDetailPage: React.FC<SoftwareDetailPageProps> = ({ software
                     <div className="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 mb-1">{proj.category}</div>
                     <div className="text-sm font-bold text-slate-900 dark:text-white mb-1">{proj.title}</div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">{proj.location} · {proj.year}</div>
-                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-mono">Weight Saved: {proj.steelWeightSaved}</div>
+                    {proj.span && <div className="text-xs text-cyan-600 dark:text-cyan-400 font-mono">Span: {proj.span}</div>}
                   </div>
                 ))}
               </div>

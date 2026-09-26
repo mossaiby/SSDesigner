@@ -608,9 +608,11 @@ export const AdminPortal: React.FC = () => {
                           <div className="text-slate-700 dark:text-slate-400">
                             <span className="text-cyan-700 dark:text-cyan-400 font-mono font-semibold">Lead Client:</span> {proj.clientOrEngineer}
                           </div>
-                          <div className="text-slate-700 dark:text-slate-400">
-                            <span className="text-emerald-700 dark:text-emerald-400 font-mono font-semibold">Material Saved:</span> {proj.steelWeightSaved}
-                          </div>
+                          {proj.memberCount && (
+                            <div className="text-slate-700 dark:text-slate-400">
+                              <span className="text-cyan-700 dark:text-cyan-400 font-mono font-semibold">Members:</span> {proj.memberCount}
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -1246,28 +1248,22 @@ export const AdminPortal: React.FC = () => {
                 const softwareData = {
                   name: getFormField(fd, 'name'),
                   tagline: getFormField(fd, 'tagline'),
-                  category: getFormField(fd, 'category', 'Form-Finding & Cable-Net'),
-                  version: getFormField(fd, 'version', '2026.1'),
+                  category: getFormField(fd, 'category', editingSoftware?.category || 'Form-Finding & Cable-Net'),
+                  version: getFormField(fd, 'version', editingSoftware?.version || ''),
                   description: getFormField(fd, 'description'),
-                  keyFeatures: getFormArrayFromLines(fd, 'keyFeatures', [
-                    'Dynamic Relaxation with kinetic damping',
-                    'Automatic tension equilibrium'
-                  ]),
-                  mathematicalFoundations: getFormArrayFromLines(fd, 'math', [
-                    'Dynamic Relaxation Kinetic Damping: m_i \\frac{v_i^{t+\\Delta t/2} - v_i^{t-\\Delta t/2}}{\\Delta t} = R_i^t',
-                    'Green-Lagrange Nonlinear Strain Tensor: E_{ij} = \\frac{1}{2}(u_{i,j} + u_{j,i} + u_{k,i}u_{k,j})'
-                  ]),
-                  thumbnail: getFormField(fd, 'thumbnail', '/src/assets/images/software_form_finding_1790188528595.jpg'),
-                  releaseDate: getFormField(fd, 'releaseDate', new Date().toISOString().substring(0, 10)),
+                  keyFeatures: getFormArrayFromLines(fd, 'keyFeatures', []),
+                  mathematicalFoundations: [],
+                  thumbnail: getFormField(fd, 'thumbnail', editingSoftware?.thumbnail || ''),
+                  releaseDate: getFormField(fd, 'releaseDate', editingSoftware?.releaseDate || new Date().toISOString().substring(0, 10)),
                   featured: fd.get('featured') === 'on',
                   specs: {
-                    solverType: getFormField(fd, 'solverType', 'Dynamic Relaxation & Sparse Cholesky'),
-                    formulation: getFormField(fd, 'formulation', 'Co-rotational 3D formulation & Green-Lagrange strain'),
-                    elementsSupported: getFormArrayFromCsv(fd, 'elements', ['Tension Cables', 'Compression Struts', 'Spatial Beams']),
-                    maxNodesTested: getFormField(fd, 'maxNodes', '100,000+ Spatial Nodes'),
-                    fileIOFormats: getFormArrayFromCsv(fd, 'fileIO', ['DXF', 'STEP', 'JSON', 'IFC 4x3']),
-                    hardwareAcceleration: getFormField(fd, 'hardware', 'OpenCL / CUDA Multithreaded'),
-                    complianceStandards: getFormArrayFromCsv(fd, 'standards', ['Eurocode 3', 'IASS Working Group 8']),
+                    solverType: getFormField(fd, 'solverType', editingSoftware?.specs?.solverType || ''),
+                    formulation: getFormField(fd, 'formulation', editingSoftware?.specs?.formulation || ''),
+                    elementsSupported: getFormArrayFromCsv(fd, 'elements', editingSoftware?.specs?.elementsSupported || []),
+                    maxNodesTested: getFormField(fd, 'maxNodes', editingSoftware?.specs?.maxNodesTested || ''),
+                    fileIOFormats: getFormArrayFromCsv(fd, 'fileIO', editingSoftware?.specs?.fileIOFormats || []),
+                    hardwareAcceleration: getFormField(fd, 'hardware', editingSoftware?.specs?.hardwareAcceleration || ''),
+                    complianceStandards: getFormArrayFromCsv(fd, 'standards', editingSoftware?.specs?.complianceStandards || []),
                   }
                 };
 
@@ -1363,23 +1359,13 @@ export const AdminPortal: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 mb-1 font-mono">Mathematical Foundations & Formulas (One formula per line)</label>
-                <textarea
-                  name="math"
-                  rows={2}
-                  defaultValue={editingSoftware?.mathematicalFoundations.join('\n') || ''}
-                  placeholder="m_i \frac{v_i^{t+\Delta t/2} - v_i^{t-\Delta t/2}}{\Delta t} = R_i^t&#10;E_{ij} = \frac{1}{2}(u_{i,j} + u_{j,i} + u_{k,i}u_{k,j})"
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono focus:border-cyan-400 focus:outline-none"
-                />
-              </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-slate-400 mb-1 font-mono">Solver Engine</label>
                   <input
                     name="solverType"
-                    defaultValue={editingSoftware?.specs.solverType || 'Dynamic Relaxation & Sparse Cholesky'}
+                    defaultValue={editingSoftware?.specs.solverType || ''}
+                    placeholder="e.g. Dynamic Relaxation & Sparse Cholesky"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1387,7 +1373,8 @@ export const AdminPortal: React.FC = () => {
                   <label className="block text-slate-400 mb-1 font-mono">Tested Node Capacity</label>
                   <input
                     name="maxNodes"
-                    defaultValue={editingSoftware?.specs.maxNodesTested || '100,000+ Spatial Nodes'}
+                    defaultValue={editingSoftware?.specs.maxNodesTested || ''}
+                    placeholder="e.g. 100,000+ Spatial Nodes"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1398,7 +1385,8 @@ export const AdminPortal: React.FC = () => {
                   <label className="block text-slate-400 mb-1 font-mono">Continuum / Structural Formulation</label>
                   <input
                     name="formulation"
-                    defaultValue={editingSoftware?.specs.formulation || 'Co-rotational 3D formulation & Green-Lagrange strain'}
+                    defaultValue={editingSoftware?.specs.formulation || ''}
+                    placeholder="e.g. Co-rotational 3D formulation & Green-Lagrange strain"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1406,7 +1394,8 @@ export const AdminPortal: React.FC = () => {
                   <label className="block text-slate-400 mb-1 font-mono">Hardware Acceleration</label>
                   <input
                     name="hardware"
-                    defaultValue={editingSoftware?.specs.hardwareAcceleration || 'OpenCL / CUDA Multithreaded'}
+                    defaultValue={editingSoftware?.specs.hardwareAcceleration || ''}
+                    placeholder="e.g. OpenCL / CUDA Multithreaded"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1416,7 +1405,8 @@ export const AdminPortal: React.FC = () => {
                 <label className="block text-slate-400 mb-1 font-mono">Supported Elements (Comma-separated)</label>
                 <input
                   name="elements"
-                  defaultValue={editingSoftware?.specs.elementsSupported.join(', ') || 'Tension Cables, Compression Struts, Beams'}
+                  defaultValue={editingSoftware?.specs.elementsSupported.join(', ') || ''}
+                  placeholder="e.g. Tension Cables, Compression Struts, Beams"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
@@ -1426,7 +1416,8 @@ export const AdminPortal: React.FC = () => {
                   <label className="block text-slate-400 mb-1 font-mono">File I/O Formats (Comma-separated)</label>
                   <input
                     name="fileIO"
-                    defaultValue={editingSoftware?.specs.fileIOFormats.join(', ') || 'DXF, STEP, JSON, IFC 4x3, CSV'}
+                    defaultValue={editingSoftware?.specs.fileIOFormats.join(', ') || ''}
+                    placeholder="e.g. DXF, STEP, JSON, IFC 4x3, CSV"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1434,7 +1425,8 @@ export const AdminPortal: React.FC = () => {
                   <label className="block text-slate-400 mb-1 font-mono">Standards (Comma-separated)</label>
                   <input
                     name="standards"
-                    defaultValue={editingSoftware?.specs.complianceStandards.join(', ') || 'Eurocode 3, IASS Working Group 8, AISC 360'}
+                    defaultValue={editingSoftware?.specs.complianceStandards.join(', ') || ''}
+                    placeholder="e.g. Eurocode 3, IASS Working Group 8, AISC 360"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1508,24 +1500,21 @@ export const AdminPortal: React.FC = () => {
                 const projectData = {
                   title: getFormField(fd, 'title'),
                   subtitle: getFormField(fd, 'subtitle', getFormField(fd, 'structuralSystem')),
-                  category: getFormField(fd, 'category', 'Sports & Arenas'),
-                  location: getFormField(fd, 'location', 'Global'),
-                  year: parseInt(getFormField(fd, 'year', '2025')) || 2025,
-                  span: getFormField(fd, 'span', '120 m Clear Span'),
+                  category: getFormField(fd, 'category', editingProject?.category || 'Sports & Arenas'),
+                  location: getFormField(fd, 'location', editingProject?.location || ''),
+                  year: parseInt(getFormField(fd, 'year', String(new Date().getFullYear()))) || new Date().getFullYear(),
+                  span: getFormField(fd, 'span', editingProject?.span || ''),
                   structuralSystem: getFormField(fd, 'structuralSystem'),
-                  nodeCount: getFormField(fd, 'nodeCount', '2,400 Nodes'),
-                  memberCount: getFormField(fd, 'memberCount', '8,200 Members'),
-                  steelWeightSaved: getFormField(fd, 'steelWeightSaved', '28% Saved'),
-                  clientOrEngineer: getFormField(fd, 'clientOrEngineer', 'Structural Engineering Partnership'),
-                  softwareUsed: getFormArrayFromCsv(fd, 'softwareUsed', ['FormSpace Prime', 'AeroLattice 3D']),
-                  challenge: getFormField(fd, 'challenge', 'Nonlinear geometric bifurcation and large deformation control.'),
-                  engineeringSolution: getFormField(fd, 'engineeringSolution', 'Optimized double-layer spatial topology with pre-stressed cable reinforcement.'),
-                  heroImage: getFormField(fd, 'heroImage', '/src/assets/images/project_botanical_dome_1790188539068.jpg'),
+                  nodeCount: getFormField(fd, 'nodeCount', editingProject?.nodeCount || ''),
+                  memberCount: getFormField(fd, 'memberCount', editingProject?.memberCount || ''),
+                  steelWeightSaved: '',
+                  clientOrEngineer: getFormField(fd, 'clientOrEngineer', editingProject?.clientOrEngineer || ''),
+                  softwareUsed: getFormArrayFromCsv(fd, 'softwareUsed', editingProject?.softwareUsed || []),
+                  challenge: getFormField(fd, 'challenge', editingProject?.challenge || ''),
+                  engineeringSolution: getFormField(fd, 'engineeringSolution', editingProject?.engineeringSolution || ''),
+                  heroImage: getFormField(fd, 'heroImage', editingProject?.heroImage || ''),
                   featured: fd.get('featured') === 'on',
-                  keyMetrics: [
-                    { label: 'Clear Span', value: getFormField(fd, 'metricSpan', '120.0'), unit: 'm' },
-                    { label: 'Steel Weight', value: getFormField(fd, 'metricWeight', '38.5'), unit: 'kg/m²' },
-                  ]
+                  keyMetrics: editingProject?.keyMetrics || []
                 };
 
                 if (editingProject) {
@@ -1556,7 +1545,7 @@ export const AdminPortal: React.FC = () => {
                     name="year"
                     type="number"
                     required
-                    defaultValue={editingProject?.year || 2025}
+                    defaultValue={editingProject?.year || new Date().getFullYear()}
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1593,21 +1582,33 @@ export const AdminPortal: React.FC = () => {
                 </datalist>
               </div>
 
+              <div>
+                <label className="block text-slate-400 mb-1 font-mono">Clear Span / Aperture *</label>
+                <input
+                  name="span"
+                  required
+                  defaultValue={editingProject?.span || ''}
+                  placeholder="e.g. 140 m Clear Span"
+                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-400 mb-1 font-mono">Clear Span / Aperture *</label>
-                  <input
-                    name="span"
-                    required
-                    defaultValue={editingProject?.span || '140 m Clear Span'}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
-                  />
-                </div>
                 <div>
                   <label className="block text-slate-400 mb-1 font-mono">Spatial Nodes Count</label>
                   <input
                     name="nodeCount"
-                    defaultValue={editingProject?.nodeCount || '3,400 Nodes'}
+                    defaultValue={editingProject?.nodeCount || ''}
+                    placeholder="e.g. 3,400 Nodes"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1 font-mono">Members Count</label>
+                  <input
+                    name="memberCount"
+                    defaultValue={editingProject?.memberCount || ''}
+                    placeholder="e.g. 8,200 Members"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1629,6 +1630,7 @@ export const AdminPortal: React.FC = () => {
                 <input
                   name="clientOrEngineer"
                   defaultValue={editingProject?.clientOrEngineer || ''}
+                  placeholder="e.g. Munich Stadium Authority & Schlaich Bergermann"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
@@ -1639,6 +1641,7 @@ export const AdminPortal: React.FC = () => {
                   name="challenge"
                   rows={2}
                   defaultValue={editingProject?.challenge || ''}
+                  placeholder="Nonlinear geometric bifurcation and large deformation control..."
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
@@ -1649,6 +1652,7 @@ export const AdminPortal: React.FC = () => {
                   name="engineeringSolution"
                   rows={2}
                   defaultValue={editingProject?.engineeringSolution || ''}
+                  placeholder="Optimized double-layer spatial topology with pre-stressed cable reinforcement..."
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
@@ -1657,7 +1661,8 @@ export const AdminPortal: React.FC = () => {
                 <label className="block text-slate-400 mb-1 font-mono">Software Used (Comma-separated)</label>
                 <input
                   name="softwareUsed"
-                  defaultValue={editingProject?.softwareUsed.join(', ') || 'FormSpace Prime, AeroLattice 3D'}
+                  defaultValue={editingProject?.softwareUsed?.join(', ') || ''}
+                  placeholder="e.g. FormSpace Prime, AeroLattice 3D"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>
@@ -1892,16 +1897,16 @@ export const AdminPortal: React.FC = () => {
                 const postData = {
                   title: getFormField(fd, 'title'),
                   slug: getFormField(fd, 'title').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-                  category: getFormField(fd, 'category', 'Computational Mechanics'),
-                  readTime: getFormField(fd, 'readTime', '5 min read'),
+                  category: getFormField(fd, 'category', editingBlog?.category || 'Computational Mechanics'),
+                  readTime: getFormField(fd, 'readTime', editingBlog?.readTime || ''),
                   excerpt: getFormField(fd, 'excerpt'),
                   content: getFormField(fd, 'content'),
-                  coverImage: getFormField(fd, 'coverImage', '/src/assets/images/software_form_finding_1790188528595.jpg'),
+                  coverImage: getFormField(fd, 'coverImage', editingBlog?.coverImage || ''),
                   author: {
                     name: currentUser?.name || 'SSDesigner Lead Engineer',
                     role: currentUser?.role === 'administrator' ? 'Chief Scientist' : 'Structural Engineer',
                   },
-                  tags: getFormArrayFromCsv(fd, 'tags', ['SpaceStructures', 'ComputationalMechanics']),
+                  tags: getFormArrayFromCsv(fd, 'tags', editingBlog?.tags || []),
                 };
 
                 if (editingBlog) {
@@ -1946,7 +1951,8 @@ export const AdminPortal: React.FC = () => {
                   <label className="block text-slate-400 mb-1 font-mono">Read Time</label>
                   <input
                     name="readTime"
-                    defaultValue={editingBlog?.readTime || '6 min read'}
+                    defaultValue={editingBlog?.readTime || ''}
+                    placeholder="e.g. 6 min read"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -1956,8 +1962,8 @@ export const AdminPortal: React.FC = () => {
                 <label className="block text-slate-400 mb-1 font-mono">Tags (Comma-separated)</label>
                 <input
                   name="tags"
-                  defaultValue={editingBlog?.tags.join(', ') || 'SpaceStructures, ComputationalMechanics, Algorithms'}
-                  placeholder="e.g. DynamicRelaxation, Cables, FEM"
+                  defaultValue={editingBlog?.tags?.join(', ') || ''}
+                  placeholder="e.g. SpaceStructures, ComputationalMechanics, Algorithms"
                   className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:border-cyan-400 focus:outline-none"
                 />
               </div>

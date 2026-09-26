@@ -264,21 +264,28 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId 
                 <div className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">{project.span}</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50">
-                <div className="text-[10px] text-emerald-700 dark:text-emerald-400 uppercase font-semibold">Steel Material Saved</div>
-                <div className="text-xl font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">{project.steelWeightSaved}</div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+              {project.nodeCount && project.memberCount ? (
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                    <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Spatial Nodes</div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">{project.nodeCount}</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                    <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Members</div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">{project.memberCount}</div>
+                  </div>
+                </div>
+              ) : project.nodeCount ? (
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                   <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Spatial Nodes</div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">{project.nodeCount}</div>
                 </div>
+              ) : project.memberCount ? (
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                   <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold">Members</div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">{project.memberCount}</div>
                 </div>
-              </div>
+              ) : null}
 
               <div>
                 <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-semibold mb-1">Structural System</div>
