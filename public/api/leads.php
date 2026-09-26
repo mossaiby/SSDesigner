@@ -89,3 +89,16 @@ if ($method === 'PUT') {
     $stmt->execute(['id' => $id]);
     sendResponse(formatLeadRow($stmt->fetch()));
 }
+
+if ($method === 'DELETE') {
+    $id = isset($_GET['id']) ? trim($_GET['id']) : null;
+    if (!$id) {
+        $input = getJsonInput();
+        if (!empty($input['id'])) $id = $input['id'];
+    }
+    if (!$id) sendError('Lead ID is required', 400);
+
+    $stmt = $pdo->prepare("DELETE FROM leads WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+    sendResponse(['success' => true]);
+}

@@ -385,6 +385,13 @@ app.put('/api/leads/:id', (req: Request, res: Response) => {
   res.json(db.leads[idx]);
 });
 
+app.delete('/api/leads/:id', (req: Request, res: Response) => {
+  const db = loadDatabase();
+  db.leads = db.leads.filter((l) => l.id !== req.params.id);
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
 // File Upload endpoint
 app.post('/api/upload', upload.single('file') as any, (req: Request, res: Response) => {
   if (!req.file) {

@@ -180,6 +180,12 @@ class ApiService {
     });
   }
 
+  async deleteLead(id: string): Promise<{ success: boolean }> {
+    return this.request<{ success: boolean }>(`/leads/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+  }
+
   // --- Users & Auth ---
   async getUsers(): Promise<AdminUser[]> {
     return this.request<AdminUser[]>('/auth/users');

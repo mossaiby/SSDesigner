@@ -668,85 +668,51 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // -------------------------------------------------------------
-  // CRUD Articles / Blog -> Persists to Database
+  // CRUD Articles / Blog -> Strictly Persists to API Database
   // -------------------------------------------------------------
   const addBlogPost = async (post: Omit<BlogPost, 'id' | 'publishedAt'>) => {
-    try {
-      const created = await api.createArticle(post);
-      setBlogPosts(prev => [created, ...prev]);
-      addAudit('PUBLISH_BLOG', `Published article to database: ${created.title}`);
-    } catch (err: any) {
-      const id = `blog_${Date.now()}`;
-      const newPost: BlogPost = {
-        ...post,
-        id,
-        publishedAt: new Date().toISOString().substring(0, 10),
-      };
-      setBlogPosts(prev => [newPost, ...prev]);
-      addAudit('PUBLISH_BLOG_LOCAL', `Published article locally: ${newPost.title}`);
-    }
+    const created = await api.createArticle(post);
+    setBlogPosts(prev => [created, ...prev]);
+    addAudit('PUBLISH_BLOG', `Published article to database: ${created.title}`);
   };
 
   const updateBlogPost = async (id: string, updates: Partial<BlogPost>) => {
-    try {
-      const updated = await api.updateArticle(id, updates);
-      setBlogPosts(prev => prev.map(b => b.id === id ? updated : b));
-      addAudit('UPDATE_BLOG', `Updated article in database ID: ${id}`);
-    } catch {
-      setBlogPosts(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
-      addAudit('UPDATE_BLOG_LOCAL', `Updated article locally ID: ${id}`);
-    }
+    const updated = await api.updateArticle(id, updates);
+    setBlogPosts(prev => prev.map(b => b.id === id ? updated : b));
+    addAudit('UPDATE_BLOG', `Updated article in database ID: ${id}`);
   };
 
   const deleteBlogPost = async (id: string) => {
-    try {
-      await api.deleteArticle(id);
-      setBlogPosts(prev => prev.filter(b => b.id !== id));
-      addAudit('DELETE_BLOG', `Deleted article from database ID: ${id}`, 'warning');
-    } catch {
-      setBlogPosts(prev => prev.filter(b => b.id !== id));
-      addAudit('DELETE_BLOG_LOCAL', `Deleted article locally ID: ${id}`, 'warning');
-    }
+    await api.deleteArticle(id);
+    setBlogPosts(prev => prev.filter(b => b.id !== id));
+    addAudit('DELETE_BLOG', `Deleted article from database ID: ${id}`, 'warning');
   };
 
   // -------------------------------------------------------------
-  // Leads -> Persists to Database
+  // Leads -> Strictly Persists to API Database
   // -------------------------------------------------------------
   const submitLead = async (lead: Omit<LeadInquiry, 'id' | 'createdAt' | 'status'>) => {
-    try {
-      const created = await api.createLead(lead);
-      setLeads(prev => [created, ...prev]);
-      addAudit('NEW_LEAD', `Inbound inquiry saved to database from ${created.email}`, 'info');
-    } catch {
-      const id = `lead_${Date.now()}`;
-      const newLead: LeadInquiry = {
-        ...lead,
-        id,
-        name: sanitizeInput(lead.name),
-        organization: sanitizeInput(lead.organization),
-        message: sanitizeInput(lead.message),
-        status: 'New',
-        createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC',
-      };
-      setLeads(prev => [newLead, ...prev]);
-      addAudit('NEW_LEAD_LOCAL', `Inbound inquiry saved locally from ${newLead.email}`, 'info');
-    }
+    const sanitized = {
+      ...lead,
+      name: sanitizeInput(lead.name),
+      organization: sanitizeInput(lead.organization),
+      message: sanitizeInput(lead.message),
+    };
+    const created = await api.createLead(sanitized);
+    setLeads(prev => [created, ...prev]);
+    addAudit('NEW_LEAD', `Inbound inquiry saved to database from ${created.email}`, 'info');
   };
 
   const updateLeadStatus = async (id: string, status: LeadInquiry['status']) => {
-    try {
-      await api.updateLeadStatus(id, status);
-      setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-      addAudit('UPDATE_LEAD_STATUS', `Status updated in database for lead ID ${id} to ${status}`);
-    } catch {
-      setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-      addAudit('UPDATE_LEAD_STATUS_LOCAL', `Status updated locally for lead ID ${id}`);
-    }
+    await api.updateLeadStatus(id, status);
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+    addAudit('UPDATE_LEAD_STATUS', `Status updated in database for lead ID ${id} to ${status}`);
   };
 
   const deleteLead = async (id: string) => {
+    await api.deleteLead(id);
     setLeads(prev => prev.filter(l => l.id !== id));
-    addAudit('DELETE_LEAD', `Deleted lead inquiry ID: ${id}`);
+    addAudit('DELETE_LEAD', `Deleted lead inquiry from database ID: ${id}`, 'warning');
   };
 
   // Reset & Backup
