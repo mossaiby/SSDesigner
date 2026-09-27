@@ -204,6 +204,12 @@ class ApiService {
       body: JSON.stringify({ email, newPassword, currentPassword }),
     });
   }
+
+  async resetDatabase(): Promise<{ success: boolean }> {
+    return this.request<{ success: boolean }>('/reset', {
+      method: 'POST',
+    });
+  }
 }
 
 export const api = new ApiService();

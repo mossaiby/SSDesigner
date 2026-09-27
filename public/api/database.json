@@ -1,0 +1,18 @@
+{
+  "software": [],
+  "projects": [],
+  "articles": [],
+  "media": [],
+  "leads": [],
+  "users": [
+    {
+      "id": "usr_admin_master",
+      "name": "System Administrator",
+      "email": "admin@ssdesigner.ir",
+      "password_hash": "$2y$12$rAquzJnwZMkOkUOnaKKH0uGeYTYJNByQPhpRzwZF5M5DIUn8JvNt6",
+      "role": "administrator",
+      "last_login": "Pending Initial Login"
+    }
+  ],
+  "audit_logs": []
+}

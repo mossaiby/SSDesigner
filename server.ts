@@ -166,12 +166,35 @@ app.get('/api/status', (_req: Request, res: Response) => {
   });
 });
 
-app.get('/api/setup', (_req: Request, res: Response) => {
-  const db = loadDatabase();
-  saveDatabase(db);
+app.all(['/api/setup', '/api/reset'], (req: Request, res: Response) => {
+  const isReset = req.method === 'POST' || req.path.includes('reset') || req.query.reset;
+  let db = loadDatabase();
+  if (isReset) {
+    db = {
+      software: [],
+      projects: [],
+      articles: [],
+      media: [],
+      leads: [],
+      users: db.users && db.users.length > 0 ? db.users : [
+        {
+          id: 'usr_admin_master',
+          name: 'System Administrator',
+          email: 'admin@ssdesigner.ir',
+          password_hash: '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+          role: 'administrator',
+          lastLogin: new Date().toISOString(),
+        }
+      ],
+      auditLogs: [],
+    };
+    saveDatabase(db);
+  } else {
+    saveDatabase(db);
+  }
   res.json({
     success: true,
-    message: 'Database structure verified and active.',
+    message: isReset ? 'Database successfully reset to pristine state!' : 'Database structure verified and active.',
     tables: ['software', 'projects', 'articles', 'media', 'leads', 'users', 'auditLogs'],
   });
 });
@@ -428,7 +451,8 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   if (!email) return res.status(400).json({ error: 'Email required' });
 
   const db = loadDatabase();
-  const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = db.users.find((u) => u.email.toLowerCase() === normalizedEmail);
 
   if (!user) {
     return res.status(404).json({ error: 'User not found in system database' });
@@ -449,31 +473,26 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
 });
 
 app.post('/api/auth/set-password', (req: Request, res: Response) => {
-  const { email, newPassword } = req.body;
-  if (!email || !newPassword) {
-    return res.status(400).json({ error: 'Email and newPassword are required' });
+  const { email, newPassword, currentPassword } = req.body;
+  if (!email || !newPassword || !currentPassword) {
+    return res.status(400).json({ error: 'Email, currentPassword, and newPassword are required' });
   }
   if (newPassword.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
 
   const db = loadDatabase();
-  let user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+  const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
 
   if (!user) {
-    user = {
-      id: `usr_${Date.now()}`,
-      name: email.split('@')[0],
-      email: email.toLowerCase(),
-      role: 'administrator',
-      password: newPassword,
-      lastLogin: new Date().toISOString(),
-    };
-    db.users.push(user);
-  } else {
-    user.password = newPassword;
+    return res.status(404).json({ error: 'User not found in system database' });
   }
 
+  if (user.password !== currentPassword) {
+    return res.status(401).json({ error: 'Authentication failed: Current password is incorrect' });
+  }
+
+  user.password = newPassword;
   saveDatabase(db);
   res.json({
     success: true,

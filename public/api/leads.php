@@ -1,91 +1,34 @@
 <?php
 require_once __DIR__ . '/config.php';
 
-$pdo = getDbConnection();
+$db = loadJsonDb();
 $method = $_SERVER['REQUEST_METHOD'];
 
-if (!$pdo) {
-    sendError('Database offline', 503);
-}
-
-// Ensure table exists
-try {
-    $pdo->exec("CREATE TABLE IF NOT EXISTS `leads` (
-      `id` VARCHAR(64) NOT NULL PRIMARY KEY,
-      `name` VARCHAR(255) NOT NULL,
-      `email` VARCHAR(255) NOT NULL,
-      `organization` VARCHAR(255),
-      `inquiry_type` VARCHAR(128),
-      `message` TEXT,
-      `software_interest` VARCHAR(255),
-      `status` VARCHAR(64) DEFAULT 'new',
-      `submitted_at` VARCHAR(64) DEFAULT NULL,
-      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
-
-    $cols = [
-        "ALTER TABLE `leads` ADD COLUMN `organization` VARCHAR(255)",
-        "ALTER TABLE `leads` ADD COLUMN `inquiry_type` VARCHAR(128)",
-        "ALTER TABLE `leads` ADD COLUMN `message` TEXT",
-        "ALTER TABLE `leads` ADD COLUMN `software_interest` VARCHAR(255)",
-        "ALTER TABLE `leads` ADD COLUMN `status` VARCHAR(64) DEFAULT 'new'",
-        "ALTER TABLE `leads` ADD COLUMN `submitted_at` VARCHAR(64) DEFAULT NULL"
-    ];
-    foreach ($cols as $c) {
-        try { $pdo->exec($c); } catch (Throwable $ex) {}
-    }
-} catch (Throwable $e) {}
-
-function formatLeadRow($row) {
-    if (!$row) return null;
-    return [
-        'id' => $row['id'],
-        'name' => $row['name'],
-        'email' => $row['email'],
-        'organization' => $row['organization'] ?: '',
-        'inquiryType' => $row['inquiry_type'] ?: 'General Inquiry',
-        'message' => $row['message'] ?: '',
-        'softwareInterest' => $row['software_interest'] ?: '',
-        'status' => $row['status'] ?: 'new',
-        'submittedAt' => $row['submitted_at'] ?: date('Y-m-d H:i')
-    ];
+if (!isset($db['leads']) || !is_array($db['leads'])) {
+    $db['leads'] = [];
 }
 
 if ($method === 'GET') {
-    $stmt = $pdo->query("SELECT * FROM leads ORDER BY created_at DESC");
-    $rows = $stmt->fetchAll();
-    sendResponse(array_map('formatLeadRow', $rows));
+    sendResponse($db['leads']);
 }
 
 if ($method === 'POST') {
     $input = getJsonInput();
-    if (empty($input['name']) || empty($input['email'])) {
-        sendError('Name and email are required', 400);
-    }
+    if (empty($input['name']) || empty($input['email'])) sendError('Name and email are required', 400);
 
-    $id = !empty($input['id']) ? $input['id'] : 'lead_' . uniqid();
-    $name = trim($input['name']);
-    $email = trim($input['email']);
-    $org = !empty($input['organization']) ? trim($input['organization']) : '';
-    $inquiryType = !empty($input['inquiryType']) ? $input['inquiryType'] : 'General Inquiry';
-    $message = !empty($input['message']) ? $input['message'] : '';
-    $software = !empty($input['softwareInterest']) ? $input['softwareInterest'] : '';
-    $status = 'new';
-    $submittedAt = date('Y-m-d H:i');
+    $newLead = array_merge([
+        'id' => 'lead_' . uniqid(),
+        'status' => 'new',
+        'submittedAt' => date('Y-m-d H:i'),
+        'organization' => '',
+        'inquiryType' => 'General Inquiry',
+        'message' => '',
+        'softwareInterest' => ''
+    ], $input);
 
-    $stmt = $pdo->prepare("INSERT INTO leads 
-        (id, name, email, organization, inquiry_type, message, software_interest, status, submitted_at)
-        VALUES (:id, :name, :email, :org, :inq, :msg, :soft, :status, :sub)");
-
-    $stmt->execute([
-        'id' => $id, 'name' => $name, 'email' => $email, 'org' => $org,
-        'inq' => $inquiryType, 'msg' => $message, 'soft' => $software,
-        'status' => $status, 'sub' => $submittedAt
-    ]);
-
-    $stmt = $pdo->prepare("SELECT * FROM leads WHERE id = :id");
-    $stmt->execute(['id' => $id]);
-    sendResponse(formatLeadRow($stmt->fetch()), 201);
+    array_unshift($db['leads'], $newLead);
+    saveJsonDb($db);
+    sendResponse($newLead, 201);
 }
 
 if ($method === 'PUT') {
@@ -94,14 +37,19 @@ if ($method === 'PUT') {
     if (!$id && !empty($input['id'])) $id = $input['id'];
     if (!$id) sendError('Lead ID is required', 400);
 
-    if (isset($input['status'])) {
-        $stmt = $pdo->prepare("UPDATE leads SET status = :status WHERE id = :id");
-        $stmt->execute(['status' => $input['status'], 'id' => $id]);
+    $idx = -1;
+    foreach ($db['leads'] as $i => $l) {
+        if ($l['id'] === $id) {
+            $idx = $i;
+            break;
+        }
     }
 
-    $stmt = $pdo->prepare("SELECT * FROM leads WHERE id = :id");
-    $stmt->execute(['id' => $id]);
-    sendResponse(formatLeadRow($stmt->fetch()));
+    if ($idx === -1) sendError('Lead not found', 404);
+
+    $db['leads'][$idx] = array_merge($db['leads'][$idx], $input);
+    saveJsonDb($db);
+    sendResponse($db['leads'][$idx]);
 }
 
 if ($method === 'DELETE') {
@@ -112,7 +60,9 @@ if ($method === 'DELETE') {
     }
     if (!$id) sendError('Lead ID is required', 400);
 
-    $stmt = $pdo->prepare("DELETE FROM leads WHERE id = :id");
-    $stmt->execute(['id' => $id]);
+    $db['leads'] = array_values(array_filter($db['leads'], function($l) use ($id) {
+        return $l['id'] !== $id;
+    }));
+    saveJsonDb($db);
     sendResponse(['success' => true]);
 }

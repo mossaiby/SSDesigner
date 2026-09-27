@@ -670,7 +670,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Reset & Backup
-  const resetAllData = () => {
+  const resetAllData = async () => {
+    try {
+      await api.resetDatabase();
+    } catch (e) {
+      console.warn('API reset failed, falling back to local reset:', e);
+    }
     setSoftwareList([]);
     setProjectsList([]);
     setMediaList([]);
@@ -678,6 +683,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLeads([]);
     purgeStaleLocalStorage();
     addAudit('DATABASE_RESET', 'Administrator cleared database records.', 'critical');
+    await refreshFromDb();
   };
 
   const exportDatabaseJson = (): string => {

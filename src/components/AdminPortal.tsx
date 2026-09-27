@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { api } from '../services/api';
 import { 
   ShieldCheck, 
   Lock, 
@@ -20,6 +21,9 @@ import {
   Check, 
   AlertTriangle, 
   Eye, 
+  EyeOff,
+  Key,
+  CheckCircle2,
   X,
   Search
 } from 'lucide-react';
@@ -109,6 +113,7 @@ export const AdminPortal: React.FC = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
 
   // Active admin tab
@@ -215,7 +220,7 @@ export const AdminPortal: React.FC = () => {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleLoginSubmit} className="space-y-4 mb-6">
+            <form onSubmit={handleLoginSubmit} className="space-y-4 mb-4">
               {loginError && (
                 <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-800/60 text-xs text-rose-300">
                   {loginError}
@@ -229,9 +234,10 @@ export const AdminPortal: React.FC = () => {
                 <input
                   type="email"
                   required
+                  autoComplete="username"
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
-                  placeholder="operator@domain.com"
+                  placeholder="admin@ssdesigner.ir"
                   className="w-full px-3 py-2 text-xs rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
                 />
               </div>
@@ -240,21 +246,32 @@ export const AdminPortal: React.FC = () => {
                 <label className="block text-xs font-mono text-slate-700 dark:text-slate-400 mb-1 font-medium">
                   Security Passkey
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={loginPassword}
-                  onChange={e => setLoginPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
-                />
+                <div className="relative">
+                  <input
+                    type={showLoginPassword ? 'text' : 'password'}
+                    required
+                    autoComplete="current-password"
+                    value={loginPassword}
+                    onChange={e => setLoginPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full px-3 py-2 pr-10 text-xs rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer p-1"
+                  >
+                    {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmittingLogin}
-                className="w-full py-2.5 px-4 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+                className="w-full py-2.5 px-4 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-colors disabled:opacity-50 cursor-pointer shadow-sm flex items-center justify-center gap-2"
               >
+                <Lock className="w-3.5 h-3.5" />
                 {isSubmittingLogin ? 'Authenticating...' : 'Authenticate Operator'}
               </button>
             </form>

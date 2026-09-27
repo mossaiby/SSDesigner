@@ -5,17 +5,19 @@
   # -------------------------------------------------------------
   # API Clean URL Routing (maps /api/<endpoint> to /api/<endpoint>.php)
   # -------------------------------------------------------------
-  RewriteRule ^api/software(?:/(.*))?$ /api/software.php?id=$1 [QSA,L]
-  RewriteRule ^api/projects(?:/(.*))?$ /api/projects.php?id=$1 [QSA,L]
-  RewriteRule ^api/articles(?:/(.*))?$ /api/articles.php?id=$1 [QSA,L]
-  RewriteRule ^api/media(?:/(.*))?$ /api/media.php?id=$1 [QSA,L]
-  RewriteRule ^api/leads(?:/(.*))?$ /api/leads.php?id=$1 [QSA,L]
-  RewriteRule ^api/auth/set-password$ /api/auth.php?action=set-password [QSA,L]
-  RewriteRule ^api/auth/users$ /api/auth.php?action=users [QSA,L]
-  RewriteRule ^api/auth/login$ /api/auth.php?action=login [QSA,L]
-  RewriteRule ^api/upload$ /api/upload.php [QSA,L]
-  RewriteRule ^api/status$ /api/status.php [QSA,L]
-  RewriteRule ^api/setup$ /api/setup.php [QSA,L]
+  RewriteRule ^api/software(?:/(.*))?/?$ /api/software.php?id=$1 [QSA,L]
+  RewriteRule ^api/projects(?:/(.*))?/?$ /api/projects.php?id=$1 [QSA,L]
+  RewriteRule ^api/articles(?:/(.*))?/?$ /api/articles.php?id=$1 [QSA,L]
+  RewriteRule ^api/media(?:/(.*))?/?$ /api/media.php?id=$1 [QSA,L]
+  RewriteRule ^api/leads(?:/(.*))?/?$ /api/leads.php?id=$1 [QSA,L]
+  RewriteRule ^api/auth/set-password/?$ /api/auth.php?action=set-password [QSA,L]
+  RewriteRule ^api/auth/users/?$ /api/auth.php?action=users [QSA,L]
+  RewriteRule ^api/auth/login/?$ /api/auth.php?action=login [QSA,L]
+  RewriteRule ^api/auth/(.*)/?$ /api/auth.php?action=$1 [QSA,L]
+  RewriteRule ^api/upload/?$ /api/upload.php [QSA,L]
+  RewriteRule ^api/status/?$ /api/status.php [QSA,L]
+  RewriteRule ^api/setup/?$ /api/setup.php [QSA,L]
+  RewriteRule ^api/reset/?$ /api/reset.php [QSA,L]
 
   # -------------------------------------------------------------
   # Allow direct access to uploaded media files
